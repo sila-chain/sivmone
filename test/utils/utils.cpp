@@ -25,9 +25,9 @@ evmc_revision to_rev(std::string_view s)
         return EVMC_ISTANBUL;
     if (s == "SilaBerlin")
         return EVMC_BERLIN;
-    if (s == "SilaLondon" || s == "ArrowGlacier")
+    if (s == "SilaLondon")
         return EVMC_LONDON;
-    if (s == "SilaParis" || s == "Merge")
+    if (s == "SilaParis")
         return EVMC_PARIS;
     if (s == "SilaShanghai")
         return EVMC_SHANGHAI;
