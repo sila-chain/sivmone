@@ -1,8 +1,8 @@
 # sivmone: Fast Sila Virtual Machine implementation
 # SPDX-License-Identifier: Apache-2.0
 
-# Mirrors the release-linux job of circle.yml: the chfast/cpp-build-env:25-gcc-15
-# image, a Release build with warnings as errors and testing enabled, then ctest.
+# The release-linux build: the chfast/cpp-build-env:25-gcc-15 image, a Release
+# build with warnings as errors and testing enabled, then ctest.
 # The checkout runs on the runner; configure, build and test run in the image.
 name: CI
 
