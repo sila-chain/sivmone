@@ -20,7 +20,7 @@ struct DifficultyTest  // NOLINT(clang-analyzer-optin.performance.Padding)
 };
 
 /// Example difficulty tests from
-/// https://github.com/ethereum/tests/blob/develop/DifficultyTests.
+/// https://github.com/sila-chain/sila-tests/blob/main/DifficultyTests.
 static constexpr DifficultyTest tests[] = {
     {
         EVMC_FRONTIER,

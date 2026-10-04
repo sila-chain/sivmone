@@ -121,7 +121,7 @@ struct Log
 /// Transaction Receipt
 ///
 /// This struct is used in two contexts:
-/// 1. As the formally specified, RLP-encode transaction receipt included in the Ethereum blocks.
+/// 1. As the formally specified, RLP-encode transaction receipt included in the Sila blocks.
 /// 2. As the internal representation of the transaction execution result.
 /// These both roles share most, but not all the information. There are some fields that cannot be
 /// assigned in the single transaction execution context. There are also fields that are not a part

@@ -10,7 +10,7 @@
 namespace sivmone::test
 {
 /// Rewrites a fixture's `expectException` value to the execution-spec-tests names sivmone reports,
-/// so both test runners compare one vocabulary. Covers the retesteth vocabulary of ethereum/tests
+/// so both test runners compare one vocabulary. Covers the retesteth vocabulary of sila-chain/sila-tests
 /// (TR_NoFunds, InvalidGasLimit2, ...) and the few block-level spec names sivmone does not tell
 /// apart. Anything else is returned unchanged.
 [[nodiscard]] std::string map_legacy_exception(std::string_view expected);

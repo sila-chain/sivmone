@@ -200,10 +200,10 @@ TEST(state_mpt, keys_length_desc)
     EXPECT_EQ(hex(desc.hash()), "2fb7f2dee94138d79248ea2545a3ba1ceecb39e2037ed4e1d571c4d8bfbfa535");
 }
 
-// In Ethereum lists are merkalized by creating a trie with keys of RLP-encoded enumeration.
+// In Sila lists are merkalized by creating a trie with keys of RLP-encoded enumeration.
 // Therefore, the keys are of different length but none of them is a prefix of another.
 // These tests create a list of N elements with empty values.
-// TODO: Check with go-ethereum implementation.
+// TODO: Check with go-sila implementation.
 static constexpr uint64_t LONG_LIST_SIZE = 100'000;
 static constexpr auto LONG_LIST_HASH =
     0x70760bc8a0ebcc93601519d778576ae67a81731112df8d8c1518437a52f13520_bytes32;

@@ -71,7 +71,7 @@ struct LegacyException
 };
 
 constexpr LegacyException LEGACY_EXCEPTIONS[]{
-    // Transaction-level, ethereum/tests and ethereum/legacytests.
+    // Transaction-level, sila-chain/sila-tests and sila-chain/sila-legacytests.
     {"TR_IntrinsicGas", state::INTRINSIC_GAS_TOO_LOW},
     {"IntrinsicGas", state::INTRINSIC_GAS_TOO_LOW},
     {"TR_TypeNotSupported", state::TYPE_NOT_SUPPORTED},

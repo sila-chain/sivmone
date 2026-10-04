@@ -103,7 +103,7 @@ commands:
     parameters:
       repo:
         type: string
-        default: "ethereum/tests"
+        default: "sila-chain/sila-tests"
       rev:
         type: string
         default: develop
@@ -135,7 +135,7 @@ commands:
     parameters:
       repo:
         type: string
-        default: ethereum/execution-specs
+        default: sila-chain/execution-specs
       release:
         type: string
       fixtures_suffix:
@@ -156,7 +156,7 @@ commands:
     parameters:
       repo:
         type: string
-        default: ethereum/execution-specs
+        default: sila-chain/execution-specs
       release:
         type: string
       fixtures_suffix:
@@ -481,7 +481,7 @@ jobs:
           ignore_filename_regex: lib/sivmone/(advanced|cpu_check|eof|lru_cache|tracing|vm)|test/(experimental|unittests)
           binaries: sivmone
 
-  ethereum-tests:
+  sila-tests:
     executor: linux-clang-latest
     environment:
       BUILD_TYPE: Release
@@ -779,7 +779,7 @@ workflows:
             tags:
               only: /^v[0-9].*/
       - execution-spec-tests
-      - ethereum-tests
+      - sila-tests
       - precompiles-libsecp256k1
       - precompiles-gmp
       - cmake-min

@@ -31,7 +31,7 @@ using evmc::bytes;
 using evmc::bytes32;
 using intx::uint256;
 
-/// Ethereum account representation for tests.
+/// Sila account representation for tests.
 struct TestAccount
 {
     uint64_t nonce = 0;
@@ -42,7 +42,7 @@ struct TestAccount
     bool operator==(const TestAccount&) const noexcept = default;
 };
 
-/// Ethereum State representation for tests.
+/// Sila State representation for tests.
 ///
 /// This is a simplified variant of state::State:
 /// it hides some details related to transaction execution (e.g. original storage values)

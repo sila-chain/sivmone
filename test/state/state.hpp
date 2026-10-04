@@ -16,7 +16,7 @@
 
 namespace sivmone::state
 {
-/// The Ethereum State: the collection of accounts mapped by their addresses.
+/// The Sila State: the collection of accounts mapped by their addresses.
 class State
 {
     struct JournalBase

@@ -1,7 +1,7 @@
 # Efficient gas calculation algorithm for Sivm
 
 This article describes how to efficiently calculate gas and check stack requirements
-for Ethereum Virtual Machine (Sivm) instructions.
+for Sila Virtual Machine (Sivm) instructions.
 
 ## Instructions metadata
 

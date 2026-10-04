@@ -11,7 +11,7 @@ namespace sivmone::state
 struct Log;
 struct TransactionReceipt;
 
-/// The 2048-bit hash suitable for keeping an Ethereum bloom filter of transactions logs.
+/// The 2048-bit hash suitable for keeping a Sila bloom filter of transactions logs.
 struct BloomFilter
 {
     //// The 256 bytes of the bloom filter value.

@@ -51,10 +51,10 @@ std::optional<Curve::Fp> field_sqrt(const Curve::Fp& x) noexcept;
 /// Calculate y coordinate of a point having x coordinate and y parity.
 std::optional<Curve::Fp> calculate_y(const Curve::Fp& x, bool y_parity) noexcept;
 
-/// Hash the secp256k1 uncompressed public key to Ethereum address.
+/// Hash the secp256k1 uncompressed public key to Sila address.
 evmc::address to_address(std::span<const uint8_t, 64> pubkey) noexcept;
 
-/// Convert the secp256k1 point (uncompressed public key) to Ethereum address.
+/// Convert the secp256k1 point (uncompressed public key) to Sila address.
 evmc::address to_address(const AffinePoint& pt) noexcept;
 
 /// The strictness of the signer recovery from a signature.

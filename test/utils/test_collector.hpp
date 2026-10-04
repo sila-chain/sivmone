@@ -26,7 +26,7 @@ void ignore_test_files(std::vector<std::filesystem::path>& files, const std::fil
 void collect_tests(std::vector<TestCase>& cases, const std::filesystem::path& root,
     const RunOptions& options, evmc::VM& vm);
 
-/// Runs the Ethereum tests collected under every path in @p roots, reporting to @p out.
+/// Runs the Sila tests collected under every path in @p roots, reporting to @p out.
 /// Returns the process exit code.
 [[nodiscard]] int test(evmc::VM& vm, std::span<const std::filesystem::path> roots,
     const RunOptions& options, std::ostream& out);

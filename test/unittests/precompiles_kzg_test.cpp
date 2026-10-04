@@ -55,10 +55,10 @@ TEST(kzg, verify_g2_gen_lines)
 
 TEST(kzg, verify_kzg_setup_g2_1_lines)
 {
-    /// The point [s]₂ at index 1 of the G2 series of the Ethereum mainnet KZG
+    /// The point [s]₂ at index 1 of the G2 series of the Sila mainnet KZG
     /// trusted setup. Affine coordinates in Montgomery form. The compressed
     /// source (y-parity bit and Fp² x coordinate) is g2_monomial[1] at:
-    /// https://github.com/ethereum/consensus-specs/blob/master/presets/mainnet/trusted_setups/trusted_setup_4096.json#L8200
+    /// https://github.com/sila-chain/consensus-specs/blob/main/presets/sila-mainnet/trusted_setups/trusted_setup_4096.json#L8200
     ///
     /// Not in the public header file because we don't want to expose blst types.
     constexpr blst_p2_affine KZG_SETUP_G2_1{

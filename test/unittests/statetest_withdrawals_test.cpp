@@ -29,7 +29,7 @@ TEST(statetest_withdrawals, withdrawals_root_hash)
 TEST(statetest_withdrawals, withdrawals_warmup_test_case)
 {
     // Input taken from
-    // https://github.com/ethereum/tests/blob/develop/BlockchainTests/InvalidBlocks/bc4895-withdrawals/warmup.json
+    // https://github.com/sila-chain/sila-tests/blob/main/BlockchainTests/InvalidBlocks/bc4895-withdrawals/warmup.json
     constexpr std::string_view input =
         R"([
 {

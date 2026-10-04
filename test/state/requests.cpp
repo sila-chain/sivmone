@@ -60,7 +60,7 @@ std::optional<Requests> collect_deposit_requests(std::span<const TransactionRece
                 return std::nullopt;
 
             // Deposit log definition
-            // https://github.com/ethereum/consensus-specs/blob/dev/solidity_deposit_contract/deposit_contract.sol
+            // https://github.com/sila-chain/consensus-specs/blob/main/solidity_deposit_contract/deposit_contract.sol
             // event DepositEvent(
             //     bytes pubkey,
             //     bytes withdrawal_credentials,

@@ -56,5 +56,5 @@ deploy_script:
         }
         echo $name
         echo $prerelease_flag
-        ghr -u ethereum -r sivmone -n "$name" $prerelease_flag $env:appveyor_repo_tag_name package/
+        ghr -u sila-chain -r sivmone -n "$name" $prerelease_flag $env:appveyor_repo_tag_name package/
       }

@@ -73,7 +73,7 @@ int64_t calculate_difficulty(int64_t parent_difficulty, bool parent_has_ommers,
     int64_t parent_timestamp, int64_t current_timestamp, int64_t block_number,
     evmc_revision rev) noexcept
 {
-    // The calculation follows Ethereum Yellow Paper section 4.3.4. "Block Header Validity".
+    // The calculation follows Sila Yellow Paper section 4.3.4. "Block Header Validity".
     static constexpr int64_t MIN_DIFFICULTY = 0x20000;
 
     if (rev >= EVMC_PARIS)
