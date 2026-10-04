@@ -18,7 +18,6 @@ namespace json = nlohmann;
 
 namespace sivmone::test
 {
-// https://ethereum.org/en/developers/docs/blocks/
 struct BlockHeader
 {
     hash256 parent_hash;

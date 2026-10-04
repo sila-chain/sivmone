@@ -23,7 +23,7 @@ TEST(state_mpt, empty_trie)
 
 TEST(state_mpt, single_account_v1)
 {
-    // Expected value computed in go-ethereum.
+    // Expected value computed in go-sila.
     constexpr auto expected =
         0x084f337237951e425716a04fb0aaa74111eda9d9c61767f2497697d0a201c92e_bytes32;
 
@@ -254,8 +254,8 @@ TEST(state_mpt, trie_topologies)
         const char* hash_hex;
     };
 
-    // The test cases are cross-checked with go-ethereum implementation.
-    // https://github.com/ethereum/go-ethereum/blob/7dea9c10cdb42e8c9f71b8b324cbe9222ab105cf/trie/stacktrie_test.go#L35
+    // The test cases are cross-checked with go-sila implementation.
+    // https://github.com/sila-chain/go-sila/blob/06047c8d2bbf575c97cd5f76a24d79b26d6274ae/trie/stacktrie_test.go#L31
 
     // clang-format off
     const std::vector<KVH> tests[] = {

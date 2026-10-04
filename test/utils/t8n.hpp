@@ -44,7 +44,7 @@ struct T8NArgs
 ///
 /// This command takes some JSON inputs, including a list of transactions, and produces the result
 /// post-state as some JSON outputs. The specifics of the JSON formats and options are dictated
-/// by execution specs, see https://steel.ethereum.foundation/docs/execution-specs.
+/// by execution specs, see https://github.com/sila-chain/execution-specs.
 ///
 /// @param vm    The VM instance. The command may modify/overwrite its config (depends on args).
 /// @param args  The command arguments.

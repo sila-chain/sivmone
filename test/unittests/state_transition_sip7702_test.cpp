@@ -155,8 +155,7 @@ TEST_F(state_transition, sip7702_set_code_transaction_invalid_y_parity)
 
 TEST_F(state_transition, sip7702_set_code_transaction_unrecoverable_signature)
 {
-    // An authorization with no recoverable authority must be skipped, leaving no account behind:
-    // https://github.com/ipsilon/evmone/issues/1483.
+    // An authorization with no recoverable authority must be skipped, leaving no account behind.
     rev = EVMC_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;

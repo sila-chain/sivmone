@@ -262,7 +262,6 @@ constexpr bool g2_subgroup_check(const ecc::AffinePoint<E2>& p_aff) noexcept
 /// Computes point Q doubling for twisted curve + line tangent (in untwisted Q) to
 /// the curve (not twisted curve) evaluated at point P
 /// Returns live evaluation coefficients (-t, tw, tvw)
-/// For more details see https://notes.ethereum.org/@ipsilon/Hkn2a2qk0
 constexpr ecc::ProjPoint<E2> lin_func_and_dbl(
     const ecc::ProjPoint<E2>& Q, std::array<Fq2, 3>& t) noexcept
 {
@@ -296,7 +295,7 @@ constexpr ecc::ProjPoint<E2> lin_func_and_dbl(
 
 /// Computes points P0 and P1 addition for twisted curve + line defined by untwisted P1 and P2
 /// points on the curve (not twisted curve) evaluated at point P. Formula is simplified for P1.z
-/// == 1. For more details see https://notes.ethereum.org/@ipsilon/Hkn2a2qk0
+/// == 1.
 [[nodiscard]] constexpr ecc::ProjPoint<E2> lin_func_and_add(
     const ecc::ProjPoint<E2>& P0, const ecc::AffinePoint<E2>& P1, std::array<Fq2, 3>& t) noexcept
 {
@@ -334,7 +333,7 @@ constexpr ecc::ProjPoint<E2> lin_func_and_dbl(
 
 /// Computes points P0 and P1 addition for twisted curve + line defined by untwisted P1 and P2
 /// points on the curve (not twisted curve) evaluated at point P. Formula is simplified for P1.z
-/// == 1. For more details see https://notes.ethereum.org/@ipsilon/Hkn2a2qk0
+/// == 1.
 constexpr void lin_func(
     const ecc::ProjPoint<E2>& P0, const ecc::AffinePoint<E2>& P1, std::array<Fq2, 3>& t) noexcept
 {

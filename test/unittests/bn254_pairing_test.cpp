@@ -154,8 +154,7 @@ TEST(crypto, bn254_pairing_invalid_input)
     }
 }
 
-// Case taken from https://www.evm.codes/precompiled
-TEST(bn254, evm_codes_example)
+TEST(bn254, pairing_example)
 {
     // Pair 1
     const auto p1 = AffinePoint{
@@ -196,7 +195,7 @@ TEST(bn254, evm_codes_example)
     EXPECT_EQ(result.value(), true) << "Pairing result should be true, matching Solidity.";
 }
 
-TEST(bn254, evm_codes_example_changed_order)
+TEST(bn254, pairing_example_changed_order)
 {
     // Pair 1
     const auto p1 = AffinePoint{

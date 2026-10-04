@@ -76,7 +76,7 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
     for (const auto& ommer : test_block.block_info.ommers)
     {
         // Check that ommer block number difference with current block is within allowed range.
-        // https://github.com/ethereum/execution-specs/blob/ee73be5c4d83a2e3c358bd14990878002e52ba9e/src/ethereum/gray_glacier/fork.py#L623
+        // https://github.com/sila-chain/execution-specs/blob/313dbf0f689a695a149ff981f4fcad73ba46173c/src/sila/forks/gray_glacier/fork.py#L669
         if (ommer.delta < 1 || ommer.delta > 6)
             return make_error_code(INCORRECT_BLOCK_FORMAT);
     }

@@ -65,7 +65,7 @@ bytes32 TestBlockHashes::get_block_hash(int64_t block_number) const noexcept
         return it->second;
 
     // Convention for testing: if the block hash is unknown return the predefined "fake" value.
-    // https://github.com/ethereum/go-ethereum/blob/v1.12.2/tests/state_test_util.go#L432
+    // https://github.com/sila-chain/go-sila/blob/06047c8d2bbf575c97cd5f76a24d79b26d6274ae/tests/state_test_util.go#L522
     const auto s = std::to_string(block_number);
     return keccak256({reinterpret_cast<const uint8_t*>(s.data()), s.size()});
 }

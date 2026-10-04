@@ -146,10 +146,9 @@ or terminate with a different exception type.
 
 ### Current "gas left" value
 
-In EVMJIT additional instructions that begin a basic block are `GAS`and any of the _call_
-instructions. This is because these instructions need to know the precise _gas left_ counter value.
-However, in sivmone this problem has been solved without additional blocks splitting
-by attaching the correction value to the mentioned instructions.
+The `GAS` and the _call_ instructions need to know the precise _gas left_ counter value.
+Instead of starting additional basic blocks at these instructions, sivmone solves
+this by attaching the correction value to the mentioned instructions.
 
 ### Undefined instructions
 

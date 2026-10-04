@@ -231,8 +231,8 @@ TEST(state_rlp_decode, tx_round_trip_legacy)
 TEST(state_rlp_decode, tx_set_code_auth_y_parity_overflow_rejected)
 {
     // SIP-7702 bounds y_parity to < 2**8; a value of 2**8 fails the whole transaction at decode
-    // time, matching geth (V uint8) and revm/alloy (y_parity: U8). Authorization::y_parity cannot
-    // hold such a value, so the tuple is encoded by hand.
+    // time, matching go-sila (V uint8). Authorization::y_parity cannot hold such a value, so the
+    // tuple is encoded by hand.
     const auto auth = rlp::encode_tuple(
         1_u256, 0x2222_address, uint64_t{0}, 0x100_u256, 0x1234_u256, 0x5678_u256);
     const auto payload = rlp::encode(uint64_t{1}) +                  // chain_id

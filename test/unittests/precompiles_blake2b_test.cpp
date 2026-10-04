@@ -46,14 +46,13 @@ TEST(blake2b_compress, reference_test)
         "ba80a53f981c4d0d6a2797b69f12f6e94c212f14685ac4b74b12bb6fdbffa2d1"
         "7d87c5392aab792dc252d5de4533cc9518d38aa8dbf1925ab92386edd4009923");
 
-    // https://github.com/ethereum/tests/blob/v13.2/src/GeneralStateTestsFiller/stPreCompiledContracts/blake2BFiller.yml#L301-L302
+    // https://github.com/sila-chain/sila-tests/blob/main/src/GeneralStateTestsFiller/stPreCompiledContracts/blake2BFiller.yml#L303-L304
     h = h_init;
     blake2b_compress(12, h.data(), m, t, false);
     EXPECT_EQ(hex({reinterpret_cast<const uint8_t*>(h.data()), sizeof(h)}),
         "75ab69d3190a562c51aef8d88f1c2775876944407270c42c9844252c26d28752"
         "98743e7f6d5ea2f2d3e8d226039cd31b4e426ac4f2d3d666a610c2116fde4735");
 
-    // https://github.com/ethereum/tests/blob/v13.2/src/GeneralStateTestsFiller/stPreCompiledContracts/blake2BFiller.yml#L268-L269
     h = h_init;
     blake2b_compress(0, h.data(), m, t, true);
     EXPECT_EQ(hex({reinterpret_cast<const uint8_t*>(h.data()), sizeof(h)}),

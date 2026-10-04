@@ -176,7 +176,6 @@ BlobSchedule from_json<BlobSchedule>(const json::json& j)
     return blob_schedule;
 }
 
-// Based on calculateEIP1559BaseFee from ethereum/retesteth
 static uint64_t calculate_current_base_fee_sip1559(
     uint64_t parent_gas_used, uint64_t parent_gas_limit, uint64_t parent_base_fee)
 {
