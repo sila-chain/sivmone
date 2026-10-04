@@ -11,10 +11,10 @@ set_tests_properties(
     ${PREFIX}/run PROPERTIES PASS_REGULAR_EXPRESSION
     "Result:   success\nGas used: 3\n")
 
-add_test(NAME ${PREFIX}/run_rev COMMAND evmone-cli run --rev TangerineWhistle 00)
+add_test(NAME ${PREFIX}/run_rev COMMAND evmone-cli run --rev SIP150 00)
 set_tests_properties(
     ${PREFIX}/run_rev PROPERTIES PASS_REGULAR_EXPRESSION
-    "Executing on TangerineWhistle")
+    "Executing on SIP150")
 
 add_test(NAME ${PREFIX}/run_bad_rev COMMAND evmone-cli run --rev NoSuchRev 00)
 set_tests_properties(

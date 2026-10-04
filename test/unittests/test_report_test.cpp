@@ -64,7 +64,7 @@ TEST(test_report, check_eq_reports_both_values)
     ASSERT_EQ(recorded.failures().size(), 1u);
     EXPECT_EQ(recorded.render(),
         "t:\n"
-        "  Prague/0:\n"
+        "  SilaPrague/0:\n"
         "    state root:\n"
         "      actual   0x0000000000000000000000000000000000000000000000000000000000000001\n"
         "      expected 0x0000000000000000000000000000000000000000000000000000000000000002\n");

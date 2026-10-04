@@ -234,7 +234,7 @@ TEST(json_loader, blockchain_test_post_state_hash)
                 "hash": "0xe1bcc830589216abdc79cb3075f06f7b133f7b0cf257ecb346da33c354099700"
             },
             "lastblockhash": "0x01de610f00331cea813e8143d51eb44ca352cdd90c602bb4b4bcf3c6cf9d5531",
-            "network": "ShanghaiToCancunAtTime15k",
+            "network": "SilaShanghaiToSilaCancunAtTime15k",
             "pre": {
                 "0x0000000000000000000000000000000000000100": {
                     "nonce": "0x00",

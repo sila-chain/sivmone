@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "run.hpp"
+#include "utils.hpp"
 #include <evmc/hex.hpp>
 #include <evmc/mocked_host.hpp>
 #include <chrono>
@@ -58,8 +59,8 @@ auto bench(MockedHost& host, evmc::VM& vm, evmc_revision rev, const evmc_message
 int run(VM& vm, evmc_revision rev, int64_t gas, bytes_view code, bytes_view input, bool create,
     bool bench, std::ostream& out)
 {
-    out << (create ? "Creating and executing on " : "Executing on ") << rev << " with " << gas
-        << " gas limit\n";
+    out << (create ? "Creating and executing on " : "Executing on ")
+        << evmone::test::sivm_revision_to_string(rev) << " with " << gas << " gas limit\n";
 
     MockedHost host;
 
