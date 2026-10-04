@@ -11,7 +11,6 @@ _sivmone_ is a C++ implementation of the Sila Virtual Machine (Sivm).
 The project aims for a clean, standalone Sivm implementation
 that can be imported as an execution module by Sila client projects.
 The codebase of _sivmone_ is optimized to provide fast and efficient execution of Sivm smart contracts.
-It derives from evmone, created by members of the [Ipsilon] (ex-[Ewasm]) team.
 
 ### Characteristic of sivmone
 
@@ -120,8 +119,6 @@ Licensed under the [Apache License, Version 2.0].
 [codspeed]: https://app.codspeed.io/sila-chain/sivmone
 [Apache License, Version 2.0]: LICENSE
 [EVMC]: https://github.com/ethereum/evmc
-[Ipsilon]: https://github.com/ipsilon
-[Ewasm]: https://github.com/ewasm
 [GMP]: https://gmplib.org
 [intx]: https://github.com/chfast/intx
 [Releases]: https://github.com/sila-chain/sivmone/releases
