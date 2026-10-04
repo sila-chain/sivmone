@@ -2,7 +2,7 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "ethash_difficulty.hpp"
+#include "silash_difficulty.hpp"
 #include <algorithm>
 #include <cassert>
 

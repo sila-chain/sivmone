@@ -58,7 +58,7 @@ struct RequestsResult
     const StateView& state_view, const BlockInfo& block, const BlockHashes& block_hashes,
     evmc_revision rev, evmc::VM& vm);
 
-/// Emit an ETH transfer log (LOG3) from SYSTEM_ADDRESS for a value transfer (SIP-7708).
+/// Emit a SIL transfer log (LOG3) from SYSTEM_ADDRESS for a value transfer (SIP-7708).
 void emit_transfer_log(
     std::vector<Log>& logs, const address& sender, const address& recipient, const uint256& amount);
 }  // namespace sivmone::state

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <gmock/gmock.h>
-#include <test/state/ethash_difficulty.hpp>
+#include <test/state/silash_difficulty.hpp>
 
 using namespace sivmone::state;
 

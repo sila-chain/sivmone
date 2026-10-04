@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <test/state/errors.hpp>
-#include <test/state/ethash_difficulty.hpp>
+#include <test/state/silash_difficulty.hpp>
 #include <test/state/requests.hpp>
 #include <test/state/rlp_decode.hpp>
 #include <test/utils/block_transition.hpp>

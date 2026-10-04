@@ -70,7 +70,7 @@ TEST_F(state_transition, selfdestruct_same_create_cancun)
 
 TEST_F(state_transition, selfdestruct_beneficiary_with_code)
 {
-    // Send ETH via SELFDESTRUCT to an account with code.
+    // Send SIL via SELFDESTRUCT to an account with code.
     // This test checks if the beneficiary's code in the state is not somehow disturbed
     // by this action as we likely don't load the code from database.
     rev = EVMC_CANCUN;
@@ -152,7 +152,7 @@ TEST_F(state_transition, selfdestruct_prefunded_amsterdam)
 
 TEST_F(state_transition, selfdestruct_prefunded_burn)
 {
-    // Burn pre-funded ETH by self-destruct to self.
+    // Burn pre-funded SIL by self-destruct to self.
     rev = EVMC_CANCUN;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
@@ -259,7 +259,7 @@ TEST_F(state_transition, massdestruct_cancun)
 
 TEST_F(state_transition, sip7708_transfer_log_selfdestruct_existing)
 {
-    // A pre-existing contract self-destructing to a distinct beneficiary emits an ETH transfer log
+    // A pre-existing contract self-destructing to a distinct beneficiary emits a SIL transfer log
     // for the moved balance (SIP-7708).
     rev = EVMC_AMSTERDAM;
     static constexpr auto Beneficiary = 0xbe_address;
@@ -273,8 +273,8 @@ TEST_F(state_transition, sip7708_transfer_log_selfdestruct_existing)
 
 TEST_F(state_transition, sip7708_transfer_log_create_tx_then_selfdestruct)
 {
-    // A CREATE-transaction endowment emits an ETH transfer log, then the same-tx-created account
-    // self-destructing in its initcode emits a second ETH transfer log (SIP-7708).
+    // A CREATE-transaction endowment emits a SIL transfer log, then the same-tx-created account
+    // self-destructing in its initcode emits a second SIL transfer log (SIP-7708).
     rev = EVMC_AMSTERDAM;
     static constexpr auto Beneficiary = 0xbe_address;
     tx.value = 0x99;

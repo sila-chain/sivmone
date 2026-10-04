@@ -4,7 +4,7 @@
 
 #include "t8n.hpp"
 #include <nlohmann/json.hpp>
-#include <test/state/ethash_difficulty.hpp>
+#include <test/state/silash_difficulty.hpp>
 #include <test/state/requests.hpp>
 #include <test/utils/block_transition.hpp>
 #include <test/utils/mpt_hash.hpp>

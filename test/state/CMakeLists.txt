@@ -20,8 +20,8 @@ target_sources(
     bloom_filter.hpp
     bloom_filter.cpp
     errors.hpp
-    ethash_difficulty.hpp
-    ethash_difficulty.cpp
+    silash_difficulty.hpp
+    silash_difficulty.cpp
     hash_utils.hpp
     host.hpp
     host.cpp

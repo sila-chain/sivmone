@@ -52,7 +52,7 @@ TEST_F(state_transition, block_apply_ommers_reward)
     static constexpr auto o1 = Ommer{0x0eeee1_address, 1};
     static constexpr auto o2 = Ommer{0x0eeee2_address, 3};
 
-    // Use high value 5 ETH to catch potential uint64 overflows.
+    // Use high value 5 SIL to catch potential uint64 overflows.
     block_reward = 5'000'000'000'000'000'000;
     block.ommers = {o1, o2};
     tx.to = To;
