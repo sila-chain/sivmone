@@ -37,4 +37,13 @@ jobs:
               cmake --build build
               cd build
               ctest --schedule-random --output-on-failure --parallel $CMAKE_BUILD_PARALLEL_LEVEL
+              cd ..
+              cmake --install build --prefix install
+              test -f install/include/sivmone/sivmone.h
+              lib=$(find install -name "libsivmone.so" | head -n1)
+              test -n "$lib"
+              nm -D --defined-only "$lib" | grep -w evmc_create_sivmone
+              if nm -D --defined-only "$lib" | grep -i evmone; then false; fi
+              install/bin/sivmone --version
+              install/bin/sivmone run 600160005260206000f3 | grep -q "Result: *success"
             '
