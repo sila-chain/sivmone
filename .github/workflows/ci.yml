@@ -45,6 +45,7 @@ jobs:
               nm -D --defined-only "$lib" | grep -w evmc_create_sivmone
               if nm -D --defined-only "$lib" | grep -i evmone; then false; fi
               export LD_LIBRARY_PATH="$(dirname "$lib")"
+              export LD_LIBRARY_PATH="$(dirname "$lib")"
               install/bin/sivmone --version
               install/bin/sivmone run 600160005260206000f3 | grep -q "Result: *success"
             '
