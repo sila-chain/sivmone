@@ -1,14 +1,14 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmone/lru_cache.hpp>
+#include <sivmone/lru_cache.hpp>
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <numeric>
 #include <random>
 
-using evmone::LRUCache;
+using sivmone::LRUCache;
 
 TEST(lru_cache, capacity1)
 {

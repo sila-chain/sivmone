@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -15,7 +15,7 @@
 #include <test/utils/statetest.hpp>
 #include <test/utils/test_report.hpp>
 
-namespace evmone::test
+namespace sivmone::test
 {
 
 /// The CL gossip protocol constraint of the maximum block size (EIP-7934).
@@ -367,13 +367,13 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
             assert(parent_data_it != block_data.end());
             const auto& pre_state = parent_data_it->second.post_state;
 
-            // Legacy fixtures name the broken rule in vocabulary evmone does not speak
+            // Legacy fixtures name the broken rule in vocabulary sivmone does not speak
             // (InvalidStateRoot, TooManyUncles); only the spec names can be compared.
             const auto names_spec_exception =
                 test_block.expected_exception.find("Exception.") != std::string::npos;
 
             // TODO: The transaction senders come from the fixture instead of being recovered
-            //   from the signatures, so evmone never sees the signature the test broke. Such a
+            //   from the signatures, so sivmone never sees the signature the test broke. Such a
             //   transaction executes as the sender the fixture names and the block is rejected
             //   by whatever rule that sender happens to break, or by its state root alone.
             const auto sender_not_recovered = contains_any(
@@ -499,4 +499,4 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
     });
 }
 
-}  // namespace evmone::test
+}  // namespace sivmone::test

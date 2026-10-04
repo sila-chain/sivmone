@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -6,7 +6,7 @@
 #include <cassert>
 #include <system_error>
 
-namespace evmone::state
+namespace sivmone::state
 {
 
 /// The reasons a transaction or a block is rejected.
@@ -58,12 +58,12 @@ enum ErrorCode : int  // NOLINT(*-use-enum-class)
     SYSTEM_CONTRACT_CALL_FAILED,
 };
 
-/// Obtains a reference to the static error category object for evmone errors.
-inline const std::error_category& evmone_category() noexcept
+/// Obtains a reference to the static error category object for sivmone errors.
+inline const std::error_category& sivmone_category() noexcept
 {
     struct Category : std::error_category
     {
-        [[nodiscard]] const char* name() const noexcept final { return "evmone"; }
+        [[nodiscard]] const char* name() const noexcept final { return "sivmone"; }
 
         [[nodiscard]] std::string message(int ev) const noexcept final
         {
@@ -152,13 +152,13 @@ inline const std::error_category& evmone_category() noexcept
     return category_instance;
 }
 
-/// Creates error_code object out of an evmone error code value.
+/// Creates error_code object out of an sivmone error code value.
 /// This is used by std::error_code to implement implicit conversion
-/// evmone::ErrorCode -> std::error_code, therefore the definition is
+/// sivmone::ErrorCode -> std::error_code, therefore the definition is
 /// in the global namespace to match the definition of ethash_errc.
 inline std::error_code make_error_code(ErrorCode errc) noexcept
 {
-    return {errc, evmone_category()};
+    return {errc, sivmone_category()};
 }
 
-}  // namespace evmone::state
+}  // namespace sivmone::state

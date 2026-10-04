@@ -1,9 +1,9 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include <benchmark/benchmark.h>
-#include <evmone_precompiles/modarith.hpp>
+#include <sivmone_precompiles/modarith.hpp>
 
 using namespace intx;
 
@@ -17,7 +17,7 @@ constexpr auto secp256k1 = 0xfffffffffffffffffffffffffffffffffffffffffffffffffff
 template <typename UintT, const UintT& Mod>
 void modarith_add(benchmark::State& state)
 {
-    const evmone::crypto::ModArith<UintT> m{Mod};
+    const sivmone::crypto::ModArith<UintT> m{Mod};
     auto a = Mod / 2;
     auto b = Mod / 3;
 
@@ -33,7 +33,7 @@ void modarith_add(benchmark::State& state)
 template <typename UintT, const UintT& Mod>
 void modarith_sub(benchmark::State& state)
 {
-    const evmone::crypto::ModArith<UintT> m{Mod};
+    const sivmone::crypto::ModArith<UintT> m{Mod};
     auto a = Mod / 2;
     auto b = Mod / 3;
 
@@ -49,7 +49,7 @@ void modarith_sub(benchmark::State& state)
 template <typename UintT, const UintT& Mod>
 void modarith_mul(benchmark::State& state)
 {
-    const evmone::crypto::ModArith<UintT> m{Mod};
+    const sivmone::crypto::ModArith<UintT> m{Mod};
     auto a = m.to_mont(Mod / 2);
     auto b = m.to_mont(Mod / 3);
 

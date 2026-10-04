@@ -1,13 +1,13 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include <evmc/hex.hpp>
-#include <evmone_precompiles/ripemd160.hpp>
+#include <sivmone_precompiles/ripemd160.hpp>
 #include <gtest/gtest.h>
 #include <span>
 
-using evmone::crypto::ripemd160;
+using sivmone::crypto::ripemd160;
 
 static std::string hex(std::span<const std::byte> x)
 {

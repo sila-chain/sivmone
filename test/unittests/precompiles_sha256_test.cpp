@@ -1,12 +1,12 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include <evmc/hex.hpp>
-#include <evmone_precompiles/sha256.hpp>
+#include <sivmone_precompiles/sha256.hpp>
 #include <gtest/gtest.h>
 
-using evmone::crypto::sha256;
+using sivmone::crypto::sha256;
 
 TEST(sha256, test_vectors)
 {
@@ -24,7 +24,7 @@ TEST(sha256, test_vectors)
 
     for (const auto& [input, expected_hash_hex] : test_cases)
     {
-        std::byte hash[evmone::crypto::SHA256_HASH_SIZE];
+        std::byte hash[sivmone::crypto::SHA256_HASH_SIZE];
         sha256(hash, reinterpret_cast<const std::byte*>(input.data()), input.size());
         const auto hash_hex = evmc::hex({reinterpret_cast<const uint8_t*>(hash), std::size(hash)});
         EXPECT_EQ(hash_hex, expected_hash_hex);

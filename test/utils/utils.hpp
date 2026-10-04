@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2018 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -8,7 +8,7 @@
 #include <intx/intx.hpp>
 #include <algorithm>
 
-namespace evmone::test
+namespace sivmone::test
 {
 using evmc::bytes;
 using evmc::bytes_view;
@@ -83,4 +83,4 @@ inline bytes operator""_hex(const char* s, size_t size)
     return from_spaced_hex({s, size}).value();
 }
 
-}  // namespace evmone::test
+}  // namespace sivmone::test

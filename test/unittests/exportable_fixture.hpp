@@ -1,11 +1,11 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
 #include <gtest/gtest.h>
 
-namespace evmone::test
+namespace sivmone::test
 {
 class ExportableFixture : public testing::Test
 {
@@ -15,4 +15,4 @@ protected:
 
     ExportableFixture();
 };
-}  // namespace evmone::test
+}  // namespace sivmone::test

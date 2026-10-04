@@ -1,20 +1,20 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// Tests of the blockchain test runner's verdicts. EEST reaches validate_block()'s rejections on
-/// a green run, but not the reports below them: those need evmone and a fixture to disagree.
+/// a green run, but not the reports below them: those need sivmone and a fixture to disagree.
 /// Neither is reachable from the suites the coverage job runs.
 
 #include <evmc/evmc.hpp>
-#include <evmone/evmone.h>
+#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <test/utils/blockchaintest.hpp>
 #include <test/utils/mpt_hash.hpp>
 
-using namespace evmone;
-using namespace evmone::test;
+using namespace sivmone;
+using namespace sivmone::test;
 using namespace evmc::literals;
 
 namespace
@@ -55,7 +55,7 @@ std::vector<Failure> run(const BlockchainTest& t)
 {
     std::vector<Failure> failures;
     TestReport report{[&](const Failure& failure) { failures.push_back(failure); }};
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
     run_blockchain_test(t, vm, report);
     return failures;
 }

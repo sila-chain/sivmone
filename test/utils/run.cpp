@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -9,7 +9,7 @@
 #include <chrono>
 #include <ostream>
 
-namespace evmone::tooling
+namespace sivmone::tooling
 {
 using namespace evmc;
 
@@ -60,7 +60,7 @@ int run(VM& vm, evmc_revision rev, int64_t gas, bytes_view code, bytes_view inpu
     bool bench, std::ostream& out)
 {
     out << (create ? "Creating and executing on " : "Executing on ")
-        << evmone::test::sivm_revision_to_string(rev) << " with " << gas << " gas limit\n";
+        << sivmone::test::sivm_revision_to_string(rev) << " with " << gas << " gas limit\n";
 
     MockedHost host;
 
@@ -105,4 +105,4 @@ int run(VM& vm, evmc_revision rev, int64_t gas, bytes_view code, bytes_view inpu
 
     return 0;
 }
-}  // namespace evmone::tooling
+}  // namespace sivmone::tooling

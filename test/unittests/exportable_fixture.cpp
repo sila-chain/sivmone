@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -13,7 +13,7 @@
 
 namespace fs = std::filesystem;
 
-namespace evmone::test
+namespace sivmone::test
 {
 namespace
 {
@@ -36,11 +36,11 @@ fs::path get_export_test_path(const testing::TestInfo& test_info, std::string_vi
 
 ExportableFixture::ExportableFixture()
 {
-    if (const auto export_dir = std::getenv("EVMONE_EXPORT_TESTS"); export_dir != nullptr)
+    if (const auto export_dir = std::getenv("SIVMONE_EXPORT_TESTS"); export_dir != nullptr)
     {
         const auto& test_info = *testing::UnitTest::GetInstance()->current_test_info();
         export_test_name = test_info.name();
         export_file_path = get_export_test_path(test_info, export_dir).string();
     }
 }
-}  // namespace evmone::test
+}  // namespace sivmone::test

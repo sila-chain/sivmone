@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -12,9 +12,9 @@
 #include <array>
 
 using namespace intx::literals;
-using namespace evmone;
-using namespace evmone::state;
-using namespace evmone::test;
+using namespace sivmone;
+using namespace sivmone::state;
+using namespace sivmone::test;
 
 
 TEST(state_mpt_hash, empty)
@@ -172,7 +172,7 @@ TEST(state_mpt_hash, legacy_and_eip1559_receipt_three_logs_no_logs)
     //}
 
     TransactionReceipt receipt0{};
-    receipt0.type = evmone::state::Transaction::Type::legacy;
+    receipt0.type = sivmone::state::Transaction::Type::legacy;
     receipt0.status = EVMC_SUCCESS;
     receipt0.cumulative_gas_used = 0x24522;
 
@@ -222,7 +222,7 @@ TEST(state_mpt_hash, legacy_and_eip1559_receipt_three_logs_no_logs)
     //}
 
     TransactionReceipt receipt1{};
-    receipt1.type = evmone::state::Transaction::Type::eip1559;
+    receipt1.type = sivmone::state::Transaction::Type::eip1559;
     receipt1.status = EVMC_SUCCESS;
     receipt1.cumulative_gas_used = 0x2cd9b;
     receipt1.logs_bloom_filter = compute_bloom_filter(receipt1.logs);
@@ -236,7 +236,7 @@ TEST(state_mpt_hash, pre_byzantium_receipt)
     // Block taken from Ethereum mainnet
     // https://etherscan.io/txs?block=4276370
 
-    using namespace evmone::state;
+    using namespace sivmone::state;
 
     TransactionReceipt receipt0{
         .type = Transaction::Type::legacy,

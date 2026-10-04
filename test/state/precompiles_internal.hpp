@@ -1,11 +1,11 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
 #include <evmc/evmc.hpp>
 
-namespace evmone::state
+namespace sivmone::state
 {
 struct ExecutionResult
 {
@@ -40,7 +40,7 @@ PrecompileAnalysis p256verify_analyze(evmc::bytes_view input, evmc_revision rev)
 
 ExecutionResult ecrecover_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
-ExecutionResult ecrecover_execute_evmone(
+ExecutionResult ecrecover_execute_sivmone(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
 ExecutionResult sha256_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
@@ -50,7 +50,7 @@ ExecutionResult identity_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
 ExecutionResult expmod_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
-ExecutionResult expmod_execute_evmone(
+ExecutionResult expmod_execute_sivmone(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
 ExecutionResult ecadd_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
@@ -78,4 +78,4 @@ ExecutionResult bls12_map_fp2_to_g2_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
 ExecutionResult p256verify_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
-}  // namespace evmone::state
+}  // namespace sivmone::state

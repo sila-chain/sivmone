@@ -1,18 +1,18 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
 #include "exportable_fixture.hpp"
-#include <evmone/evmone.h>
+#include <sivmone/sivmone.h>
 #include <test/state/errors.hpp>
 #include <test/state/host.hpp>
 #include <test/utils/test_state.hpp>
 
-namespace evmone::test
+namespace sivmone::test
 {
-using namespace evmone;
-using namespace evmone::state;
+using namespace sivmone;
+using namespace sivmone::state;
 
 /// Fixture to defining test cases in form similar to JSON State Tests.
 ///
@@ -39,8 +39,8 @@ protected:
 
     static constexpr auto Coinbase = 0xc014bace_address;
 
-    static inline evmc::VM vm{evmc_create_evmone()};
-    static inline evmc::VM tracing_vm{evmc_create_evmone(), {{"trace", "1"}}};
+    static inline evmc::VM vm{evmc_create_sivmone()};
+    static inline evmc::VM tracing_vm{evmc_create_sivmone(), {{"trace", "1"}}};
 
     struct ExpectedAccount
     {
@@ -125,4 +125,4 @@ protected:
         const std::variant<TransactionReceipt, std::error_code>& res, const TestState& post);
 };
 
-}  // namespace evmone::test
+}  // namespace sivmone::test

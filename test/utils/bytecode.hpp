@@ -1,17 +1,17 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019-2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
 #include <evmc/evmc.hpp>
-#include <evmone/instructions_traits.hpp>
+#include <sivmone/instructions_traits.hpp>
 #include <intx/intx.hpp>
 #include <test/utils/utils.hpp>
 #include <algorithm>
 #include <ostream>
 #include <stdexcept>
 
-namespace evmone::test
+namespace sivmone::test
 {
 struct bytecode;
 
@@ -19,10 +19,10 @@ inline bytecode push(uint64_t n);
 inline bytecode push(evmc::address addr);
 inline bytecode push(evmc::bytes32 bs);
 
-using enum evmone::Opcode;
-using evmone::Opcode;
+using enum sivmone::Opcode;
+using sivmone::Opcode;
 
-// TODO: Pull bytecode in evmone namespace
+// TODO: Pull bytecode in sivmone namespace
 struct bytecode : bytes
 {
     bytecode() noexcept = default;
@@ -479,11 +479,11 @@ inline std::string decode(bytes_view bytecode)
     for (auto it = bytecode.begin(); it != bytecode.end(); ++it)
     {
         const auto opcode = *it;
-        if (const auto name = evmone::instr::traits[opcode].name; name)
+        if (const auto name = sivmone::instr::traits[opcode].name; name)
         {
             s += std::string{" + OP_"} + name;
 
-            if (size_t imm_size = evmone::instr::traits[opcode].immediate_size; imm_size > 0)
+            if (size_t imm_size = sivmone::instr::traits[opcode].immediate_size; imm_size > 0)
             {
                 const auto imm_start = it + 1;
                 imm_size = std::min(imm_size, static_cast<size_t>(bytecode.end() - imm_start));
@@ -502,4 +502,4 @@ inline std::string decode(bytes_view bytecode)
     return s;
 }
 
-}  // namespace evmone::test
+}  // namespace sivmone::test

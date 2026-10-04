@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -12,7 +12,7 @@
 #include <optional>
 #include <vector>
 
-namespace evmone::state
+namespace sivmone::state
 {
 /// The maximum allowed gas limit for a transaction (EIP-7825).
 constexpr auto MAX_TX_GAS_LIMIT = 0x1000000;  // 2**24
@@ -152,4 +152,4 @@ struct TransactionReceipt
     std::optional<bytes32> post_state;
 };
 
-}  // namespace evmone::state
+}  // namespace sivmone::state

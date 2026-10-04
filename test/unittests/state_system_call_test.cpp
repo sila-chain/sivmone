@@ -1,8 +1,8 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmone/evmone.h>
+#include <sivmone/sivmone.h>
 #include <gtest/gtest.h>
 #include <test/state/state.hpp>
 #include <test/state/system_contracts.hpp>
@@ -10,13 +10,13 @@
 #include <test/utils/test_state.hpp>
 
 using namespace evmc::literals;
-using namespace evmone::state;
-using namespace evmone::test;
+using namespace sivmone::state;
+using namespace sivmone::test;
 
 class state_system_call : public testing::Test
 {
 protected:
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
     TestState state;
     TestBlockHashes block_hashes;
 };

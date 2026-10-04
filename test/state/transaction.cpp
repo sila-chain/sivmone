@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -8,9 +8,9 @@
 #include "../utils/stdx/utility.hpp"
 #include "hash_utils.hpp"
 #include "rlp_decode.hpp"
-#include <evmone_precompiles/secp256k1.hpp>
+#include <sivmone_precompiles/secp256k1.hpp>
 
-namespace evmone::state
+namespace sivmone::state
 {
 bool decode(bytes_view& from, Authorization& to) noexcept
 {
@@ -173,4 +173,4 @@ std::optional<address> recover_sender(const Transaction& tx, bytes_view txbytes)
     return crypto::secp256k1::ecrecover(
         h.bytes, r_bytes.bytes, s_bytes.bytes, y_parity, crypto::secp256k1::RecoveryMode::strict);
 }
-}  // namespace evmone::state
+}  // namespace sivmone::state

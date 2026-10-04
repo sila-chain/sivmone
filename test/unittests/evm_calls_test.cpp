@@ -1,14 +1,14 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019-2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// This file contains EVM unit tests that perform any kind of calls.
 
 #include "evm_fixture.hpp"
-#include <evmone/create_address.hpp>
+#include <sivmone/create_address.hpp>
 
 using namespace evmc::literals;
-using namespace evmone::test;
+using namespace sivmone::test;
 
 inline constexpr auto max_uint256 =
     0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff_bytes32;
@@ -82,7 +82,7 @@ TEST_P(evm, create)
 
     EXPECT_GAS_USED(EVMC_SUCCESS, 115816);
 
-    const auto expected_addr = evmone::compute_create_address(msg.recipient, 0);
+    const auto expected_addr = sivmone::compute_create_address(msg.recipient, 0);
     EXPECT_EQ(account.storage[0x01_bytes32].current, to_bytes32(expected_addr));
 
     ASSERT_EQ(host.recorded_calls.size(), 1);
@@ -132,7 +132,7 @@ TEST_P(evm, create2)
     // the 0x41-byte all-zero initcode read from the empty memory.
     const auto initcode = bytes(0x41, 0);
     const auto expected_addr =
-        evmone::compute_create2_address(msg.recipient, 0x5a_bytes32, initcode);
+        sivmone::compute_create2_address(msg.recipient, 0x5a_bytes32, initcode);
     EXPECT_EQ(account.storage[0x01_bytes32].current, to_bytes32(expected_addr));
 }
 
@@ -173,8 +173,8 @@ TEST_P(evm, create_failure)
     for (auto op : {OP_CREATE, OP_CREATE2})
     {
         const auto computed_addr = op == OP_CREATE ?
-                                       evmone::compute_create_address(msg.recipient, 0) :
-                                       evmone::compute_create2_address(msg.recipient, {}, {});
+                                       sivmone::compute_create_address(msg.recipient, 0) :
+                                       sivmone::compute_create2_address(msg.recipient, {}, {});
         const auto create_address = bytes_view{computed_addr.bytes, sizeof(computed_addr)};
         const auto code = push(0) + (3 * OP_DUP1) + op + ret_top();
 

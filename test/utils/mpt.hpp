@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -6,7 +6,7 @@
 #include <test/state/hash_utils.hpp>
 #include <memory>
 
-namespace evmone::state
+namespace sivmone::state
 {
 /// Insert-only Merkle Patricia Trie implementation for getting the root hash
 /// out of (key, value) pairs.
@@ -31,4 +31,4 @@ public:
     [[nodiscard]] hash256 hash() const;
 };
 
-}  // namespace evmone::state
+}  // namespace sivmone::state

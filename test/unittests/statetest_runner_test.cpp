@@ -1,20 +1,20 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// Tests of what the state test runner reports when a fixture does not hold. Those paths run only
-/// when evmone disagrees with a fixture, which a green EEST run never does.
+/// when sivmone disagrees with a fixture, which a green EEST run never does.
 
 #include <evmc/evmc.hpp>
-#include <evmone/evmone.h>
+#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <test/utils/statetest.hpp>
 
 #include <sstream>
 
-using namespace evmone;
-using namespace evmone::test;
+using namespace sivmone;
+using namespace sivmone::test;
 
 namespace
 {
@@ -154,7 +154,7 @@ Run run(std::string_view fixture, bool trace_summary = false, bool state_diff = 
     std::ostringstream output;
     std::vector<Failure> failures;
     TestReport report{[&](const Failure& failure) { failures.push_back(failure); }};
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
     for (const auto& t : tests)
         run_state_test(t, vm,
             {.output = output, .trace_summary = trace_summary, .state_diff = state_diff}, report);

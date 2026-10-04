@@ -1,11 +1,11 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "bloom_filter.hpp"
 #include "transaction.hpp"
 
-namespace evmone::state
+namespace sivmone::state
 {
 
 namespace
@@ -62,4 +62,4 @@ BloomFilter bloom_filter_from_bytes(bytes_view data) noexcept
     return res;
 }
 
-}  // namespace evmone::state
+}  // namespace sivmone::state

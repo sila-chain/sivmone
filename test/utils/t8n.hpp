@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -9,7 +9,7 @@
 #include <optional>
 #include <string>
 
-namespace evmone::tooling
+namespace sivmone::tooling
 {
 /// Arguments for t8n(). Streams are non-owning; the caller manages lifetime.
 struct T8NArgs
@@ -49,4 +49,4 @@ struct T8NArgs
 /// @param vm    The VM instance. The command may modify/overwrite its config (depends on args).
 /// @param args  The command arguments.
 void t8n(evmc::VM& vm, const T8NArgs& args);
-}  // namespace evmone::tooling
+}  // namespace sivmone::tooling

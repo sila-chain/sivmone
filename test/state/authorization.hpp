@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -8,7 +8,7 @@
 #include <optional>
 #include <vector>
 
-namespace evmone::state
+namespace sivmone::state
 {
 using evmc::address;
 using intx::uint256;
@@ -33,4 +33,4 @@ using AuthorizationList = std::vector<Authorization>;
 
 /// Recovers the authority (the signer) of an authorization, std::nullopt if invalid (EIP-7702).
 [[nodiscard]] std::optional<address> recover_authority(const Authorization& auth) noexcept;
-}  // namespace evmone::state
+}  // namespace sivmone::state

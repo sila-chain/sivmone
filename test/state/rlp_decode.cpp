@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -6,7 +6,7 @@
 #include <cassert>
 #include <limits>
 
-namespace evmone::rlp
+namespace sivmone::rlp
 {
 namespace
 {
@@ -114,4 +114,4 @@ bool decode(bytes_view& from, evmc::address& to) noexcept
 {
     return decode(from, to.bytes);
 }
-}  // namespace evmone::rlp
+}  // namespace sivmone::rlp

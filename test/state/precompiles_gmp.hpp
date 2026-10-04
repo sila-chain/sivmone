@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <span>
 
-namespace evmone::state
+namespace sivmone::state
 {
 /// Executes the expmod precompile using the GMP library.
 ///
@@ -17,4 +17,4 @@ void expmod_gmp(std::span<const uint8_t> base, std::span<const uint8_t> exp,
 
 ExecutionResult expmod_execute_gmp(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
-}  // namespace evmone::state
+}  // namespace sivmone::state

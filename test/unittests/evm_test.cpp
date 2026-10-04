@@ -1,14 +1,14 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "evm_fixture.hpp"
-#include <evmone/constants.hpp>
+#include <sivmone/constants.hpp>
 #include <numeric>
 
 using namespace evmc::literals;
 using namespace intx;
-using namespace evmone::test;
+using namespace sivmone::test;
 
 TEST_P(evm, empty)
 {
@@ -642,7 +642,7 @@ TEST_P(evm, undefined_instructions)
         const auto r = evmc_revision(i);
         for (uint8_t opcode = 0; opcode <= 0xfe; ++opcode)
         {
-            if (evmone::instr::gas_costs[r][opcode] != evmone::instr::undefined)
+            if (sivmone::instr::gas_costs[r][opcode] != sivmone::instr::undefined)
                 continue;
 
             auto res = vm.execute(host, r, {}, &opcode, sizeof(opcode));
@@ -707,8 +707,8 @@ TEST_P(evm, staticmode)
 
 TEST_P(evm, max_code_size_push1)
 {
-    const auto code = (evmone::MAX_CODE_SIZE / 2) * push(1);
-    ASSERT_EQ(code.size(), evmone::MAX_CODE_SIZE);
+    const auto code = (sivmone::MAX_CODE_SIZE / 2) * push(1);
+    ASSERT_EQ(code.size(), sivmone::MAX_CODE_SIZE);
 
     execute(code);
     EXPECT_STATUS(EVMC_STACK_OVERFLOW);

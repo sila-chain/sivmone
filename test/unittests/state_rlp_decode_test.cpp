@@ -1,8 +1,8 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmone_precompiles/secp256k1.hpp>
+#include <sivmone_precompiles/secp256k1.hpp>
 #include <gtest/gtest.h>
 #include <test/state/rlp_decode.hpp>
 #include <test/state/transaction.hpp>
@@ -12,8 +12,8 @@
 
 using namespace evmc::literals;
 using namespace intx;
-using namespace evmone;
-using namespace evmone::test;
+using namespace sivmone;
+using namespace sivmone::test;
 
 namespace
 {
@@ -645,7 +645,7 @@ TEST(state_rlp_decode, recover_sender_legacy_protected)
     // The same fields signed twice: over the pre-EIP-155 preimage and over the EIP-155 one for
     // chain 0 (wire v = 35/36). Both decode to chain_id 0, so only the verbatim v says which
     // preimage was signed. No EEST fixture signs for chain 0, which is why this is pinned here.
-    // Signer of both: 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550 (private key 0xa5). evmone only
+    // Signer of both: 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550 (private key 0xa5). sivmone only
     // recovers, so changing the fields means re-signing each preimage elsewhere, with a low s.
     constexpr auto signer = 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550_address;
 

@@ -1,14 +1,14 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmone_precompiles/secp256k1.hpp>
+#include <sivmone_precompiles/secp256k1.hpp>
 #include <gtest/gtest.h>
 #include <test/utils/utils.hpp>
 
-using namespace evmone::crypto::secp256k1;
+using namespace sivmone::crypto::secp256k1;
 using namespace evmc::literals;
-using namespace evmone::test;
+using namespace sivmone::test;
 
 namespace
 {
@@ -18,8 +18,8 @@ namespace
 /// Convenience wrapper for point multiplication test.
 AffinePoint mul(const AffinePoint& p, const uint256& c) noexcept
 {
-    const auto r = evmone::crypto::ecc::mul(p, c);
-    return evmone::crypto::ecc::to_affine<Curve>(r);
+    const auto r = sivmone::crypto::ecc::mul(p, c);
+    return sivmone::crypto::ecc::to_affine<Curve>(r);
 }
 }  // namespace
 
@@ -58,7 +58,7 @@ TEST(secp256k1, field_sqrt_invalid)
 
 TEST(secp256k1, scalar_inv)
 {
-    const evmone::crypto::ModArith n{Curve::ORDER};
+    const sivmone::crypto::ModArith n{Curve::ORDER};
 
     for (const auto& t : {
              1_u256,

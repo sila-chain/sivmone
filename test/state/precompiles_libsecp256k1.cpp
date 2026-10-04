@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -6,7 +6,7 @@
 #include <secp256k1_recovery.h>
 #include <cassert>
 
-namespace evmone::state
+namespace sivmone::state
 {
 bool ecrecover_libsecp256k1(std::span<uint8_t, 64> pubkey, std::span<const uint8_t, 32> hash,
     std::span<const uint8_t, 64> sig_bytes, bool parity) noexcept
@@ -29,4 +29,4 @@ bool ecrecover_libsecp256k1(std::span<uint8_t, 64> pubkey, std::span<const uint8
     std::copy_n(&pubkey_prefixed[1], pubkey.size(), pubkey.data());
     return true;
 }
-}  // namespace evmone::state
+}  // namespace sivmone::state

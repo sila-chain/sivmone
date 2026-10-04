@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -7,13 +7,13 @@
 #include <benchmark/benchmark.h>
 #include <evmc/evmc.hpp>
 #include <evmc/mocked_host.hpp>
-#include <evmone/advanced_analysis.hpp>
-#include <evmone/advanced_execution.hpp>
-#include <evmone/baseline.hpp>
-#include <evmone/vm.hpp>
+#include <sivmone/advanced_analysis.hpp>
+#include <sivmone/advanced_execution.hpp>
+#include <sivmone/baseline.hpp>
+#include <sivmone/vm.hpp>
 #include <source_location>
 
-namespace evmone::test
+namespace sivmone::test
 {
 extern std::map<std::string_view, evmc::VM> registered_vms;
 
@@ -77,7 +77,7 @@ inline evmc::Result baseline_execute(evmc::VM& c_vm, [[maybe_unused]] ExecutionS
     const baseline::CodeAnalysis& analysis, const evmc_message& msg, evmc_revision rev,
     evmc::Host& host, [[maybe_unused]] bytes_view code)
 {
-    auto& vm = *static_cast<evmone::VM*>(c_vm.get_raw_pointer());
+    auto& vm = *static_cast<sivmone::VM*>(c_vm.get_raw_pointer());
     return evmc::Result{
         baseline::execute(vm, host.get_interface(), host.to_context(), rev, msg, analysis)};
 }
@@ -175,4 +175,4 @@ inline void bench_evmc_execute(benchmark::State& state, evmc::VM& vm, bytes_view
         state, vm, code, input, expected_output);
 }
 
-}  // namespace evmone::test
+}  // namespace sivmone::test

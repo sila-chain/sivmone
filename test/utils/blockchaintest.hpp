@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -16,7 +16,7 @@
 
 namespace json = nlohmann;
 
-namespace evmone::test
+namespace sivmone::test
 {
 // https://ethereum.org/en/developers/docs/blocks/
 struct BlockHeader
@@ -82,4 +82,4 @@ BlockchainTest make_blockchain_test(const std::string& name, const json::json& j
 
 /// Execute the blockchain @p test using the @p vm, recording what does not match into @p report.
 void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& report);
-}  // namespace evmone::test
+}  // namespace sivmone::test

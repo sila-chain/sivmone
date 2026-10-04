@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -14,7 +14,7 @@ TEST(bn254, ecpairing_null_pairs)
     {
         evmc::bytes input(192 * static_cast<size_t>(n), 0);
         std::array<uint8_t, 32> result{};
-        const auto [status_code, output_size] = evmone::state::ecpairing_execute(
+        const auto [status_code, output_size] = sivmone::state::ecpairing_execute(
             input.data(), input.size(), result.data(), result.size());
         EXPECT_EQ(status_code, EVMC_SUCCESS);
         EXPECT_EQ(output_size, result.size());

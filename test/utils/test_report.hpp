@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -16,7 +16,7 @@
 #include <system_error>
 #include <type_traits>
 
-namespace evmone::test
+namespace sivmone::test
 {
 /// A test cannot be run at all. Skipped rather than failed.
 struct UnsupportedTestFeature : std::runtime_error
@@ -174,4 +174,4 @@ private:
 /// checked and its detail. The C++ location of the check is deliberately absent — the name of the
 /// check identifies it, and the fixture is what the reader is debugging.
 std::ostream& operator<<(std::ostream& out, const Failure& failure);
-}  // namespace evmone::test
+}  // namespace sivmone::test

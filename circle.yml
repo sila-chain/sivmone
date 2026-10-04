@@ -177,14 +177,14 @@ commands:
           working_directory: ~/build
           command: >
             LLVM_PROFILE_FILE=state_tests.profraw
-            bin/evmone test <<parameters.ignore>> ~/spec-tests/fixtures/state_tests
+            bin/sivmone test <<parameters.ignore>> ~/spec-tests/fixtures/state_tests
       - run:
           name: "Execution spec tests (<<parameters.release>>, blockchain_tests)"
           # Tests for in-development EVM revision currently passing.
           working_directory: ~/build
           command: >
             LLVM_PROFILE_FILE=blockchain_tests.profraw
-            bin/evmone test <<parameters.ignore>> ~/spec-tests/fixtures/blockchain_tests
+            bin/sivmone test <<parameters.ignore>> ~/spec-tests/fixtures/blockchain_tests
 
   configure:
     description: "Configure"
@@ -201,7 +201,7 @@ commands:
             if [ "$TOOLCHAIN" ]; then
               export toolchain_option="-DTOOLCHAIN=$TOOLCHAIN"
             fi
-            cmake ../project $toolchain_option -DCMAKE_INSTALL_PREFIX=~/install -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_COMPILE_WARNING_AS_ERROR=TRUE -DEVMONE_TESTING=<< parameters.testing >> $CMAKE_OPTIONS
+            cmake ../project $toolchain_option -DCMAKE_INSTALL_PREFIX=~/install -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_COMPILE_WARNING_AS_ERROR=TRUE -DSIVMONE_TESTING=<< parameters.testing >> $CMAKE_OPTIONS
 
   compile:
     description: "Compile"
@@ -217,8 +217,8 @@ commands:
           name: "Smoke test the tool"
           working_directory: ~/build
           command: |
-            bin/evmone --version
-            bin/evmone run 600160005260206000f3 | tee out.txt
+            bin/sivmone --version
+            bin/sivmone run 600160005260206000f3 | tee out.txt
             grep -q "Result: *success" out.txt
             grep -q "Output: *0\{63\}1" out.txt
 
@@ -281,7 +281,7 @@ commands:
           name: "Test"
           shell: bash
           working_directory: ~/build
-          command: ctest -R ${TESTS_FILTER:-'.*'} --schedule-random --output-on-failure --parallel $CMAKE_BUILD_PARALLEL_LEVEL --output-junit ~/test_results/evmone.xml
+          command: ctest -R ${TESTS_FILTER:-'.*'} --schedule-random --output-on-failure --parallel $CMAKE_BUILD_PARALLEL_LEVEL --output-junit ~/test_results/sivmone.xml
       - store_test_results:
           path: ~/test_results
 
@@ -309,7 +309,7 @@ commands:
         default: ""
       binaries:
         type: string
-        default: evmone evmone-unittests
+        default: sivmone sivmone-unittests
     steps:
       - run:
           name: "Collect coverage data (clang, <<parameters.flags>>)"
@@ -317,11 +317,11 @@ commands:
           command: |
             IGNORE_FILENAME_REGEX='include/evmc<<#parameters.ignore_filename_regex>>|<<parameters.ignore_filename_regex>><</parameters.ignore_filename_regex>>'
             OBJECTS=$(printf -- '-object bin/%s ' <<parameters.binaries>>)
-            ARGS="lib/libevmone.so $OBJECTS -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=$IGNORE_FILENAME_REGEX"
+            ARGS="lib/libsivmone.so $OBJECTS -Xdemangler llvm-cxxfilt -instr-profile=sivmone.profdata -ignore-filename-regex=$IGNORE_FILENAME_REGEX"
 
             rm -rf ~/coverage
             mkdir ~/coverage
-            llvm-profdata merge -sparse *.profraw -o evmone.profdata
+            llvm-profdata merge -sparse *.profraw -o sivmone.profdata
             find . -name '*.profraw' -delete
             
             llvm-cov export -format=lcov $ARGS -skip-expansions > ~/coverage/coverage.lcov
@@ -346,23 +346,23 @@ commands:
           name: "Build Package"
           shell: bash
           working_directory: ~/package
-          command: cmake --build ~/build --target package && mv ~/build/evmone-*.* .
+          command: cmake --build ~/build --target package && mv ~/build/sivmone-*.* .
       - store_artifacts:
           path: ~/package
           destination: package
       - persist_to_workspace:
           root: ~/package
           paths:
-            - evmone-*
+            - sivmone-*
 
   unpack_package:
     steps:
       - attach_workspace:
           at: ~/package
       - run:
-          name: "Unpack evmone"
+          name: "Unpack sivmone"
           working_directory: ~/package
-          command: tar xz < evmone*.tar.gz
+          command: tar xz < sivmone*.tar.gz
 
 jobs:
 
@@ -379,7 +379,7 @@ jobs:
       - run:
           name: "Check spelling"
           command: |
-            codespell --quiet-level=4 --ignore-words=.codespell-ignore --skip=./lib/evmone_precompiles/keccak.c
+            codespell --quiet-level=4 --ignore-words=.codespell-ignore --skip=./lib/sivmone_precompiles/keccak.c
 
   release-linux:
     executor: linux-gcc-latest
@@ -391,7 +391,7 @@ jobs:
       - run:
           name: "Export JSON tests"
           working_directory: ~/package
-          command: tar -C ~/build/test/integration/export -cz fixtures > evmone-tests.tar.gz
+          command: tar -C ~/build/test/integration/export -cz fixtures > sivmone-tests.tar.gz
       - package
 
   release-windows:
@@ -414,7 +414,7 @@ jobs:
             $ErrorActionPreference = "Stop"
             & 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1' -Arch amd64
             which cmake
-            cmake -S . -B ~/build -G Ninja -DCMAKE_INSTALL_PREFIX=C:\install -DEVMONE_TESTING=ON
+            cmake -S . -B ~/build -G Ninja -DCMAKE_INSTALL_PREFIX=C:\install -DSIVMONE_TESTING=ON
       - run:
           name: 'Build'
           shell: powershell
@@ -471,15 +471,15 @@ jobs:
           ignore: "--ignore for_amsterdam --ignore for_bpo2toamsterdamattime15k"
       - collect_coverage_clang:
           flags: eest-develop
-          ignore_filename_regex: lib/evmone/(advanced|cpu_check|eof|lru_cache|tracing|vm)|test/(experimental|unittests)
-          binaries: evmone
+          ignore_filename_regex: lib/sivmone/(advanced|cpu_check|eof|lru_cache|tracing|vm)|test/(experimental|unittests)
+          binaries: sivmone
       - run_execution_spec_tests:
           release: tests@v21.0.0
           ignore: "--ignore for_amsterdam --ignore for_bpo2toamsterdamattime15k"
       - collect_coverage_clang:
           flags: eest-stable
-          ignore_filename_regex: lib/evmone/(advanced|cpu_check|eof|lru_cache|tracing|vm)|test/(experimental|unittests)
-          binaries: evmone
+          ignore_filename_regex: lib/sivmone/(advanced|cpu_check|eof|lru_cache|tracing|vm)|test/(experimental|unittests)
+          binaries: sivmone
 
   ethereum-tests:
     executor: linux-clang-latest
@@ -495,7 +495,7 @@ jobs:
           name: "Drop unsupported Constantinople test cases"
           working_directory: ~/tests
           command: |
-            # evmone no longer supports the Constantinople revision (it never
+            # sivmone no longer supports the Constantinople revision (it never
             # activated on Mainnet and was superseded by Petersburg). Strip the
             # Constantinople-only cases from the fixtures so the other forks in
             # each file still run. ConstantinopleFix (== Petersburg) is kept.
@@ -510,7 +510,7 @@ jobs:
           working_directory: ~/build
           command: >
             LLVM_PROFILE_FILE=blockchain_tests_valid.profraw
-            bin/evmone test
+            bin/sivmone test
             ~/tests/BlockchainTests/ValidBlocks
             ~/tests/LegacyTests/Cancun/BlockchainTests/ValidBlocks
       - run:
@@ -518,7 +518,7 @@ jobs:
           working_directory: ~/build
           command: >
             LLVM_PROFILE_FILE=blockchain_tests_invalid.profraw
-            bin/evmone test
+            bin/sivmone test
             --ignore bc4895-withdrawals/shanghaiWithoutWithdrawalsRLP.json
             --ignore bcInvalidHeaderTest
             --ignore bcUncleHeaderValidity/gasLimitTooLowExactBound.json
@@ -531,7 +531,7 @@ jobs:
     executor: linux-clang-latest
     environment:
       BUILD_TYPE: Release
-      CMAKE_OPTIONS: -DCOVERAGE=1 -DEVMONE_PRECOMPILES_LIBSECP256K1=1
+      CMAKE_OPTIONS: -DCOVERAGE=1 -DSIVMONE_PRECOMPILES_LIBSECP256K1=1
     steps:
       - build
       - download_execution_spec_tests:
@@ -540,7 +540,7 @@ jobs:
           name: "Execution spec tests (state_tests)"
           working_directory: ~/build
           command: >
-            bin/evmone test --ignore for_amsterdam ~/spec-tests/fixtures/state_tests
+            bin/sivmone test --ignore for_amsterdam ~/spec-tests/fixtures/state_tests
       - collect_coverage_clang:
           flags: eest-libsecp256k1
 
@@ -548,7 +548,7 @@ jobs:
     executor: linux-clang-latest
     environment:
       BUILD_TYPE: Release
-      CMAKE_OPTIONS: -DCOVERAGE=1 -DEVMONE_PRECOMPILES_GMP=1
+      CMAKE_OPTIONS: -DCOVERAGE=1 -DSIVMONE_PRECOMPILES_GMP=1
     steps:
       - run:
           name: "Install GMP"
@@ -560,7 +560,7 @@ jobs:
           name: "Execution spec tests (state_tests)"
           working_directory: ~/build
           command: >
-            bin/evmone test --ignore for_amsterdam ~/spec-tests/fixtures/state_tests
+            bin/sivmone test --ignore for_amsterdam ~/spec-tests/fixtures/state_tests
       - collect_coverage_clang:
           flags: eest-develop-gmp
 
@@ -574,7 +574,7 @@ jobs:
   clang-min:
     executor: linux-clang-min
     environment:
-      CMAKE_OPTIONS=-DEVMONE_X86_64_ARCH_LEVEL=3
+      CMAKE_OPTIONS=-DSIVMONE_X86_64_ARCH_LEVEL=3
     steps:
       - build:
           tools_only_first: true
@@ -591,7 +591,7 @@ jobs:
       - run:
           name: "memcheck"
           working_directory: ~/build
-          command: valgrind --vgdb=no --error-exitcode=99 bin/evmone-unittests
+          command: valgrind --vgdb=no --error-exitcode=99 bin/sivmone-unittests
 
   gcc-32bit:
     executor: linux-gcc-multilib
@@ -665,23 +665,23 @@ jobs:
       - build
       - test
       - collect_coverage_clang:
-          flags: evmone-unittests
+          flags: sivmone-unittests
 
   fuzzing:
     executor: linux-clang-selfhosted
     environment:
       CMAKE_GENERATOR: Ninja
-      CMAKE_OPTIONS: -DASSERTIONS=ON -DEVMONE_FUZZING=ON
+      CMAKE_OPTIONS: -DASSERTIONS=ON -DSIVMONE_FUZZING=ON
     steps:
       - build
       - restore_cache:
           name: "Restore fuzzing corpus"
           key: fuzzing-corpus
       - run:
-          name: "Run evmone-fuzzer"
+          name: "Run sivmone-fuzzer"
           working_directory: ~/build
           command: |
-            bin/evmone-fuzzer -runs=5000000 -fork=$CMAKE_BUILD_PARALLEL_LEVEL -fork_corpus_groups=1 ~/corpus -create_missing_dirs=1 -max_len=100 -entropic_scale_per_exec_time=1 2>&1 | sed '/NEW_FUNC/d'
+            bin/sivmone-fuzzer -runs=5000000 -fork=$CMAKE_BUILD_PARALLEL_LEVEL -fork_corpus_groups=1 ~/corpus -create_missing_dirs=1 -max_len=100 -entropic_scale_per_exec_time=1 2>&1 | sed '/NEW_FUNC/d'
       - save_cache:
           name: "Save fuzzing corpus"
           key: fuzzing-corpus-{{epoch}}
@@ -729,13 +729,13 @@ jobs:
           name: "Check qemu"
           command: qemu-x86_64 --version
       - run:
-          name: "Check evmone-cli"
+          name: "Check sivmone-cli"
           working_directory: ~/build
-          command: (! qemu-x86_64 bin/evmone --trace run 6000 2>&1) | grep "CPU does not support"
+          command: (! qemu-x86_64 bin/sivmone --trace run 6000 2>&1) | grep "CPU does not support"
       - run:
           name: "Check unittests"
           working_directory: ~/build
-          command: (! qemu-x86_64 bin/evmone-unittests 2>&1) | grep "CPU does not support"
+          command: (! qemu-x86_64 bin/sivmone-unittests 2>&1) | grep "CPU does not support"
 
   riscv32:
     executor: linux-gcc-latest
@@ -752,7 +752,7 @@ jobs:
 
 workflows:
   version: 2
-  evmone:
+  sivmone:
     jobs:
       - lint
       - clang-tidy

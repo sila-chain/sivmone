@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -16,7 +16,7 @@
 
 namespace json = nlohmann;
 
-namespace evmone::test
+namespace sivmone::test
 {
 
 struct TestMultiTransaction : state::Transaction
@@ -187,14 +187,14 @@ void run_state_test(const StateTransitionTest& test, evmc::VM& vm, const StateTe
 /// Computes the hash of the RLP-encoded list of transaction logs.
 /// This method is only used in tests.
 hash256 logs_hash(const std::vector<state::Log>& logs);
-}  // namespace evmone::test
+}  // namespace sivmone::test
 
-inline std::ostream& operator<<(std::ostream& out, const evmone::address& a)
+inline std::ostream& operator<<(std::ostream& out, const sivmone::address& a)
 {
-    return out << evmone::test::hex0x(a);
+    return out << sivmone::test::hex0x(a);
 }
 
-inline std::ostream& operator<<(std::ostream& out, const evmone::bytes32& b)
+inline std::ostream& operator<<(std::ostream& out, const sivmone::bytes32& b)
 {
-    return out << evmone::test::hex0x(b);
+    return out << sivmone::test::hex0x(b);
 }

@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019-2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -26,13 +26,13 @@
         hex({intx::be::store<evmc_bytes32>(intx::uint256{X}).bytes, sizeof(evmc_bytes32)}))
 
 
-namespace evmone::test
+namespace sivmone::test
 {
 /// The "evm" test fixture with generic unit tests for EVMC-compatible VM implementations.
 class evm : public testing::TestWithParam<evmc::VM*>
 {
 protected:
-    /// Reports if execution is done by evmone/Advanced.
+    /// Reports if execution is done by sivmone/Advanced.
     static bool is_advanced() noexcept;
 
     /// The VM handle.
@@ -95,4 +95,4 @@ protected:
         execute(std::numeric_limits<int64_t>::max(), code, input);
     }
 };
-}  // namespace evmone::test
+}  // namespace sivmone::test

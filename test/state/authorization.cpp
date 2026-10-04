@@ -1,16 +1,16 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "authorization.hpp"
 #include "hash_utils.hpp"
 // TODO: Move the RLP encoder down into the state library, next to rlp_common.hpp. It lives in
-//   evmone.testutils, which links against evmone::state, so this include points the wrong way.
+//   sivmone.testutils, which links against sivmone::state, so this include points the wrong way.
 //   It works only because the encoder is header-only.
 #include "../utils/rlp.hpp"
-#include <evmone_precompiles/secp256k1.hpp>
+#include <sivmone_precompiles/secp256k1.hpp>
 
-namespace evmone::state
+namespace sivmone::state
 {
 namespace
 {
@@ -37,4 +37,4 @@ std::optional<address> recover_authority(const Authorization& auth) noexcept
     return crypto::secp256k1::ecrecover(
         h.bytes, r.bytes, s.bytes, auth.y_parity == 1, crypto::secp256k1::RecoveryMode::strict);
 }
-}  // namespace evmone::state
+}  // namespace sivmone::state

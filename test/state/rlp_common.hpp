@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace evmone::rlp
+namespace sivmone::rlp
 {
 /// The largest payload encoded in the short form; longer payloads use the long form.
 constexpr size_t SHORT_LENGTH_LIMIT = 55;
@@ -17,4 +17,4 @@ constexpr size_t SHORT_LENGTH_LIMIT = 55;
 constexpr uint8_t SHORT_STRING_BASE = 0x80;
 /// Base of a list prefix: a short list is this byte plus its payload length (0xc0..0xf7).
 constexpr uint8_t SHORT_LIST_BASE = 0xc0;
-}  // namespace evmone::rlp
+}  // namespace sivmone::rlp

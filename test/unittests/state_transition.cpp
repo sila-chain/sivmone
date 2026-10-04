@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -10,7 +10,7 @@
 #include <filesystem>
 #include <fstream>
 
-namespace evmone::test
+namespace sivmone::test
 {
 void state_transition::SetUp()
 {
@@ -204,4 +204,4 @@ Log state_transition::transfer_log(
     return {SYSTEM_ADDRESS, bytes{intx::be::store<uint256be>(amount)},
         {topic, to_bytes32(sender), to_bytes32(recipient)}};
 }
-}  // namespace evmone::test
+}  // namespace sivmone::test

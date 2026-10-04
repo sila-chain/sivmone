@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -20,7 +20,7 @@
 ///   input, so a byte string could be handed out as a bytes_view (and a list as a range of views)
 ///   instead of being copied into bytes/std::vector. That requires the destination fields
 ///   (Transaction::data and friends) to be views over an input buffer outliving them.
-namespace evmone::rlp
+namespace sivmone::rlp
 {
 using evmc::bytes;
 using evmc::bytes_view;
@@ -146,4 +146,4 @@ template <typename... Ts>
 {
     return (decode(from, items) && ...);
 }
-}  // namespace evmone::rlp
+}  // namespace sivmone::rlp

@@ -1,11 +1,11 @@
-# evmone: Fast Ethereum Virtual Machine implementation
+# sivmone: Fast Sila Virtual Machine implementation
 # Copyright 2018 The evmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
-# The internal evmone unit tests. The generic EVM ones are also built in.
-add_executable(evmone-unittests)
+# The internal sivmone unit tests. The generic EVM ones are also built in.
+add_executable(sivmone-unittests)
 target_sources(
-    evmone-unittests PRIVATE
+    sivmone-unittests PRIVATE
     analysis_test.cpp
     baseline_analysis_test.cpp
     blockchaintest_loader_test.cpp
@@ -38,7 +38,7 @@ target_sources(
     bn254_pairing_test.cpp
     modarith_test.cpp
     secp256k1_test.cpp
-    evmone_test.cpp
+    sivmone_test.cpp
     execution_state_test.cpp
     exportable_fixture.hpp
     exportable_fixture.cpp
@@ -94,11 +94,11 @@ target_sources(
     tooling_t8n_test.cpp
     tracing_test.cpp
 )
-target_link_libraries(evmone-unittests PRIVATE evmone evmone::experimental evmone::precompiles evmone::state evmone::testutils blst::blst GTest::gtest GTest::gtest_main)
-target_include_directories(evmone-unittests PRIVATE ${evmone_private_include_dir})
+target_link_libraries(sivmone-unittests PRIVATE sivmone sivmone::experimental sivmone::precompiles sivmone::state sivmone::testutils blst::blst GTest::gtest GTest::gtest_main)
+target_include_directories(sivmone-unittests PRIVATE ${sivmone_private_include_dir})
 if(NOT CMAKE_CXX_CLANG_TIDY)
     target_precompile_headers(
-        evmone-unittests PRIVATE
+        sivmone-unittests PRIVATE
         <intx/intx.hpp>
         <evmc/evmc.hpp>
         <evmc/hex.hpp>
@@ -107,7 +107,7 @@ if(NOT CMAKE_CXX_CLANG_TIDY)
 endif()
 
 gtest_discover_tests(
-    evmone-unittests
+    sivmone-unittests
     TEST_PREFIX ${PROJECT_NAME}/unittests/
     PROPERTIES
     ENVIRONMENT LLVM_PROFILE_FILE=${PROJECT_BINARY_DIR}/unittests-%p.profraw
@@ -115,7 +115,7 @@ gtest_discover_tests(
 
 # Provide the project version to selected source files.
 set_source_files_properties(
-    evmone_test.cpp
+    sivmone_test.cpp
     main.cpp
     PROPERTIES COMPILE_DEFINITIONS PROJECT_VERSION="${PROJECT_VERSION}"
 )

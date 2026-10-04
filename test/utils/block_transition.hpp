@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -14,12 +14,12 @@
 #include <system_error>
 #include <vector>
 
-namespace evmone::state
+namespace sivmone::state
 {
 struct BlockInfo;
 }
 
-namespace evmone::test
+namespace sivmone::test
 {
 /// A transaction rejected during block application.
 struct RejectedTransaction
@@ -71,4 +71,4 @@ struct TransitionResult
     const state::BlockInfo& block, const state::BlockHashes& block_hashes,
     const std::vector<state::Transaction>& txs, evmc_revision rev, int64_t blob_gas_limit,
     const BlockTransitionOptions& opts = {});
-}  // namespace evmone::test
+}  // namespace sivmone::test

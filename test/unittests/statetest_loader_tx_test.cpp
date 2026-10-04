@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -6,7 +6,7 @@
 #include <intx/intx.hpp>
 #include <test/utils/statetest.hpp>
 
-using namespace evmone;
+using namespace sivmone;
 using namespace intx::literals;
 using namespace testing;
 
@@ -409,13 +409,13 @@ TEST(statetest_loader, invalid_tx_type)
     }
 }
 
-namespace evmone::test
+namespace sivmone::test
 {
 // This function is used only by the following test case and in `statetest_loader.cpp` where it is
 // defined.
 template <>
 uint8_t from_json<uint8_t>(const json::json& j);
-}  // namespace evmone::test
+}  // namespace sivmone::test
 
 TEST(statetest_loader, load_uint8_t)
 {

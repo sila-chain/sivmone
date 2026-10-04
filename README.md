@@ -1,4 +1,4 @@
-# evmone
+# sivmone
 
 [![ethereum badge]][ethereum]
 [![readme style standard badge]][standard readme]
@@ -10,12 +10,12 @@
 
 > Fast Ethereum Virtual Machine implementation
 
-_evmone_ is a C++ implementation of the Ethereum Virtual Machine (EVM). 
+_sivmone_ is a C++ implementation of the Ethereum Virtual Machine (EVM). 
 Created by members of the [Ipsilon] (ex-[Ewasm]) team, the project aims for clean, standalone EVM implementation 
 that can be imported as an execution module by Ethereum Client projects. 
-The codebase of _evmone_ is optimized to provide fast and efficient execution of EVM smart contracts.
+The codebase of _sivmone_ is optimized to provide fast and efficient execution of EVM smart contracts.
 
-### Characteristic of evmone
+### Characteristic of sivmone
 
 1. Exposes the [EVMC] API.
 2. Requires C++20 standard.
@@ -44,38 +44,38 @@ The codebase of _evmone_ is optimized to provide fast and efficient execution of
 
 ### As geth plugin
 
-evmone implements the [EVMC] API for Ethereum Virtual Machines.
+sivmone implements the [EVMC] API for Ethereum Virtual Machines.
 It can be used as a plugin replacing geth's internal EVM. But for that a modified
 version of geth is needed. The [Ewasm]'s fork
 of go-ethereum provides [binary releases of geth with EVMC support](https://github.com/ewasm/go-ethereum/releases).
 
-Next, download evmone from [Releases].
+Next, download sivmone from [Releases].
 
-Start the downloaded geth with `--vm.evm` option pointing to the evmone shared library.
+Start the downloaded geth with `--vm.evm` option pointing to the sivmone shared library.
 
 ```bash
-geth --vm.evm=./libevmone.so
+geth --vm.evm=./libsivmone.so
 ```
 
 ### Building from source
 
-To build the evmone EVMC module (shared library), test, and benchmark:
+To build the sivmone EVMC module (shared library), test, and benchmark:
 
 1. Fetch the source code:
    ```
    git clone --recursive https://github.com/ethereum/evmone
-   cd evmone
+   cd sivmone
    ```
 
 2. Configure the project build and dependencies:
    ##### Linux / OSX
    ```
-   cmake -S . -B build -DEVMONE_TESTING=ON
+   cmake -S . -B build -DSIVMONE_TESTING=ON
    ```
 
    ##### Windows
    ```
-   cmake -S . -B build -DEVMONE_TESTING=ON -G "Visual Studio 16 2019" -A x64
+   cmake -S . -B build -DSIVMONE_TESTING=ON -G "Visual Studio 16 2019" -A x64
    ```
    
 3. Build:
@@ -86,28 +86,28 @@ To build the evmone EVMC module (shared library), test, and benchmark:
 
 3. Run the unit tests or benchmarking tool:
    ```
-   build/bin/evmone-unittests
-   build/bin/evmone-bench test/sivm-benchmarks/benchmarks
+   build/bin/sivmone-unittests
+   build/bin/sivmone-bench test/sivm-benchmarks/benchmarks
    ```
 
 ### Precompiles
 
-Ethereum Precompiled Contracts (_precompiles_ for short) are supported by evmone with some exceptions:
+Ethereum Precompiled Contracts (_precompiles_ for short) are supported by sivmone with some exceptions:
 
-1. The `ecrecover` is implemented directly by evmone and has degraded performance.
-2. For `expmod` stubs are enabled by default — they will correctly respond to known inputs. The CMake option `EVMONE_PRECOMPILES_GMP=1` enables full implementation but this requires [GMP] (e.g. libgmp-dev) library at build and execution time.
+1. The `ecrecover` is implemented directly by sivmone and has degraded performance.
+2. For `expmod` stubs are enabled by default — they will correctly respond to known inputs. The CMake option `SIVMONE_PRECOMPILES_GMP=1` enables full implementation but this requires [GMP] (e.g. libgmp-dev) library at build and execution time.
 
 ### Docker
 
-Docker images with evmone are available on Docker Hub:
+Docker images with sivmone are available on Docker Hub:
 https://hub.docker.com/r/ethereum/evmone.
 
-Having the evmone shared library inside a docker is not very useful on its own,
+Having the sivmone shared library inside a docker is not very useful on its own,
 but the image can be used as the base of another one or you can run benchmarks 
 with it.
 
 ```bash
-docker run --entrypoint evmone-bench ethereum/evmone /src/test/benchmarks
+docker run --entrypoint sivmone-bench ethereum/sivmone /src/test/benchmarks
 ```
 
 ## References

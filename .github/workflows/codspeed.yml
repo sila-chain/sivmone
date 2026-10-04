@@ -1,4 +1,4 @@
-# evmone: Fast Ethereum Virtual Machine implementation
+# sivmone: Fast Sila Virtual Machine implementation
 # Copyright 2026 The evmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
@@ -42,33 +42,33 @@ jobs:
       # log_benchmark.json (log.json sweeps the same opcodes).
       matrix:
         include:
-          - name: evmone
+          - name: sivmone
             # The precompiles benchmark runs both the mainnet inputs and the modexp parameter sweep:
             # the mainnet moduli are all odd and 256-bit, so they cover one code path and hide the
             # work on the others.
             run: >-
-              $BUILD_DIR/bin/evmone-bench test/sivm-benchmarks/benchmarks --benchmark_filter='baseline/(analyse|execute)' &&
-              $BUILD_DIR/bin/evmone-precompiles-bench
+              $BUILD_DIR/bin/sivmone-bench test/sivm-benchmarks/benchmarks --benchmark_filter='baseline/(analyse|execute)' &&
+              $BUILD_DIR/bin/sivmone-precompiles-bench
           # The worst-case blocks of the execution spec tests, run as the tests they are: each
           # checks its post state and is measured on the way. Every one is filled for seven block
           # sizes and the smallest is taken, covering all in a fraction of the simulator time.
           - name: instruction
             fixtures: compute/instruction
             run: >-
-              $BUILD_DIR/bin/evmone test $FIXTURES/compute/instruction -k benchmark-gas-value_1M
+              $BUILD_DIR/bin/sivmone test $FIXTURES/compute/instruction -k benchmark-gas-value_1M
               --ignore call_context --ignore account_query --ignore log/log_benchmark.json
           - name: instruction/call_context
             fixtures: compute/instruction/call_context
-            run: $BUILD_DIR/bin/evmone test $FIXTURES/compute/instruction/call_context -k benchmark-gas-value_1M
+            run: $BUILD_DIR/bin/sivmone test $FIXTURES/compute/instruction/call_context -k benchmark-gas-value_1M
           - name: instruction/account_query
             fixtures: compute/instruction/account_query
-            run: $BUILD_DIR/bin/evmone test $FIXTURES/compute/instruction/account_query -k benchmark-gas-value_1M
+            run: $BUILD_DIR/bin/sivmone test $FIXTURES/compute/instruction/account_query -k benchmark-gas-value_1M
           - name: precompile
             fixtures: compute/precompile
-            run: $BUILD_DIR/bin/evmone test $FIXTURES/compute/precompile -k benchmark-gas-value_1M --ignore modexp/modexp.json
+            run: $BUILD_DIR/bin/sivmone test $FIXTURES/compute/precompile -k benchmark-gas-value_1M --ignore modexp/modexp.json
           - name: scenario
             fixtures: compute/scenario
-            run: $BUILD_DIR/bin/evmone test $FIXTURES/compute/scenario -k benchmark-gas-value_1M
+            run: $BUILD_DIR/bin/sivmone test $FIXTURES/compute/scenario -k benchmark-gas-value_1M
     steps:
       - uses: actions/checkout@v5
         with:
@@ -87,13 +87,13 @@ jobs:
           -DCMAKE_C_FLAGS=-g
           -DCMAKE_CXX_FLAGS=-g
           -DBUILD_SHARED_LIBS=OFF
-          -DEVMONE_TESTING=ON
-          -DEVMONE_PRECOMPILES_GMP=ON
-          -DEVMONE_PRECOMPILES_LIBSECP256K1=ON
+          -DSIVMONE_TESTING=ON
+          -DSIVMONE_PRECOMPILES_GMP=ON
+          -DSIVMONE_PRECOMPILES_LIBSECP256K1=ON
           -DCODSPEED_MODE=simulation
 
       - name: Build
-        run: cmake --build $BUILD_DIR --target evmone-bench evmone-precompiles-bench evmone-cli
+        run: cmake --build $BUILD_DIR --target sivmone-bench sivmone-precompiles-bench sivmone-cli
 
       # Only the job's own fixtures are unpacked.
       - name: Download the benchmark fixtures

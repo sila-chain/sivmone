@@ -1,14 +1,14 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmone/evmone.h>
+#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
 #include <nlohmann/json.hpp>
 #include <test/utils/t8n.hpp>
 #include <sstream>
 
-using namespace evmone;
+using namespace sivmone;
 using namespace testing;
 using nlohmann::json;
 
@@ -39,7 +39,7 @@ constexpr auto ALLOC_JSON = R"({
 
 // Single legacy CREATE transaction; init code is `PUSH1 0x01 PUSH0 RETURN`,
 // which deploys a one-byte runtime `0x00`. Three opcodes => three trace lines.
-// Matches test/integration/evmone-cli/t8n/cancun_create_tx/txs.json[0]; the tx hash is
+// Matches test/integration/sivmone-cli/t8n/cancun_create_tx/txs.json[0]; the tx hash is
 // well-known and used below.
 constexpr auto TX_JSON = R"([{
     "to": null,
@@ -58,7 +58,7 @@ constexpr auto TX_JSON = R"([{
 /// Runs t8n over the given pre-state and transactions, and returns the result JSON.
 std::string run_t8n(std::string_view alloc_json, std::string_view txs_json, evmc_revision rev)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{std::string{alloc_json}};
@@ -123,7 +123,7 @@ constexpr auto ENV_WITH_PARENT_JSON = R"({
 /// Runs t8n over an empty state with no transaction, for what the block env alone decides.
 std::string run_t8n_env(std::string_view env_json, evmc_revision rev)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     std::istringstream env{std::string{env_json}};
     std::istringstream alloc{"{}"};
@@ -227,7 +227,7 @@ TEST(tooling_t8n, a_block_requesting_nothing_reports_the_empty_requests_hash)
 TEST(tooling_t8n, no_inputs_no_outputs)
 {
     // Smoke: t8n() with everything left at defaults must not throw or crash.
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     tooling::T8NArgs args;
     args.rev = EVMC_OSAKA;
@@ -237,7 +237,7 @@ TEST(tooling_t8n, no_inputs_no_outputs)
 
 TEST(tooling_t8n, result_written_to_out_streams)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     tooling::T8NArgs args;
     args.rev = EVMC_OSAKA;
@@ -257,7 +257,7 @@ TEST(tooling_t8n, result_written_to_out_streams)
 
 TEST(tooling_t8n, out_alloc_reports_the_beacon_root_write_and_the_created_account)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{ALLOC_WITH_BEACON_ROOTS_JSON};
@@ -285,7 +285,7 @@ TEST(tooling_t8n, out_alloc_reports_the_beacon_root_write_and_the_created_accoun
 
 TEST(tooling_t8n, open_trace_called_per_tx)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{ALLOC_JSON};
@@ -319,7 +319,7 @@ TEST(tooling_t8n, open_trace_called_per_tx)
 
 TEST(tooling_t8n, out_body_is_hex_rlp_of_transactions)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{ALLOC_JSON};
@@ -358,7 +358,7 @@ TEST(tooling_t8n, pre_byzantium_sets_receipt_post_state)
 
 TEST(tooling_t8n, mismatched_tx_hash_throws)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     // TX_JSON's tx with a deliberately wrong "hash" field. t8n() must detect
     // the mismatch against the recomputed hash and throw std::logic_error.
@@ -393,7 +393,7 @@ TEST(tooling_t8n, mismatched_tx_hash_throws)
 
 TEST(tooling_t8n, max_chain_id)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     // The maximum `chainId` (uint64 max = 0xffffffffffffffff) must be parsed and
     // executed without overflow; regression test for `chainId` being loaded as
@@ -431,7 +431,7 @@ TEST(tooling_t8n, max_chain_id)
 
 TEST(tooling_t8n, max_v)
 {
-    evmc::VM vm{evmc_create_evmone()};
+    evmc::VM vm{evmc_create_sivmone()};
 
     // Legacy EIP-155 `v` is chainId*2 + 35 + parity, exceeding 0xff for chainId > 110.
     // The maximum `v` (uint64 max = 0xffffffffffffffff) must be parsed and executed without

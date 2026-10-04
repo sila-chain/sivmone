@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -7,7 +7,7 @@
 #include "synthetic_benchmarks.hpp"
 #include <benchmark/benchmark.h>
 #include <evmc/evmc.hpp>
-#include <evmone/evmone.h>
+#include <sivmone/sivmone.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -17,7 +17,7 @@ namespace fs = std::filesystem;
 
 using namespace benchmark;
 
-namespace evmone::test
+namespace sivmone::test
 {
 std::map<std::string_view, evmc::VM> registered_vms;
 
@@ -170,19 +170,19 @@ void register_benchmarks(std::span<const BenchmarkCase> benchmark_cases)
 }
 
 
-/// The error code for CLI arguments parsing error in evmone-bench.
+/// The error code for CLI arguments parsing error in sivmone-bench.
 constexpr auto cli_parsing_error = -3;
 
-/// Parses evmone-bench CLI arguments and registers benchmark cases.
+/// Parses sivmone-bench CLI arguments and registers benchmark cases.
 ///
 /// The following variants of number arguments are supported (including argv[0]):
 ///
-/// 1: evmone-bench
-///    Uses evmone VMs, only synthetic benchmarks are available.
-/// 2: evmone-bench benchmarks_dir
-///    Uses evmone VMs, loads all benchmarks from benchmarks_dir.
-/// 4: evmone-bench code_hex_file input_hex expected_output_hex.
-///    Uses evmone VMs, registers custom benchmark with the code from the given file,
+/// 1: sivmone-bench
+///    Uses sivmone VMs, only synthetic benchmarks are available.
+/// 2: sivmone-bench benchmarks_dir
+///    Uses sivmone VMs, loads all benchmarks from benchmarks_dir.
+/// 4: sivmone-bench code_hex_file input_hex expected_output_hex.
+///    Uses sivmone VMs, registers custom benchmark with the code from the given file,
 ///    and the given input. The benchmark will compare the output with the provided
 ///    expected one.
 std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
@@ -230,7 +230,7 @@ std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
     return {0, {}};
 }
 }  // namespace
-}  // namespace evmone::test
+}  // namespace sivmone::test
 
 int main(int argc, char** argv)
 {
@@ -239,7 +239,7 @@ int main(int argc, char** argv)
     MaybeReenterWithoutASLR(argc, argv);
 #endif
 
-    using namespace evmone::test;
+    using namespace sivmone::test;
     try
     {
         Initialize(&argc, argv);  // Consumes --benchmark_ options.
@@ -250,9 +250,9 @@ int main(int argc, char** argv)
         if (ec != 0)
             return ec;
 
-        registered_vms["advanced"] = evmc::VM{evmc_create_evmone(), {{"advanced", ""}}};
-        registered_vms["baseline"] = evmc::VM{evmc_create_evmone()};
-        registered_vms["bnocgoto"] = evmc::VM{evmc_create_evmone(), {{"cgoto", "no"}}};
+        registered_vms["advanced"] = evmc::VM{evmc_create_sivmone(), {{"advanced", ""}}};
+        registered_vms["baseline"] = evmc::VM{evmc_create_sivmone()};
+        registered_vms["bnocgoto"] = evmc::VM{evmc_create_sivmone(), {{"cgoto", "no"}}};
         register_benchmarks(benchmark_cases);
         register_synthetic_benchmarks();
         RunSpecifiedBenchmarks();

@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -7,26 +7,26 @@
 #include <algorithm>
 #include <span>
 
-namespace evmone::test
+namespace sivmone::test
 {
 namespace
 {
-/// The exceptions a fixture may name for a rejection evmone reports with this error, on top of
+/// The exceptions a fixture may name for a rejection sivmone reports with this error, on top of
 /// the canonical name its error message carries.
 struct AlternativeExceptions
 {
-    state::ErrorCode errc;   ///< The code evmone rejects with.
+    state::ErrorCode errc;   ///< The code sivmone rejects with.
     std::string_view names;  ///< The other names the fixtures use for it, `|`-separated.
 };
 
-/// Where the execution specs draw more distinctions than evmone does, or draw one of them in a
+/// Where the execution specs draw more distinctions than sivmone does, or draw one of them in a
 /// different place. Both refuse the same transactions, so every name listed here is accepted.
 constexpr AlternativeExceptions ALTERNATIVE_TX_EXCEPTIONS[]{
-    // The specs make the floor cost (EIP-7623) a rule of its own; evmone folds it into the
+    // The specs make the floor cost (EIP-7623) a rule of its own; sivmone folds it into the
     // intrinsic gas.
     {state::INTRINSIC_GAS_TOO_LOW, "TransactionException.INTRINSIC_GAS_BELOW_FLOOR_GAS_COST"},
 
-    // The specs name the transaction type that arrived before its fork; evmone has one rule.
+    // The specs name the transaction type that arrived before its fork; sivmone has one rule.
     {state::TYPE_NOT_SUPPORTED,
         "TransactionException.TYPE_1_TX_PRE_FORK|"
         "TransactionException.TYPE_2_TX_PRE_FORK|"
@@ -37,7 +37,7 @@ constexpr AlternativeExceptions ALTERNATIVE_TX_EXCEPTIONS[]{
     {state::BLOB_GAS_LIMIT_EXCEEDED,
         "TransactionException.TYPE_3_TX_MAX_BLOB_GAS_ALLOWANCE_EXCEEDED"},
 
-    // evmone bounds the signature v while decoding the transaction, because the domain of v is
+    // sivmone bounds the signature v while decoding the transaction, because the domain of v is
     // what tells a legacy transaction from a typed one and carries the chain id (EIP-155). The
     // execution specs read v as a plain integer and bound it with the rest of the signature.
     // decode_transaction() reports one code for every malformed encoding, so this accepts more
@@ -46,12 +46,12 @@ constexpr AlternativeExceptions ALTERNATIVE_TX_EXCEPTIONS[]{
 
 };
 
-/// The same, for the rules evmone checks on the block rather than the transaction.
+/// The same, for the rules sivmone checks on the block rather than the transaction.
 constexpr AlternativeExceptions ALTERNATIVE_BLOCK_EXCEPTIONS[]{
-    // A parent that is absent and one whose hash is zero are the same lookup miss to evmone.
+    // A parent that is absent and one whose hash is zero are the same lookup miss to sivmone.
     {state::UNKNOWN_PARENT, "BlockException.UNKNOWN_PARENT_ZERO"},
 
-    // evmone reports one malformed-header error where the specs name the individual rule. Nine
+    // sivmone reports one malformed-header error where the specs name the individual rule. Nine
     // validate_block() branches share that code, so these names are interchangeable to it;
     // separating them needs a distinct code per branch.
     {state::INCORRECT_BLOCK_FORMAT,
@@ -61,7 +61,7 @@ constexpr AlternativeExceptions ALTERNATIVE_BLOCK_EXCEPTIONS[]{
         "BlockException.RLP_INVALID_FIELD_OVERFLOW_64"},
 };
 
-/// A retesteth `expectException` value and the evmone rejection(s) it stands for. Some legacy
+/// A retesteth `expectException` value and the sivmone rejection(s) it stands for. Some legacy
 /// names cover two rules at once, hence the second code.
 struct LegacyException
 {
@@ -167,4 +167,4 @@ bool is_expected_block_exception(const std::error_code& ec, std::string_view exp
 {
     return is_expected_exception(ALTERNATIVE_BLOCK_EXCEPTIONS, ec, expected);
 }
-}  // namespace evmone::test
+}  // namespace sivmone::test

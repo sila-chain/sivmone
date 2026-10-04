@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -14,7 +14,7 @@
 #include "transaction.hpp"
 #include <variant>
 
-namespace evmone::state
+namespace sivmone::state
 {
 /// The Ethereum State: the collection of accounts mapped by their addresses.
 class State
@@ -148,4 +148,4 @@ TransactionReceipt transition(const StateView& state, const BlockInfo& block,
 [[nodiscard]] std::variant<TransactionProperties, std::error_code> validate_transaction(
     const StateView& state_view, const BlockInfo& block, const Transaction& tx, evmc_revision rev,
     int64_t block_gas_left, int64_t block_state_gas_left, int64_t blob_gas_left) noexcept;
-}  // namespace evmone::state
+}  // namespace sivmone::state

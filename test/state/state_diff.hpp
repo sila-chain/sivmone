@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
@@ -7,7 +7,7 @@
 #include <intx/intx.hpp>
 #include <vector>
 
-namespace evmone::state
+namespace sivmone::state
 {
 using evmc::address;
 using evmc::bytes;
@@ -48,4 +48,4 @@ struct StateDiff
     /// accounts cannot be deleted and this list is always empty.
     std::vector<address> deleted_accounts;
 };
-}  // namespace evmone::state
+}  // namespace sivmone::state

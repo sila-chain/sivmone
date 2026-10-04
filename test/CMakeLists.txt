@@ -1,11 +1,11 @@
-# evmone: Fast Ethereum Virtual Machine implementation
+# sivmone: Fast Sila Virtual Machine implementation
 # Copyright 2019-2020 The evmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
 include(FetchContent)
 include(GoogleTest)
 
-set(evmone_private_include_dir ${PROJECT_SOURCE_DIR}/lib)
+set(sivmone_private_include_dir ${PROJECT_SOURCE_DIR}/lib)
 
 hunter_add_package(CLI11)
 find_package(CLI11 CONFIG REQUIRED)
@@ -37,8 +37,8 @@ block(PROPAGATE benchmark_libs)
             SOURCE_SUBDIR google_benchmark
         )
         list(APPEND benchmark_libs codspeed instrument_hooks)
-        # Also reports the tests `evmone test` runs as benchmarks (utils/test_driver.cpp).
-        target_link_libraries(evmone.testutils PRIVATE codspeed)
+        # Also reports the tests `sivmone test` runs as benchmarks (utils/test_driver.cpp).
+        target_link_libraries(sivmone.testutils PRIVATE codspeed)
     endif()
     FetchContent_MakeAvailable(benchmark)
 endblock()
@@ -52,7 +52,7 @@ set_target_properties(
 )
 
 include(CableBuildInfo)
-cable_add_buildinfo_library(PROJECT_NAME evmone)
+cable_add_buildinfo_library(PROJECT_NAME sivmone)
 
 add_subdirectory(bench)
 add_subdirectory(experimental)
@@ -61,11 +61,11 @@ add_subdirectory(internal_benchmarks)
 add_subdirectory(precompiles_bench)
 add_subdirectory(unittests)
 
-set(targets evmone-bench evmone-bench-internal evmone-precompiles-bench evmone-state evmone-unittests)
+set(targets sivmone-bench sivmone-bench-internal sivmone-precompiles-bench sivmone-state sivmone-unittests)
 
-if(EVMONE_FUZZING)
+if(SIVMONE_FUZZING)
     add_subdirectory(fuzzer)
-    list(APPEND targets evmone-fuzzer)
+    list(APPEND targets sivmone-fuzzer)
 endif()
 
 set_target_properties(

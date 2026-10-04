@@ -1,13 +1,13 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmone_precompiles/modarith.hpp>
+#include <sivmone_precompiles/modarith.hpp>
 #include <gtest/gtest.h>
 #include <array>
 
 using namespace intx;
-using namespace evmone::crypto;
+using namespace sivmone::crypto;
 
 constexpr auto P23 = 23_u256;
 constexpr auto BN254Mod = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47_u256;

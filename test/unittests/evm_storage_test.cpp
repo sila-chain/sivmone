@@ -1,15 +1,15 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// This file contains EVM unit tests that access or modify the contract storage.
 
 #include "evm_fixture.hpp"
-#include <evmone/constants.hpp>
+#include <sivmone/constants.hpp>
 #include <array>
 
 using namespace evmc::literals;
-using namespace evmone::test;
+using namespace sivmone::test;
 
 TEST_P(evm, storage)
 {
@@ -248,7 +248,7 @@ TEST_P(evm, sstore_cost_net_gas_metering)
     cost_constants[EVMC_ISTANBUL] = {800, 20000, 5000, 15000};
     cost_constants[EVMC_BERLIN] = {100, 20000, 2900, 15000};
     cost_constants[EVMC_LONDON] = {100, 20000, 2900, 4800};
-    cost_constants[EVMC_AMSTERDAM] = {100, 10100, 10100, 11616, evmone::STORAGE_SET_STATE_GAS};
+    cost_constants[EVMC_AMSTERDAM] = {100, 10100, 10100, 11616, sivmone::STORAGE_SET_STATE_GAS};
 
     for (const auto r : {EVMC_ISTANBUL, EVMC_BERLIN, EVMC_LONDON, EVMC_AMSTERDAM})
     {

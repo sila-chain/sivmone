@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -11,18 +11,18 @@
 #include <memory>
 #include <span>
 
-#ifdef EVMONE_PRECOMPILES_LIBSECP256K1
+#ifdef SIVMONE_PRECOMPILES_LIBSECP256K1
 #include <state/precompiles_libsecp256k1.hpp>
 #endif
 
-#ifdef EVMONE_PRECOMPILES_GMP
+#ifdef SIVMONE_PRECOMPILES_GMP
 #include <state/precompiles_gmp.hpp>
 #endif
 
 namespace
 {
-using namespace evmone::state;
-using namespace evmone::test;
+using namespace sivmone::state;
+using namespace sivmone::test;
 using enum PrecompileId;
 
 /// The revision used for the precompile benchmarks.
@@ -320,19 +320,19 @@ void modexp(benchmark::State& state)
         ->Args({128 * 8, 8, 2048})                \
         ->Args({128 * 8, 4096, 2048})             \
         ->Args({128 * 8, 8190, 2048})
-BENCHMARK(modexp<expmod_execute_evmone>) MODEXP_ARGS;
-#ifdef EVMONE_PRECOMPILES_GMP
+BENCHMARK(modexp<expmod_execute_sivmone>) MODEXP_ARGS;
+#ifdef SIVMONE_PRECOMPILES_GMP
 BENCHMARK(modexp<expmod_execute_gmp>) MODEXP_ARGS;
 #endif
 #undef MODEXP_ARGS
 
 BENCHMARK(precompile<identity, identity_execute>);
-BENCHMARK(precompile<ecrecover, ecrecover_execute_evmone>);
-#ifdef EVMONE_PRECOMPILES_LIBSECP256K1
+BENCHMARK(precompile<ecrecover, ecrecover_execute_sivmone>);
+#ifdef SIVMONE_PRECOMPILES_LIBSECP256K1
 BENCHMARK(precompile<ecrecover, ecrecover_execute_libsecp256k1>);
 #endif
-BENCHMARK(precompile<expmod, expmod_execute_evmone>);
-#ifdef EVMONE_PRECOMPILES_GMP
+BENCHMARK(precompile<expmod, expmod_execute_sivmone>);
+#ifdef SIVMONE_PRECOMPILES_GMP
 BENCHMARK(precompile<expmod, expmod_execute_gmp>);
 #endif
 BENCHMARK(precompile<ecadd, ecadd_execute>);

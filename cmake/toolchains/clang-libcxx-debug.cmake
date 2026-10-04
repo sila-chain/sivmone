@@ -1,4 +1,4 @@
-# evmone: Ethereum Virtual Machine
+# sivmone: Sila Virtual Machine
 # Copyright 2024 The evmone Authors.
 # Licensed under the Apache License, Version 2.0. See the LICENSE file.
 

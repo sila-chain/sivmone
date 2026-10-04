@@ -1,14 +1,14 @@
-# evmone: Ethereum Virtual Machine
+# sivmone: Sila Virtual Machine
 # Copyright 2019 The evmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required(VERSION 3.25...4.2)
 
-option(BUILD_SHARED_LIBS "Build evmone as a shared library" ON)
+option(BUILD_SHARED_LIBS "Build sivmone as a shared library" ON)
 option(COVERAGE "Build with coverage instrumentation" OFF)
 option(ASSERTIONS "Force enable the assertions in the code ignoring the CMAKE_BUILD_TYPE default" OFF)
-option(EVMONE_TESTING "Build tests and test tools" OFF)
-option(EVMONE_FUZZING "Instrument libraries and build fuzzing tools" OFF)
+option(SIVMONE_TESTING "Build tests and test tools" OFF)
+option(SIVMONE_FUZZING "Instrument libraries and build fuzzing tools" OFF)
 
 include(cmake/cable/bootstrap.cmake)
 include(CableBuildType)
@@ -22,10 +22,10 @@ cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release Debug)
 
 include(Hunter/init)
 
-project(evmone LANGUAGES CXX C)
+project(sivmone LANGUAGES CXX C)
 set(PROJECT_VERSION 0.24.0)
 
-option(EVMONE_TOOLS "Build evmone tools" ${PROJECT_IS_TOP_LEVEL})
+option(SIVMONE_TOOLS "Build sivmone tools" ${PROJECT_IS_TOP_LEVEL})
 
 string(REGEX MATCH "([0-9]+)\\.([0-9]+)" _ ${PROJECT_VERSION})
 set(PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1})
@@ -105,28 +105,28 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
     # Setup options for x86_64 micro-architecture levels.
     # https://clang.llvm.org/docs/UsersManual.html#x86
 
-    set(EVMONE_X86_64_ARCH_LEVEL_INIT 2)
+    set(SIVMONE_X86_64_ARCH_LEVEL_INIT 2)
     if(APPLE)
         # On macos with Apple Silicon CPU (arm64) the x86 is emulated and SSE4.2 is not available.
-        set(EVMONE_X86_64_ARCH_LEVEL_INIT 1)
+        set(SIVMONE_X86_64_ARCH_LEVEL_INIT 1)
     endif()
 
-    set(EVMONE_X86_64_ARCH_LEVEL ${EVMONE_X86_64_ARCH_LEVEL_INIT} CACHE STRING "The x86_64 micro-architecture level")
-    if(EVMONE_X86_64_ARCH_LEVEL GREATER_EQUAL 1 AND EVMONE_X86_64_ARCH_LEVEL LESS_EQUAL 4)
-        message(STATUS "x86_64 micro-architecture level: ${EVMONE_X86_64_ARCH_LEVEL}")
-        if(EVMONE_X86_64_ARCH_LEVEL GREATER_EQUAL 2)
-            add_compile_options(-march=x86-64-v${EVMONE_X86_64_ARCH_LEVEL})
+    set(SIVMONE_X86_64_ARCH_LEVEL ${SIVMONE_X86_64_ARCH_LEVEL_INIT} CACHE STRING "The x86_64 micro-architecture level")
+    if(SIVMONE_X86_64_ARCH_LEVEL GREATER_EQUAL 1 AND SIVMONE_X86_64_ARCH_LEVEL LESS_EQUAL 4)
+        message(STATUS "x86_64 micro-architecture level: ${SIVMONE_X86_64_ARCH_LEVEL}")
+        if(SIVMONE_X86_64_ARCH_LEVEL GREATER_EQUAL 2)
+            add_compile_options(-march=x86-64-v${SIVMONE_X86_64_ARCH_LEVEL})
         endif()
     else()
-        message(FATAL_ERROR "Invalid EVMONE_X86_64_ARCH_LEVEL: ${EVMONE_X86_64_ARCH_LEVEL}")
+        message(FATAL_ERROR "Invalid SIVMONE_X86_64_ARCH_LEVEL: ${SIVMONE_X86_64_ARCH_LEVEL}")
     endif()
 endif()
 
 include(GNUInstallDirs)
 
-if(EVMONE_FUZZING)
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build evmone as a shared library" FORCE)
-    set(EVMONE_TESTING ON CACHE BOOL "Build tests and test tools" FORCE)
+if(SIVMONE_FUZZING)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build sivmone as a shared library" FORCE)
+    set(SIVMONE_TESTING ON CACHE BOOL "Build tests and test tools" FORCE)
 
     if(NOT COVERAGE)
         # Add fuzzing instrumentation only for non-coverage builds.
@@ -138,9 +138,9 @@ if(EVMONE_FUZZING)
     endif()
 endif()
 
-set(EVMONE_INTX_DIR "" CACHE PATH "Path to local intx source directory")
-if(EVMONE_INTX_DIR)
-    add_subdirectory(${EVMONE_INTX_DIR} intx)
+set(SIVMONE_INTX_DIR "" CACHE PATH "Path to local intx source directory")
+if(SIVMONE_INTX_DIR)
+    add_subdirectory(${SIVMONE_INTX_DIR} intx)
 else()
     hunter_add_package(intx)
     find_package(intx CONFIG REQUIRED)
@@ -150,7 +150,7 @@ set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(lib)
 
-if(EVMONE_TOOLS)
+if(SIVMONE_TOOLS)
     hunter_add_package(nlohmann_json)
     find_package(nlohmann_json CONFIG REQUIRED)
     add_subdirectory(test/state)
@@ -158,9 +158,9 @@ if(EVMONE_TOOLS)
     add_subdirectory(tools)
 endif()
 
-if(EVMONE_TESTING)
-    if(NOT EVMONE_TOOLS)
-        message(FATAL_ERROR "EVMONE_TESTING requires EVMONE_TOOLS")
+if(SIVMONE_TESTING)
+    if(NOT SIVMONE_TOOLS)
+        message(FATAL_ERROR "SIVMONE_TESTING requires SIVMONE_TOOLS")
     endif()
     enable_testing()
     add_subdirectory(test)
@@ -169,15 +169,15 @@ endif()
 
 # INSTALL
 
-set(install_targets evmone)
-if(TARGET evmone-standalone)
-    list(APPEND install_targets evmone-standalone)
+set(install_targets sivmone)
+if(TARGET sivmone-standalone)
+    list(APPEND install_targets sivmone-standalone)
 endif()
-if(TARGET evmone-cli)
-    list(APPEND install_targets evmone-cli)
+if(TARGET sivmone-cli)
+    list(APPEND install_targets sivmone-cli)
 endif()
-if(TARGET evmone-bench)
-    list(APPEND install_targets evmone-bench)
+if(TARGET sivmone-bench)
+    list(APPEND install_targets sivmone-bench)
 endif()
 
 set_target_properties(
@@ -187,7 +187,7 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
 )
 
-install(TARGETS ${install_targets} EXPORT evmoneTargets
+install(TARGETS ${install_targets} EXPORT sivmoneTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

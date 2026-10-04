@@ -1,19 +1,19 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
-#include <evmone/constants.hpp>
+#include <sivmone/constants.hpp>
 
 using namespace evmc::literals;
 using namespace intx;
-using namespace evmone::test;
+using namespace sivmone::test;
 
 namespace
 {
 // Authorization tuples signed by AUTHORITY and Sender with the keys the fixture documents.
-// evmone has no ECDSA signer, so the signatures are literals: changing chain_id, addr or nonce
+// sivmone has no ECDSA signer, so the signatures are literals: changing chain_id, addr or nonce
 // means re-signing keccak256(0x05 || rlp([chain_id, addr, nonce])).
 
 constexpr Authorization AUTHORITY_DELEGATION{

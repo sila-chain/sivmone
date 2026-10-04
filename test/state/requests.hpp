@@ -1,4 +1,4 @@
-// evmone: Fast Ethereum Virtual Machine implementation
+// sivmone: Fast Sila Virtual Machine implementation
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -9,7 +9,7 @@
 #include <evmc/evmc.hpp>
 #include <span>
 
-namespace evmone::state
+namespace sivmone::state
 {
 /// The address of the deposit contract.
 ///
@@ -69,4 +69,4 @@ hash256 calculate_requests_hash(std::span<const Requests> requests_list);
 ///
 /// @return The collected deposit requests or std::nullopt if the collection has failed.
 std::optional<Requests> collect_deposit_requests(std::span<const TransactionReceipt> receipts);
-}  // namespace evmone::state
+}  // namespace sivmone::state
