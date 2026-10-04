@@ -13,7 +13,11 @@ on:
 jobs:
   release-linux:
     runs-on: ubuntu-24.04
-    container: chfast/cpp-build-env:25-gcc-15
+    container:
+      image: chfast/cpp-build-env:25-gcc-15
+      # The image runs as an unprivileged user; the Actions runner needs root to
+      # write its workspace and state files.
+      options: --user root
     env:
       BUILD_TYPE: Release
       CMAKE_BUILD_PARALLEL_LEVEL: 4
