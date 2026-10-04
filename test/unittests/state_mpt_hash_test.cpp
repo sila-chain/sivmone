@@ -233,37 +233,37 @@ TEST(state_mpt_hash, legacy_and_sip1559_receipt_three_logs_no_logs)
 
 TEST(state_mpt_hash, pre_byzantium_receipt)
 {
-    // Block taken from Ethereum mainnet
-    // https://etherscan.io/txs?block=4276370
+    // The receipts of block 1 of a SilaHomestead chain generated with go-sila (three value
+    // transfers); the expected hash is that block's receipts root.
 
     using namespace sivmone::state;
 
     TransactionReceipt receipt0{
         .type = Transaction::Type::legacy,
-        .cumulative_gas_used = 0x8323,
+        .cumulative_gas_used = 0x5208,
         .logs = {},
         .logs_bloom_filter = compute_bloom_filter(receipt0.logs),
-        .post_state = 0x4a8f9db452b100f9ec85830785b2d1744c3e727561c334c4f18022daa113290a_bytes32,
+        .post_state = 0x50d21a80b1b6eed4770fc8870348049ec2fbbd5709c3a06bb40a0b76c37b0581_bytes32,
     };
 
     TransactionReceipt receipt1{
         .type = Transaction::Type::legacy,
-        .cumulative_gas_used = 0x10646,
+        .cumulative_gas_used = 0xa410,
         .logs = {},
         .logs_bloom_filter = compute_bloom_filter(receipt1.logs),
-        .post_state = 0xb14ab7c32b3e126591731850976a15e2359c1f3628f1b0ff37776c210b9cadb8_bytes32,
+        .post_state = 0x36d8a082be821058bd7cfd4db1dbe2daab10a1817d85f1f93c588ed28a37e488_bytes32,
     };
 
     TransactionReceipt receipt2{
         .type = Transaction::Type::legacy,
-        .cumulative_gas_used = 0x1584e,
+        .cumulative_gas_used = 0xf618,
         .logs = {},
         .logs_bloom_filter = compute_bloom_filter(receipt2.logs),
-        .post_state = 0x7bda915deb201cae321d31028d322877e8fb98264db3ffcbfec7ea7b9b2106b1_bytes32,
+        .post_state = 0xf8c75d98c16d2f426e393a52421e90af5cb1a4ea4bf7297442e61242602a07c1_bytes32,
     };
 
     EXPECT_EQ(mpt_hash(std::array{receipt0, receipt1, receipt2}),
-        0x8a4fa43a95939b06ad13ce8cd08e026ae6e79ea3c5fc80c732d252e2769ce778_bytes32);
+        0x589d5d34fad8972cfb24b47d5a967c7030e530f1a6845e17c8a0051b169e8c52_bytes32);
 }
 
 TEST(state_mpt_hash, mpt_hashing_test)
