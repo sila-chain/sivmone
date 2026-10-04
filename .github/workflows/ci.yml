@@ -26,8 +26,13 @@ jobs:
           docker run --rm --user "$(id -u):$(id -g)" \
             -e BUILD_TYPE=Release -e CMAKE_BUILD_PARALLEL_LEVEL=4 -e HOME=/tmp \
             -v "$GITHUB_WORKSPACE:/project" -w /project "$IMAGE" bash -ec '
+              CC=${CC:-cc}
+              CXX=${CXX:-cpp}
+              echo CC: $CC
+              echo CXX: $CXX
+              $CC --version
+              $CXX --version
               cmake --version
-              ${CXX:-c++} --version
               cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_COMPILE_WARNING_AS_ERROR=TRUE -DEVMONE_TESTING=ON
               cmake --build build
               cd build
