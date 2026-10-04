@@ -8,7 +8,7 @@
 
 namespace sivmone::advanced
 {
-evmc_result execute(AdvancedExecutionState& state, const AdvancedCodeAnalysis& analysis) noexcept
+sivmc_result execute(AdvancedExecutionState& state, const AdvancedCodeAnalysis& analysis) noexcept
 {
     state.analysis.advanced = &analysis;  // Allow accessing the analysis by instructions.
 
@@ -19,8 +19,9 @@ evmc_result execute(AdvancedExecutionState& state, const AdvancedCodeAnalysis& a
     return make_execution_result(state, state.gas_left);
 }
 
-evmc_result execute(evmc_vm* /*unused*/, const evmc_host_interface* host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message* msg, const uint8_t* code, size_t code_size) noexcept
+sivmc_result execute(sivmc_vm* /*unused*/, const sivmc_host_interface* host,
+    sivmc_host_context* ctx, sivmc_revision rev, const sivmc_message* msg, const uint8_t* code,
+    size_t code_size) noexcept
 {
     const bytes_view container{code, code_size};
     const auto analysis = analyze(rev, container);

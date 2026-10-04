@@ -4,8 +4,8 @@
 #pragma once
 
 #include "rlp_common.hpp"
-#include <evmc/evmc.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <algorithm>
 #include <concepts>
 #include <span>
@@ -22,8 +22,8 @@
 ///   (Transaction::data and friends) to be views over an input buffer outliving them.
 namespace sivmone::rlp
 {
-using evmc::bytes;
-using evmc::bytes_view;
+using sivmc::bytes;
+using sivmc::bytes_view;
 
 template <class T>
 concept UnsignedIntegral = std::unsigned_integral<T> || std::same_as<T, intx::uint256>;
@@ -82,8 +82,8 @@ template <UnsignedIntegral T>
 
 /// Decodes a fixed-width value: the payload must be exactly the type's size (32 bytes for a hash,
 /// 20 for an address). A shorter, longer, or zero-padded encoding is rejected.
-[[nodiscard]] bool decode(bytes_view& from, evmc::bytes32& to) noexcept;
-[[nodiscard]] bool decode(bytes_view& from, evmc::address& to) noexcept;
+[[nodiscard]] bool decode(bytes_view& from, sivmc::bytes32& to) noexcept;
+[[nodiscard]] bool decode(bytes_view& from, sivmc::address& to) noexcept;
 
 /// Decodes a fixed-width field into a byte span: the payload must be exactly N bytes.
 template <size_t N>

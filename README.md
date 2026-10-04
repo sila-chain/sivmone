@@ -14,7 +14,7 @@ The codebase of _sivmone_ is optimized to provide fast and efficient execution o
 
 ### Characteristic of sivmone
 
-1. Exposes the [EVMC] API.
+1. Exposes the [SIVMC] API.
 2. Requires C++20 standard.
 3. The [intx] library is used to provide 256-bit integer precision.
 4. The silash Keccak hash function implementation (in `lib/sivmone_precompiles`) is used
@@ -39,16 +39,16 @@ The codebase of _sivmone_ is optimized to provide fast and efficient execution o
 
 ## Usage
 
-### As an EVMC module
+### As an SIVMC module
 
-sivmone implements the [EVMC] API. The shared library `libsivmone.so` exports
-`evmc_create_sivmone()` and can be loaded by any client with an EVMC loader.
+sivmone implements the [SIVMC] API. The shared library `libsivmone.so` exports
+`sivmc_create_sivmone()` and can be loaded by any client with an SIVMC loader.
 
 Prebuilt packages are published on [Releases].
 
 ### Building from source
 
-To build the sivmone EVMC module (shared library), test, and benchmark:
+To build the sivmone SIVMC module (shared library), test, and benchmark:
 
 1. Fetch the source code:
    ```
@@ -118,7 +118,7 @@ Licensed under the [Apache License, Version 2.0].
 [ci]: https://github.com/sila-chain/sivmone/actions/workflows/ci.yml
 [codspeed]: https://app.codspeed.io/sila-chain/sivmone
 [Apache License, Version 2.0]: LICENSE
-[EVMC]: https://github.com/ethereum/evmc
+[SIVMC]: https://github.com/sila-chain/sivmc
 [GMP]: https://gmplib.org
 [intx]: https://github.com/chfast/intx
 [Releases]: https://github.com/sila-chain/sivmone/releases

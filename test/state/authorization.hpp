@@ -3,15 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <optional>
 #include <vector>
 
 namespace sivmone::state
 {
-using evmc::address;
 using intx::uint256;
+using sivmc::address;
 
 /// The set-code transaction authorization tuple (SIP-7702).
 struct Authorization

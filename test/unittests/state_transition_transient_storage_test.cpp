@@ -5,12 +5,12 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, transient_storage)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     const auto tbump = 0xb0_address;
 
     tx.to = To;
@@ -23,7 +23,7 @@ TEST_F(state_transition, transient_storage)
 
 TEST_F(state_transition, transient_storage_revert)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     const auto tbump = 0xb0_address;
 
     tx.to = To;
@@ -37,7 +37,7 @@ TEST_F(state_transition, transient_storage_revert)
 
 TEST_F(state_transition, transient_storage_static)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     const auto db = 0xdb_address;
 
     tx.to = To;

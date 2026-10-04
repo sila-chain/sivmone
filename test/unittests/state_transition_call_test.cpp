@@ -5,12 +5,12 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, call_value_to_empty)
 {
-    rev = EVMC_LONDON;
+    rev = SIVMC_SILA_LONDON;
     static constexpr auto BENEFICIARY = 0xbe_address;
     tx.to = To;
     pre[To] = {.balance = 1, .code = call(BENEFICIARY).value(1)};
@@ -23,7 +23,7 @@ TEST_F(state_transition, call_value_to_empty)
 
 TEST_F(state_transition, delegatecall_static_legacy)
 {
-    rev = EVMC_LONDON;
+    rev = SIVMC_SILA_LONDON;
     // Checks if DELEGATECALL forwards the "static" flag.
     static constexpr auto CALLEE1 = 0xca11ee01_address;
     static constexpr auto CALLEE2 = 0xca11ee02_address;
@@ -57,7 +57,7 @@ TEST_F(state_transition, osaka_call_depth_limit_unreachable)
     // SIP-7825 caps the transaction gas and the 63/64 rule leaves each frame a 64th less, so the
     // cheapest possible self-recursion runs out of gas at depth 494 and the 1024 limit is
     // unreachable. gas_used pins it: a frame stopped by the limit would keep the gas it forwarded.
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     tx.gas_limit = state::MAX_TX_GAS_LIMIT;
     block.gas_limit = tx.gas_limit;
     pre[Sender].balance = intx::uint256{tx.gas_limit} * tx.max_gas_price + 1;

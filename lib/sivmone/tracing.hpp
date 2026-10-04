@@ -3,17 +3,17 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/bytes.hpp>
-#include <evmc/evmc.h>
-#include <evmc/utils.h>
 #include <intx/intx.hpp>
+#include <sivmc/bytes.hpp>
+#include <sivmc/sivmc.h>
+#include <sivmc/utils.h>
 #include <memory>
 #include <ostream>
 #include <string_view>
 
 namespace sivmone
 {
-using evmc::bytes_view;
+using sivmc::bytes_view;
 class ExecutionState;
 
 class Tracer
@@ -25,14 +25,14 @@ public:
     virtual ~Tracer() = default;
 
     void notify_execution_start(  // NOLINT(misc-no-recursion)
-        evmc_revision rev, const evmc_message& msg, bytes_view code) noexcept
+        sivmc_revision rev, const sivmc_message& msg, bytes_view code) noexcept
     {
         on_execution_start(rev, msg, code);
         if (m_next_tracer)
             m_next_tracer->notify_execution_start(rev, msg, code);
     }
 
-    void notify_execution_end(const evmc_result& result) noexcept  // NOLINT(misc-no-recursion)
+    void notify_execution_end(const sivmc_result& result) noexcept  // NOLINT(misc-no-recursion)
     {
         on_execution_end(result);
         if (m_next_tracer)
@@ -50,10 +50,10 @@ public:
 
 private:
     virtual void on_execution_start(
-        evmc_revision rev, const evmc_message& msg, bytes_view code) noexcept = 0;
+        sivmc_revision rev, const sivmc_message& msg, bytes_view code) noexcept = 0;
     virtual void on_instruction_start(uint32_t pc, const intx::uint256* stack_top, int stack_height,
         int64_t gas, const ExecutionState& state) noexcept = 0;
-    virtual void on_execution_end(const evmc_result& result) noexcept = 0;
+    virtual void on_execution_end(const sivmc_result& result) noexcept = 0;
 };
 
 /// Creates the "histogram" tracer which counts occurrences of individual opcodes during execution
@@ -61,10 +61,10 @@ private:
 ///
 /// @param out  Report output stream.
 /// @return     Histogram tracer object.
-EVMC_EXPORT std::unique_ptr<Tracer> create_histogram_tracer(std::ostream& out);
+SIVMC_EXPORT std::unique_ptr<Tracer> create_histogram_tracer(std::ostream& out);
 
-EVMC_EXPORT std::unique_ptr<Tracer> create_instruction_counter(std::string_view out_file_path);
+SIVMC_EXPORT std::unique_ptr<Tracer> create_instruction_counter(std::string_view out_file_path);
 
-EVMC_EXPORT std::unique_ptr<Tracer> create_instruction_tracer(std::ostream& out);
+SIVMC_EXPORT std::unique_ptr<Tracer> create_instruction_tracer(std::ostream& out);
 
 }  // namespace sivmone

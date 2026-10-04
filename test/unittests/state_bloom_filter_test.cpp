@@ -2,14 +2,14 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/evmc.hpp>
 #include <gtest/gtest.h>
+#include <sivmc/sivmc.hpp>
 #include <test/state/bloom_filter.hpp>
 #include <test/state/state.hpp>
 #include <test/utils/utils.hpp>
 #include <array>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::state;
 using namespace sivmone::test;
 

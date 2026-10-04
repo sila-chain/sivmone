@@ -5,13 +5,13 @@
 
 #include "requests.hpp"
 #include "transaction.hpp"
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 #include <system_error>
 #include <variant>
 
 namespace sivmone::state
 {
-using namespace evmc::literals;
+using namespace sivmc::literals;
 
 /// The address of the sender of the system calls (SIP-4788).
 constexpr auto SYSTEM_ADDRESS = 0xfffffffffffffffffffffffffffffffffffffffe_address;
@@ -39,7 +39,7 @@ class StateView;
 /// Executes code of pre-defined accounts via pseudo-transaction from the system sender (0xff...fe).
 /// The sender's nonce is not increased.
 [[nodiscard]] StateDiff system_call_block_start(const StateView& state_view, const BlockInfo& block,
-    const BlockHashes& block_hashes, evmc_revision rev, evmc::VM& vm);
+    const BlockHashes& block_hashes, sivmc_revision rev, sivmc::VM& vm);
 
 struct RequestsResult
 {
@@ -56,7 +56,7 @@ struct RequestsResult
 ///         requests collection failed.
 [[nodiscard]] std::variant<RequestsResult, std::error_code> system_call_block_end(
     const StateView& state_view, const BlockInfo& block, const BlockHashes& block_hashes,
-    evmc_revision rev, evmc::VM& vm);
+    sivmc_revision rev, sivmc::VM& vm);
 
 /// Emit a SIL transfer log (LOG3) from SYSTEM_ADDRESS for a value transfer (SIP-7708).
 void emit_transfer_log(

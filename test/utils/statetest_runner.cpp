@@ -12,7 +12,7 @@
 
 namespace sivmone::test
 {
-void run_state_test(const StateTransitionTest& test, evmc::VM& vm, const StateTestOptions& options,
+void run_state_test(const StateTransitionTest& test, sivmc::VM& vm, const StateTestOptions& options,
     TestReport& report)
 {
     report.start_case(test.name);
@@ -22,7 +22,7 @@ void run_state_test(const StateTransitionTest& test, evmc::VM& vm, const StateTe
         for (size_t case_index = 0; case_index != cases.size(); ++case_index)
         {
             const auto in_case = report.at(sivm_revision_to_string(rev), '/', case_index);
-            // if (rev != EVMC_FRONTIER)
+            // if (rev != SIVMC_FRONTIER)
             //     continue;
             // if (case_index != 3)
             //     continue;
@@ -84,7 +84,7 @@ void run_state_test(const StateTransitionTest& test, evmc::VM& vm, const StateTe
                 if (holds_alternative<state::TransactionReceipt>(res))  // if tx valid
                 {
                     const auto& r = get<state::TransactionReceipt>(res);
-                    if (r.status == EVMC_SUCCESS)
+                    if (r.status == SIVMC_SUCCESS)
                         out << R"("pass":true)";
                     else
                         out << R"("pass":false,"error":")" << r.status << '"';

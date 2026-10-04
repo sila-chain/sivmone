@@ -74,7 +74,7 @@ intx::uint256 compute_blob_gas_price(
     return fake_exponential(MIN_BLOB_GASPRICE, excess_blob_gas, fraction);
 }
 
-uint64_t calc_excess_blob_gas(evmc_revision rev, const BlobParams& blob_params,
+uint64_t calc_excess_blob_gas(sivmc_revision rev, const BlobParams& blob_params,
     uint64_t parent_blob_gas_used, uint64_t parent_excess_blob_gas, uint64_t parent_base_fee,
     const intx::uint256& parent_blob_base_fee) noexcept
 {
@@ -85,7 +85,8 @@ uint64_t calc_excess_blob_gas(evmc_revision rev, const BlobParams& blob_params,
     if (parent_excess_blob_gas + parent_blob_gas_used < target_blob_gas_per_block)
         return 0;
 
-    if (rev >= EVMC_OSAKA && BLOB_BASE_COST * parent_base_fee > GAS_PER_BLOB * parent_blob_base_fee)
+    if (rev >= SIVMC_SILA_OSAKA &&
+        BLOB_BASE_COST * parent_base_fee > GAS_PER_BLOB * parent_blob_base_fee)
         return parent_excess_blob_gas +
                parent_blob_gas_used * (blob_params.max - blob_params.target) / blob_params.max;
 

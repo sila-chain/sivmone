@@ -6,16 +6,16 @@
 /// a green run, but not the reports below them: those need sivmone and a fixture to disagree.
 /// Neither is reachable from the suites the coverage job runs.
 
-#include <evmc/evmc.hpp>
-#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <sivmc/sivmc.hpp>
+#include <sivmone/sivmone.h>
 #include <test/utils/blockchaintest.hpp>
 #include <test/utils/mpt_hash.hpp>
 
 using namespace sivmone;
 using namespace sivmone::test;
-using namespace evmc::literals;
+using namespace sivmc::literals;
 
 namespace
 {
@@ -55,7 +55,7 @@ std::vector<Failure> run(const BlockchainTest& t)
 {
     std::vector<Failure> failures;
     TestReport report{[&](const Failure& failure) { failures.push_back(failure); }};
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
     run_blockchain_test(t, vm, report);
     return failures;
 }

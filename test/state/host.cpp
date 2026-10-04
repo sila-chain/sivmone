@@ -13,7 +13,7 @@ namespace sivmone::state
 bool Host::account_exists(const address& addr) const noexcept
 {
     const auto* const acc = m_state.find(addr);
-    return acc != nullptr && (m_rev < EVMC_SPURIOUS_DRAGON || !acc->is_empty());
+    return acc != nullptr && (m_rev < SIVMC_SIP158 || !acc->is_empty());
 }
 
 bytes32 Host::get_storage(const address& addr, const bytes32& key) const noexcept
@@ -21,10 +21,11 @@ bytes32 Host::get_storage(const address& addr, const bytes32& key) const noexcep
     return m_state.get_storage(addr, key).current;
 }
 
-evmc_storage_status Host::set_storage(
+sivmc_storage_status Host::set_storage(
     const address& addr, const bytes32& key, const bytes32& value) noexcept
 {
-    // Follow EVMC documentation https://evmc.ethereum.org/storagestatus.html#autotoc_md3
+    // Follow SIVMC documentation
+    // https://github.com/sila-chain/sivmc/blob/0355352ff41e4874f8bc24a25ebf5c64f40ef66f/docs/Sivm_Storage_Change_Status.md
     // and SIP-2200 specification https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2200.md.
 
     auto& storage_slot = m_state.get_storage(addr, key);
@@ -35,32 +36,32 @@ evmc_storage_status Host::set_storage(
     const auto current_is_zero = is_zero(current);
     const auto value_is_zero = is_zero(value);
 
-    auto status = EVMC_STORAGE_ASSIGNED;  // All other cases.
+    auto status = SIVMC_STORAGE_ASSIGNED;  // All other cases.
     if (!dirty && !restored)
     {
         if (current_is_zero)
-            status = EVMC_STORAGE_ADDED;  // 0 → 0 → Z
+            status = SIVMC_STORAGE_ADDED;  // 0 → 0 → Z
         else if (value_is_zero)
-            status = EVMC_STORAGE_DELETED;  // X → X → 0
+            status = SIVMC_STORAGE_DELETED;  // X → X → 0
         else
-            status = EVMC_STORAGE_MODIFIED;  // X → X → Z
+            status = SIVMC_STORAGE_MODIFIED;  // X → X → Z
     }
     else if (dirty && !restored)
     {
         if (current_is_zero && !value_is_zero)
-            status = EVMC_STORAGE_DELETED_ADDED;  // X → 0 → Z
+            status = SIVMC_STORAGE_DELETED_ADDED;  // X → 0 → Z
         else if (!current_is_zero && value_is_zero)
-            status = EVMC_STORAGE_MODIFIED_DELETED;  // X → Y → 0
+            status = SIVMC_STORAGE_MODIFIED_DELETED;  // X → Y → 0
     }
     else if (dirty)
     {
         assert(restored);  // Always true.
         if (current_is_zero)
-            status = EVMC_STORAGE_DELETED_RESTORED;  // X → 0 → X
+            status = SIVMC_STORAGE_DELETED_RESTORED;  // X → 0 → X
         else if (value_is_zero)
-            status = EVMC_STORAGE_ADDED_DELETED;  // 0 → Y → 0
+            status = SIVMC_STORAGE_ADDED_DELETED;  // 0 → Y → 0
         else
-            status = EVMC_STORAGE_MODIFIED_RESTORED;  // X → Y → X
+            status = SIVMC_STORAGE_MODIFIED_RESTORED;  // X → Y → X
     }
 
     m_state.journal_storage_change(storage_slot);
@@ -140,7 +141,7 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
     m_state.journal_balance_change(beneficiary, beneficiary_acc.balance);
     m_state.journal_balance_change(addr, balance);
 
-    if (m_rev >= EVMC_CANCUN && !acc.just_created)
+    if (m_rev >= SIVMC_SILA_CANCUN && !acc.just_created)
     {
         // SIP-6780:
         // "SELFDESTRUCT is executed in a transaction that is not the same
@@ -148,7 +149,7 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
         acc.balance = 0;
         beneficiary_acc.balance += balance;  // Keep balance if acc is the beneficiary.
 
-        if (m_rev >= EVMC_AMSTERDAM)
+        if (m_rev >= SIVMC_SILA_AMSTERDAM)
             emit_transfer_log(m_logs, addr, beneficiary, balance);
 
         // Return "selfdestruct not registered".
@@ -156,7 +157,7 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
         return false;
     }
 
-    if (m_rev < EVMC_AMSTERDAM || beneficiary != addr)
+    if (m_rev < SIVMC_SILA_AMSTERDAM || beneficiary != addr)
     {
         // Transfer may happen multiple times per single account as account's balance
         // can be increased with a call following previous selfdestruct.
@@ -164,7 +165,7 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
         acc.balance = 0;  // Zero balance if acc is the beneficiary (before SIP-8246)
     }
 
-    if (m_rev >= EVMC_AMSTERDAM)
+    if (m_rev >= SIVMC_SILA_AMSTERDAM)
         emit_transfer_log(m_logs, addr, beneficiary, balance);
 
     // Mark the destruction if not done already.
@@ -177,9 +178,9 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
     return false;
 }
 
-evmc::Result Host::create(const evmc_message& msg) noexcept
+sivmc::Result Host::create(const sivmc_message& msg) noexcept
 {
-    assert(msg.kind == EVMC_CREATE || msg.kind == EVMC_CREATE2);
+    assert(msg.kind == SIVMC_CREATE || msg.kind == SIVMC_CREATE2);
     assert(msg.recipient != address{});  // Must be computed already.
 
     // TODO: find()+insert() probes m_modified twice for a new recipient.
@@ -191,16 +192,16 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
     }
     else
     {
-        // TODO: Add EVMC errors for creation failures.
+        // TODO: Add SIVMC errors for creation failures.
         if (is_create_collision(*new_acc))
-            return evmc::Result{EVMC_FAILURE, {.left = msg.state_gas}};
+            return sivmc::Result{SIVMC_FAILURE, {.left = msg.state_gas}};
         m_state.journal_create(msg.recipient);
     }
 
     assert(new_acc != nullptr);
     assert(new_acc->nonce == 0);
 
-    if (m_rev >= EVMC_SPURIOUS_DRAGON)
+    if (m_rev >= SIVMC_SIP158)
         new_acc->nonce = 1;  // No need to journal: create revert will 0 the nonce.
 
     new_acc->just_created = true;
@@ -213,7 +214,7 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
     sender_acc.balance -= value;
     new_acc->balance += value;  // The new account may be prefunded.
 
-    if (m_rev >= EVMC_AMSTERDAM)
+    if (m_rev >= SIVMC_SILA_AMSTERDAM)
         emit_transfer_log(m_logs, msg.sender, msg.recipient, value);
 
     auto create_msg = msg;
@@ -221,7 +222,7 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
     create_msg.input_size = 0;
     const bytes_view initcode{msg.input_data, msg.input_size};
     auto result = m_vm.execute(*this, m_rev, create_msg, initcode.data(), initcode.size());
-    if (result.status_code != EVMC_SUCCESS)
+    if (result.status_code != SIVMC_SUCCESS)
         return result;
 
     auto gas_left = result.gas_left;
@@ -229,23 +230,24 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
 
     const bytes_view code{result.output_data, result.output_size};
 
-    const size_t max_code_size = m_rev >= EVMC_AMSTERDAM ? MAX_CODE_SIZE_AMSTERDAM : MAX_CODE_SIZE;
-    if (m_rev >= EVMC_SPURIOUS_DRAGON && code.size() > max_code_size)
-        return evmc::Result{EVMC_FAILURE, {.left = msg.state_gas}};
+    const size_t max_code_size =
+        m_rev >= SIVMC_SILA_AMSTERDAM ? MAX_CODE_SIZE_AMSTERDAM : MAX_CODE_SIZE;
+    if (m_rev >= SIVMC_SIP158 && code.size() > max_code_size)
+        return sivmc::Result{SIVMC_FAILURE, {.left = msg.state_gas}};
 
     // Reject new contract code starting with the 0xEF byte (SIP-3541).
-    if (m_rev >= EVMC_LONDON && code.starts_with(0xEF))
-        return evmc::Result{EVMC_CONTRACT_VALIDATION_FAILURE, {.left = msg.state_gas}};
+    if (m_rev >= SIVMC_SILA_LONDON && code.starts_with(0xEF))
+        return sivmc::Result{SIVMC_CONTRACT_VALIDATION_FAILURE, {.left = msg.state_gas}};
 
     StateGas state_gas{result.state_gas};  // The initcode's state-gas for code deposit.
-    if (m_rev >= EVMC_AMSTERDAM)
+    if (m_rev >= SIVMC_SILA_AMSTERDAM)
     {
         // The code deposit splits into an execution-gas and a state-gas component (SIP-8037).
         const auto execution_cost = 6 * ((std::ssize(code) + 31) / 32);
         const auto state_cost = std::ssize(code) * COST_PER_STATE_BYTE;
         gas_left -= execution_cost;
         if (gas_left < 0 || !state_gas.charge(gas_left, state_cost))
-            return evmc::Result{EVMC_FAILURE, {.left = msg.state_gas}};
+            return sivmc::Result{SIVMC_FAILURE, {.left = msg.state_gas}};
     }
     else
     {
@@ -254,9 +256,9 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
         gas_left -= cost;
         if (gas_left < 0)
         {
-            return (m_rev == EVMC_FRONTIER) ?
-                       evmc::Result{EVMC_SUCCESS, result.gas_left, result.gas_refund} :
-                       evmc::Result{EVMC_FAILURE, {.left = msg.state_gas}};
+            return (m_rev == SIVMC_FRONTIER) ?
+                       sivmc::Result{SIVMC_SUCCESS, result.gas_left, result.gas_refund} :
+                       sivmc::Result{SIVMC_FAILURE, {.left = msg.state_gas}};
         }
     }
 
@@ -267,22 +269,22 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
         new_acc->code_changed = true;
     }
 
-    return evmc::Result{result.status_code, gas_left, result.gas_refund, state_gas};
+    return sivmc::Result{result.status_code, gas_left, result.gas_refund, state_gas};
 }
 
-evmc::Result Host::execute_message(const evmc_message& msg) noexcept
+sivmc::Result Host::execute_message(const sivmc_message& msg) noexcept
 {
-    if (msg.kind == EVMC_CREATE || msg.kind == EVMC_CREATE2)
+    if (msg.kind == SIVMC_CREATE || msg.kind == SIVMC_CREATE2)
         return create(msg);
 
-    if (msg.kind == EVMC_CALL)
+    if (msg.kind == SIVMC_CALL)
     {
         auto* recipient_acc = m_state.find(msg.recipient);
         if (recipient_acc == nullptr)
             m_state.journal_new_account(msg.recipient);
         // TODO: Both branches will insert new account so better to do it in common path.
 
-        if (evmc::is_zero(msg.value))
+        if (sivmc::is_zero(msg.value))
         {
             m_state.touch(msg.recipient);
         }
@@ -304,26 +306,26 @@ evmc::Result Host::execute_message(const evmc_message& msg) noexcept
             sender_acc.balance -= value;
             recipient_acc->balance += value;
 
-            if (m_rev >= EVMC_AMSTERDAM)
+            if (m_rev >= SIVMC_SILA_AMSTERDAM)
                 emit_transfer_log(m_logs, msg.sender, msg.recipient, value);
         }
     }
 
     // Calls to precompile address via SIP-7702 delegation execute empty code instead of precompile.
-    if ((msg.flags & EVMC_DELEGATED) == 0 && is_precompile(m_rev, msg.code_address))
+    if ((msg.flags & SIVMC_DELEGATED) == 0 && is_precompile(m_rev, msg.code_address))
         return call_precompile(m_rev, msg);
 
     // TODO: get_code() performs the account lookup. Add a way to get an account with code?
     const auto code = m_state.get_code(msg.code_address);
     if (code.empty())  // Skip trivial execution.
-        return evmc::Result{EVMC_SUCCESS, msg.gas, 0, {.left = msg.state_gas}};
+        return sivmc::Result{SIVMC_SUCCESS, msg.gas, 0, {.left = msg.state_gas}};
 
     return m_vm.execute(*this, m_rev, msg, code.data(), code.size());
 }
 
-evmc::Result Host::call(const evmc_message& msg) noexcept
+sivmc::Result Host::call(const sivmc_message& msg) noexcept
 {
-    if (msg.depth != 0 && (msg.kind == EVMC_CREATE || msg.kind == EVMC_CREATE2))
+    if (msg.depth != 0 && (msg.kind == SIVMC_CREATE || msg.kind == SIVMC_CREATE2))
     {
         // Bump the creator's nonce (already done for depth 0). Not reverted if creation fails.
         auto& sender_acc = m_state.get(msg.sender);
@@ -337,7 +339,7 @@ evmc::Result Host::call(const evmc_message& msg) noexcept
 
     auto result = execute_message(msg);
 
-    if (result.status_code != EVMC_SUCCESS)
+    if (result.status_code != SIVMC_SUCCESS)
     {
         assert(result.state_gas.left == msg.state_gas);
         assert(result.state_gas.spilled == 0);
@@ -346,7 +348,7 @@ evmc::Result Host::call(const evmc_message& msg) noexcept
         // never reverted. It only matters when the account is empty, so gate it by rev range.
         static constexpr auto ADDR_03 = 0x03_address;
         bool is_03_touched = false;
-        if (m_rev < EVMC_PARIS && m_rev >= EVMC_SPURIOUS_DRAGON) [[unlikely]]
+        if (m_rev < SIVMC_SILA_PARIS && m_rev >= SIVMC_SIP158) [[unlikely]]
         {
             const auto* const acc_03 = m_state.find(ADDR_03);
             is_03_touched = acc_03 != nullptr && acc_03->erase_if_empty;
@@ -362,7 +364,7 @@ evmc::Result Host::call(const evmc_message& msg) noexcept
     return result;
 }
 
-evmc_tx_context Host::get_tx_context() const noexcept
+sivmc_tx_context Host::get_tx_context() const noexcept
 {
     // TODO: The effective gas price is already computed in transaction validation.
     // TODO: The effective gas price calculation is broken for system calls (gas price 0).
@@ -371,7 +373,7 @@ evmc_tx_context Host::get_tx_context() const noexcept
         std::min(m_tx.max_priority_gas_price, m_tx.max_gas_price - m_block.base_fee);
     const auto effective_gas_price = m_block.base_fee + priority_gas_price;
 
-    return evmc_tx_context{
+    return sivmc_tx_context{
         intx::be::store<uint256be>(effective_gas_price),  // By SIP-1559.
         m_tx.sender,
         m_block.coinbase,
@@ -399,18 +401,18 @@ void Host::emit_log(const address& addr, const uint8_t* data, size_t data_size,
     m_logs.push_back({addr, {data, data_size}, {topics, topics + topics_count}});
 }
 
-evmc_access_status Host::access_account(const address& addr) noexcept
+sivmc_access_status Host::access_account(const address& addr) noexcept
 {
-    if (m_rev < EVMC_BERLIN)
-        return EVMC_ACCESS_COLD;  // Ignore before Berlin.
+    if (m_rev < SIVMC_SILA_BERLIN)
+        return SIVMC_ACCESS_COLD;  // Ignore before Berlin.
 
     auto* acc = m_state.find(addr);
 
-    if (acc != nullptr && acc->access_status == EVMC_ACCESS_WARM)
-        return EVMC_ACCESS_WARM;
+    if (acc != nullptr && acc->access_status == SIVMC_ACCESS_WARM)
+        return SIVMC_ACCESS_WARM;
 
     if (is_precompile(m_rev, addr))  // Precompiles are always warm. Don't insert to state.
-        return EVMC_ACCESS_WARM;
+        return SIVMC_ACCESS_WARM;
 
     // TODO: On a modified-set miss the account is looked up twice. This can be improved with
     //   a try_emplace-like API, but the miss happens only in ~39% of the calls on Mainnet.
@@ -422,22 +424,22 @@ evmc_access_status Host::access_account(const address& addr) noexcept
     else
         m_state.journal_account_flags(addr, *acc);
 
-    acc->access_status = EVMC_ACCESS_WARM;
-    return EVMC_ACCESS_COLD;
+    acc->access_status = SIVMC_ACCESS_WARM;
+    return SIVMC_ACCESS_COLD;
 }
 
-evmc_access_status Host::access_storage(const address& addr, const bytes32& key) noexcept
+sivmc_access_status Host::access_storage(const address& addr, const bytes32& key) noexcept
 {
     auto& storage_slot = m_state.get_storage(addr, key);
-    if (storage_slot.access_status == EVMC_ACCESS_WARM)
-        return EVMC_ACCESS_WARM;  // Nothing changes, skip journaling.
+    if (storage_slot.access_status == SIVMC_ACCESS_WARM)
+        return SIVMC_ACCESS_WARM;  // Nothing changes, skip journaling.
     m_state.journal_storage_change(storage_slot);
-    storage_slot.access_status = EVMC_ACCESS_WARM;
-    return EVMC_ACCESS_COLD;
+    storage_slot.access_status = SIVMC_ACCESS_WARM;
+    return SIVMC_ACCESS_COLD;
 }
 
 
-evmc::bytes32 Host::get_transient_storage(const address& addr, const bytes32& key) const noexcept
+sivmc::bytes32 Host::get_transient_storage(const address& addr, const bytes32& key) const noexcept
 {
     const auto& acc = m_state.get(addr);
     const auto it = acc.transient_storage.find(key);

@@ -10,12 +10,12 @@
 
 namespace sivmone::state
 {
-using evmc::uint256be;
+using sivmc::uint256be;
 
-class Host : public evmc::Host
+class Host : public sivmc::Host
 {
-    evmc_revision m_rev;
-    evmc::VM& m_vm;
+    sivmc_revision m_rev;
+    sivmc::VM& m_vm;
     State& m_state;
     const BlockInfo& m_block;
     const BlockHashes& m_block_hashes;
@@ -23,14 +23,14 @@ class Host : public evmc::Host
     std::vector<Log> m_logs;
 
 public:
-    Host(evmc_revision rev, evmc::VM& vm, State& state, const BlockInfo& block,
+    Host(sivmc_revision rev, sivmc::VM& vm, State& state, const BlockInfo& block,
         const BlockHashes& block_hashes, const Transaction& tx) noexcept
       : m_rev{rev}, m_vm{vm}, m_state{state}, m_block{block}, m_block_hashes{block_hashes}, m_tx{tx}
     {}
 
     [[nodiscard]] std::vector<Log>&& take_logs() noexcept { return std::move(m_logs); }
 
-    evmc::Result call(const evmc_message& msg) noexcept override;
+    sivmc::Result call(const sivmc_message& msg) noexcept override;
 
     [[nodiscard]] bool account_exists(const address& addr) const noexcept override;
 
@@ -38,10 +38,10 @@ private:
     [[nodiscard]] bytes32 get_storage(
         const address& addr, const bytes32& key) const noexcept override;
 
-    evmc_storage_status set_storage(
+    sivmc_storage_status set_storage(
         const address& addr, const bytes32& key, const bytes32& value) noexcept override;
 
-    [[nodiscard]] evmc::bytes32 get_transient_storage(
+    [[nodiscard]] sivmc::bytes32 get_transient_storage(
         const address& addr, const bytes32& key) const noexcept override;
 
     void set_transient_storage(
@@ -60,9 +60,9 @@ private:
 
     bool selfdestruct(const address& addr, const address& beneficiary) noexcept override;
 
-    evmc::Result create(const evmc_message& msg) noexcept;
+    sivmc::Result create(const sivmc_message& msg) noexcept;
 
-    [[nodiscard]] evmc_tx_context get_tx_context() const noexcept override;
+    [[nodiscard]] sivmc_tx_context get_tx_context() const noexcept override;
 
     [[nodiscard]] bytes32 get_block_hash(int64_t block_number) const noexcept override;
 
@@ -70,11 +70,11 @@ private:
         const bytes32 topics[], size_t topics_count) noexcept override;
 
 public:
-    evmc_access_status access_account(const address& addr) noexcept override;
+    sivmc_access_status access_account(const address& addr) noexcept override;
 
 private:
-    evmc_access_status access_storage(const address& addr, const bytes32& key) noexcept override;
+    sivmc_access_status access_storage(const address& addr, const bytes32& key) noexcept override;
 
-    evmc::Result execute_message(const evmc_message& msg) noexcept;
+    sivmc::Result execute_message(const sivmc_message& msg) noexcept;
 };
 }  // namespace sivmone::state

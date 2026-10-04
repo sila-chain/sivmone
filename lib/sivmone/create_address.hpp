@@ -3,14 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
-#include <evmc/utils.h>
+#include <sivmc/sivmc.hpp>
+#include <sivmc/utils.h>
 
 namespace sivmone
 {
-using evmc::address;
-using evmc::bytes32;
-using evmc::bytes_view;
+using sivmc::address;
+using sivmc::bytes32;
+using sivmc::bytes_view;
 
 /// Computes the address of the to-be-created contract with the CREATE scheme.
 ///
@@ -21,7 +21,7 @@ using evmc::bytes_view;
 /// @param sender        The address of the message sender. YP: 𝑠.
 /// @param sender_nonce  The sender's nonce before the increase. YP: 𝑛.
 /// @return              The address computed with the CREATE scheme.
-[[nodiscard]] EVMC_EXPORT address compute_create_address(
+[[nodiscard]] SIVMC_EXPORT address compute_create_address(
     const address& sender, uint64_t sender_nonce) noexcept;
 
 /// Computes the address of the to-be-created contract with the CREATE2 scheme.
@@ -33,6 +33,6 @@ using evmc::bytes_view;
 /// @param salt          The salt.
 /// @param init_code     The init_code to hash (initcode or initcontainer).
 /// @return              The address computed with the CREATE2 scheme.
-[[nodiscard]] EVMC_EXPORT address compute_create2_address(
+[[nodiscard]] SIVMC_EXPORT address compute_create2_address(
     const address& sender, const bytes32& salt, bytes_view init_code) noexcept;
 }  // namespace sivmone

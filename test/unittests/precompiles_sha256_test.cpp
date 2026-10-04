@@ -2,9 +2,9 @@
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/hex.hpp>
-#include <sivmone_precompiles/sha256.hpp>
 #include <gtest/gtest.h>
+#include <sivmc/hex.hpp>
+#include <sivmone_precompiles/sha256.hpp>
 
 using sivmone::crypto::sha256;
 
@@ -26,7 +26,7 @@ TEST(sha256, test_vectors)
     {
         std::byte hash[sivmone::crypto::SHA256_HASH_SIZE];
         sha256(hash, reinterpret_cast<const std::byte*>(input.data()), input.size());
-        const auto hash_hex = evmc::hex({reinterpret_cast<const uint8_t*>(hash), std::size(hash)});
+        const auto hash_hex = sivmc::hex({reinterpret_cast<const uint8_t*>(hash), std::size(hash)});
         EXPECT_EQ(hash_hex, expected_hash_hex);
     }
 }

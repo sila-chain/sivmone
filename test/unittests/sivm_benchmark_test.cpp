@@ -9,7 +9,7 @@
 #include <numeric>
 #include <random>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_P(sivm, grow_memory_with_mload)
@@ -21,15 +21,15 @@ TEST_P(sivm, grow_memory_with_mload)
 
     // Pokes the same offset 0 all the time.
     execute(code, 0x00_bytes32);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 57356);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 57356);
 
     // Pokes memory offset increasing by 1, memory grows every 32nd "iteration".
     execute(code, 0x01_bytes32);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 57772);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 57772);
 
     // Pokes memory offset increasing by 32, memory grows every "iteration".
     execute(code, 0x20_bytes32);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 102409);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 102409);
 }
 
 TEST_P(sivm, grow_memory_with_mstore)
@@ -41,15 +41,15 @@ TEST_P(sivm, grow_memory_with_mstore)
 
     // Pokes the same offset 0 all the time.
     execute(code, 0x00_bytes32);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 61452);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 61452);
 
     // Pokes memory offset increasing by 1, memory grows every 32nd "iteration".
     execute(code, 0x01_bytes32);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 61868);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 61868);
 
     // Pokes memory offset increasing by 32, memory grows every "iteration".
     execute(code, 0x20_bytes32);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 106505);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 106505);
 }
 
 TEST_P(sivm, jump_around)
@@ -83,7 +83,7 @@ TEST_P(sivm, jump_around)
     // EXPECT_EQ(hex(code), "");  // Uncomment to get the code dump.
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, int64_t{(1 + 3 + 8) * num_jumps + 1});
+    EXPECT_GAS_USED(SIVMC_SUCCESS, int64_t{(1 + 3 + 8) * num_jumps + 1});
 }
 
 TEST_P(sivm, signextend_bench)
@@ -115,6 +115,6 @@ TEST_P(sivm, signextend_bench)
     // EXPECT_EQ(hex(code), "");  // Uncomment to get the code dump.
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 8 * num_instr + 15 * 3 + 21);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 8 * num_instr + 15 * 3 + 21);
     EXPECT_OUTPUT_INT(0);
 }

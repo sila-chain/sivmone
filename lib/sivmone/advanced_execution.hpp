@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.h>
-#include <evmc/utils.h>
+#include <sivmc/sivmc.h>
+#include <sivmc/utils.h>
 
 namespace sivmone::advanced
 {
@@ -12,10 +12,10 @@ struct AdvancedExecutionState;
 struct AdvancedCodeAnalysis;
 
 /// Execute the already analyzed code using the provided execution state.
-EVMC_EXPORT evmc_result execute(
+SIVMC_EXPORT sivmc_result execute(
     AdvancedExecutionState& state, const AdvancedCodeAnalysis& analysis) noexcept;
 
-/// EVMC-compatible execute() function.
-evmc_result execute(evmc_vm* vm, const evmc_host_interface* host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message* msg, const uint8_t* code, size_t code_size) noexcept;
+/// SIVMC-compatible execute() function.
+sivmc_result execute(sivmc_vm* vm, const sivmc_host_interface* host, sivmc_host_context* ctx,
+    sivmc_revision rev, const sivmc_message* msg, const uint8_t* code, size_t code_size) noexcept;
 }  // namespace sivmone::advanced

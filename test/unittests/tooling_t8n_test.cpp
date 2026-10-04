@@ -2,9 +2,9 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
 #include <nlohmann/json.hpp>
+#include <sivmone/sivmone.h>
 #include <test/utils/t8n.hpp>
 #include <sstream>
 
@@ -56,9 +56,9 @@ constexpr auto TX_JSON = R"([{
 }])";
 
 /// Runs t8n over the given pre-state and transactions, and returns the result JSON.
-std::string run_t8n(std::string_view alloc_json, std::string_view txs_json, evmc_revision rev)
+std::string run_t8n(std::string_view alloc_json, std::string_view txs_json, sivmc_revision rev)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{std::string{alloc_json}};
@@ -94,7 +94,7 @@ constexpr auto TX_TO_CALLEE = R"([{
 }])";
 
 /// Runs TX_TO_CALLEE against a callee deployed with the given code.
-std::string run_call_to(std::string_view callee_code, evmc_revision rev)
+std::string run_call_to(std::string_view callee_code, sivmc_revision rev)
 {
     const auto alloc = R"({
         "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b": {
@@ -121,9 +121,9 @@ constexpr auto ENV_WITH_PARENT_JSON = R"({
 })";
 
 /// Runs t8n over an empty state with no transaction, for what the block env alone decides.
-std::string run_t8n_env(std::string_view env_json, evmc_revision rev)
+std::string run_t8n_env(std::string_view env_json, sivmc_revision rev)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     std::istringstream env{std::string{env_json}};
     std::istringstream alloc{"{}"};
@@ -175,13 +175,13 @@ constexpr auto ALLOC_WITH_REQUEST_STUBS_JSON = R"({
 TEST(tooling_t8n, base_fee_is_computed_from_the_parent_block)
 {
     // The parent used twice its gas target, so the fee rises by max(7 / 8, 1) = 1 (SIP-1559).
-    const auto result = json::parse(run_t8n_env(ENV_WITH_PARENT_JSON, EVMC_LONDON));
+    const auto result = json::parse(run_t8n_env(ENV_WITH_PARENT_JSON, SIVMC_SILA_LONDON));
     EXPECT_EQ(result.at("currentBaseFee"), "0x8");
 }
 
 TEST(tooling_t8n, no_base_fee_before_london)
 {
-    const auto result = json::parse(run_t8n_env(ENV_WITH_PARENT_JSON, EVMC_BERLIN));
+    const auto result = json::parse(run_t8n_env(ENV_WITH_PARENT_JSON, SIVMC_SILA_BERLIN));
     EXPECT_TRUE(result.contains("gasUsed"));  // Not an empty result which says nothing.
     EXPECT_FALSE(result.contains("currentBaseFee"));
 }
@@ -207,7 +207,7 @@ TEST(tooling_t8n, blob_transaction_creating_a_contract_is_rejected)
         "sender": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b"
     }])";
 
-    const auto result = json::parse(run_t8n(ALLOC_JSON, BLOB_CREATE_TX, EVMC_CANCUN));
+    const auto result = json::parse(run_t8n(ALLOC_JSON, BLOB_CREATE_TX, SIVMC_SILA_CANCUN));
     EXPECT_EQ(result.at("receipts"), json::array());
     ASSERT_EQ(result.at("rejected").size(), 1u);
     EXPECT_EQ(
@@ -216,7 +216,8 @@ TEST(tooling_t8n, blob_transaction_creating_a_contract_is_rejected)
 
 TEST(tooling_t8n, a_block_requesting_nothing_reports_the_empty_requests_hash)
 {
-    const auto result = json::parse(run_t8n(ALLOC_WITH_REQUEST_STUBS_JSON, "[]", EVMC_PRAGUE));
+    const auto result =
+        json::parse(run_t8n(ALLOC_WITH_REQUEST_STUBS_JSON, "[]", SIVMC_SILA_PRAGUE));
     EXPECT_FALSE(result.contains("blockException"));
     EXPECT_EQ(result.at("requests"), json::array());
     // sha256 of nothing at all (SIP-7685).
@@ -227,20 +228,20 @@ TEST(tooling_t8n, a_block_requesting_nothing_reports_the_empty_requests_hash)
 TEST(tooling_t8n, no_inputs_no_outputs)
 {
     // Smoke: t8n() with everything left at defaults must not throw or crash.
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     tooling::T8NArgs args;
-    args.rev = EVMC_OSAKA;
+    args.rev = SIVMC_SILA_OSAKA;
 
     tooling::t8n(vm, args);
 }
 
 TEST(tooling_t8n, result_written_to_out_streams)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     tooling::T8NArgs args;
-    args.rev = EVMC_OSAKA;
+    args.rev = SIVMC_SILA_OSAKA;
     std::ostringstream out_result;
     std::ostringstream out_alloc;
     args.out_result = &out_result;
@@ -257,7 +258,7 @@ TEST(tooling_t8n, result_written_to_out_streams)
 
 TEST(tooling_t8n, out_alloc_reports_the_beacon_root_write_and_the_created_account)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{ALLOC_WITH_BEACON_ROOTS_JSON};
@@ -265,7 +266,7 @@ TEST(tooling_t8n, out_alloc_reports_the_beacon_root_write_and_the_created_accoun
     std::ostringstream out_alloc;
 
     tooling::T8NArgs args;
-    args.rev = EVMC_CANCUN;
+    args.rev = SIVMC_SILA_CANCUN;
     args.chain_id = 1;
     args.alloc = &alloc;
     args.env = &env;
@@ -285,7 +286,7 @@ TEST(tooling_t8n, out_alloc_reports_the_beacon_root_write_and_the_created_accoun
 
 TEST(tooling_t8n, open_trace_called_per_tx)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{ALLOC_JSON};
@@ -293,17 +294,17 @@ TEST(tooling_t8n, open_trace_called_per_tx)
     std::ostringstream out_result;
     std::ostringstream out_alloc;
     std::ostringstream trace_buf;
-    std::vector<std::pair<size_t, evmc::bytes32>> trace_calls;
+    std::vector<std::pair<size_t, sivmc::bytes32>> trace_calls;
 
     tooling::T8NArgs args;
-    args.rev = EVMC_SHANGHAI;  // No system contracts => clean trace_buf.
+    args.rev = SIVMC_SILA_SHANGHAI;  // No system contracts => clean trace_buf.
     args.chain_id = 1;
     args.alloc = &alloc;
     args.env = &env;
     args.txs = &txs;
     args.out_result = &out_result;
     args.out_alloc = &out_alloc;
-    args.open_trace = [&](size_t i, const evmc::bytes32& hash) -> std::ostream& {
+    args.open_trace = [&](size_t i, const sivmc::bytes32& hash) -> std::ostream& {
         trace_calls.emplace_back(i, hash);
         return trace_buf;
     };
@@ -319,7 +320,7 @@ TEST(tooling_t8n, open_trace_called_per_tx)
 
 TEST(tooling_t8n, out_body_is_hex_rlp_of_transactions)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     std::istringstream env{ENV_JSON};
     std::istringstream alloc{ALLOC_JSON};
@@ -329,7 +330,7 @@ TEST(tooling_t8n, out_body_is_hex_rlp_of_transactions)
     std::ostringstream out_body;
 
     tooling::T8NArgs args;
-    args.rev = EVMC_SHANGHAI;
+    args.rev = SIVMC_SILA_SHANGHAI;
     args.chain_id = 1;
     args.alloc = &alloc;
     args.env = &env;
@@ -350,7 +351,7 @@ TEST(tooling_t8n, pre_byzantium_sets_receipt_post_state)
     // The TX_JSON fixture uses PUSH0 in its init code, so the inner CREATE fails at Homestead,
     // but the outer tx still produces a receipt, which carries the post-state root instead of
     // the SIP-658 status.
-    const auto result = run_t8n(ALLOC_JSON, TX_JSON, EVMC_HOMESTEAD);
+    const auto result = run_t8n(ALLOC_JSON, TX_JSON, SIVMC_SILA_HOMESTEAD);
 
     EXPECT_THAT(result, HasSubstr("\"transactionHash\""));
     EXPECT_THAT(result, HasSubstr("\"root\": \"0x"));
@@ -358,7 +359,7 @@ TEST(tooling_t8n, pre_byzantium_sets_receipt_post_state)
 
 TEST(tooling_t8n, mismatched_tx_hash_throws)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     // TX_JSON's tx with a deliberately wrong "hash" field. t8n() must detect
     // the mismatch against the recomputed hash and throw std::logic_error.
@@ -382,7 +383,7 @@ TEST(tooling_t8n, mismatched_tx_hash_throws)
     std::istringstream txs{TX_WITH_BAD_HASH};
 
     tooling::T8NArgs args;
-    args.rev = EVMC_SHANGHAI;
+    args.rev = SIVMC_SILA_SHANGHAI;
     args.chain_id = 1;
     args.alloc = &alloc;
     args.env = &env;
@@ -393,7 +394,7 @@ TEST(tooling_t8n, mismatched_tx_hash_throws)
 
 TEST(tooling_t8n, max_chain_id)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     // The maximum `chainId` (uint64 max = 0xffffffffffffffff) must be parsed and
     // executed without overflow; regression test for `chainId` being loaded as
@@ -418,7 +419,7 @@ TEST(tooling_t8n, max_chain_id)
     std::ostringstream out_result;
 
     tooling::T8NArgs args;
-    args.rev = EVMC_SHANGHAI;
+    args.rev = SIVMC_SILA_SHANGHAI;
     args.chain_id = std::numeric_limits<uint64_t>::max();
     args.alloc = &alloc;
     args.env = &env;
@@ -431,7 +432,7 @@ TEST(tooling_t8n, max_chain_id)
 
 TEST(tooling_t8n, max_v)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
 
     // Legacy SIP-155 `v` is chainId*2 + 35 + parity, exceeding 0xff for chainId > 110.
     // The maximum `v` (uint64 max = 0xffffffffffffffff) must be parsed and executed without
@@ -457,7 +458,7 @@ TEST(tooling_t8n, max_v)
     std::ostringstream out_result;
 
     tooling::T8NArgs args;
-    args.rev = EVMC_SHANGHAI;
+    args.rev = SIVMC_SILA_SHANGHAI;
     args.chain_id = 1;
     args.alloc = &alloc;
     args.env = &env;
@@ -471,7 +472,7 @@ TEST(tooling_t8n, max_v)
 TEST(tooling_t8n, receipt_reports_emitted_logs)
 {
     // MSTORE8(0, 0xaa); LOG1(offset=0, size=1, topic=0x42).
-    const auto result = run_call_to("0x60aa600053604260016000a100", EVMC_SHANGHAI);
+    const auto result = run_call_to("0x60aa600053604260016000a100", SIVMC_SILA_SHANGHAI);
 
     EXPECT_THAT(result, HasSubstr("\"address\": \"0x000000000000000000000000000000000000c0de\""));
     EXPECT_THAT(result,
@@ -482,8 +483,8 @@ TEST(tooling_t8n, receipt_reports_emitted_logs)
 TEST(tooling_t8n, receipt_status_reports_failure)
 {
     // The callee is the INVALID instruction, so the transaction fails.
-    EXPECT_THAT(run_call_to("0xfe", EVMC_SHANGHAI), HasSubstr("\"status\": \"0x0\""));
-    EXPECT_THAT(run_call_to("0x00", EVMC_SHANGHAI), HasSubstr("\"status\": \"0x1\""));
+    EXPECT_THAT(run_call_to("0xfe", SIVMC_SILA_SHANGHAI), HasSubstr("\"status\": \"0x0\""));
+    EXPECT_THAT(run_call_to("0x00", SIVMC_SILA_SHANGHAI), HasSubstr("\"status\": \"0x1\""));
 }
 
 TEST(tooling_t8n, block_gas_used_is_pre_refund_from_amsterdam)
@@ -501,7 +502,7 @@ TEST(tooling_t8n, block_gas_used_is_pre_refund_from_amsterdam)
         }
     })";
 
-    const auto run = [](evmc_revision rev) {
+    const auto run = [](sivmc_revision rev) {
         const auto j = json::parse(run_t8n(ALLOC_REFUNDING_CALLEE, TX_TO_CALLEE, rev));
         const auto hex_value = [](const json& v) {
             return std::stoll(v.get<std::string>(), nullptr, 16);
@@ -510,11 +511,11 @@ TEST(tooling_t8n, block_gas_used_is_pre_refund_from_amsterdam)
             hex_value(j.at("gasUsed")), hex_value(j.at("receipts").at(0).at("cumulativeGasUsed"))};
     };
 
-    const auto [osaka_block_gas, osaka_cumulative] = run(EVMC_OSAKA);
+    const auto [osaka_block_gas, osaka_cumulative] = run(SIVMC_SILA_OSAKA);
     EXPECT_EQ(osaka_block_gas, osaka_cumulative);
 
     // The difference is the refund for clearing the slot, capped at 1/5 of the gas used
     // (SIP-3529): the repriced refund exceeds that cap.
-    const auto [block_gas, cumulative] = run(EVMC_AMSTERDAM);
+    const auto [block_gas, cumulative] = run(SIVMC_SILA_AMSTERDAM);
     EXPECT_EQ(block_gas - cumulative, block_gas / 5);
 }

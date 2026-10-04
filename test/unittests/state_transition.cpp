@@ -35,7 +35,7 @@ void state_transition::TearDown()
 {
     // Validation:
 
-    if (rev < EVMC_LONDON)
+    if (rev < SIVMC_SILA_LONDON)
     {
         ASSERT_EQ(block.base_fee, 0);
         ASSERT_EQ(tx.type, state::Transaction::Type::legacy);
@@ -58,7 +58,7 @@ void state_transition::TearDown()
     if (trace)
         trace_capture.emplace();
 
-    // After EVMC_PRAGUE, get_blob_params will not work like that without a blob schedule.
+    // After SIVMC_SILA_PRAGUE, get_blob_params will not work like that without a blob schedule.
     // TODO: add a blob schedule to use with state_transition tests, should they be added.
     const auto res = test::transition(state, block, block_hashes, tx, rev, selected_vm,
         block.gas_limit, block.gas_limit,

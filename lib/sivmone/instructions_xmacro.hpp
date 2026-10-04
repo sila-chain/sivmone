@@ -20,7 +20,7 @@
 /// It has 3 knobs for users.
 ///
 /// 1. The ON_OPCODE(OPCODE) macro must be defined. It will receive all defined opcodes from
-///    the evmc_opcode enum.
+///    the sivmc_opcode enum.
 /// 2. The ON_OPCODE_UNDEFINED(OPCODE) macro may be defined to receive
 ///    the values of all undefined opcodes.
 ///    This macro is by default alias to ON_OPCODE_UNDEFINED_DEFAULT therefore users must first

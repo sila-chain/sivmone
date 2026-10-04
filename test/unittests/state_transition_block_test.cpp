@@ -6,7 +6,7 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, block_apply_withdrawal)
@@ -47,7 +47,7 @@ TEST_F(state_transition, known_block_hash_fake)
 
 TEST_F(state_transition, block_apply_ommers_reward)
 {
-    rev = EVMC_LONDON;
+    rev = SIVMC_SILA_LONDON;
 
     static constexpr auto o1 = Ommer{0x0eeee1_address, 1};
     static constexpr auto o2 = Ommer{0x0eeee2_address, 3};
@@ -65,7 +65,7 @@ TEST_F(state_transition, block_apply_ommers_reward)
 
 TEST_F(state_transition, sip7516_blob_base_fee)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
 
     block.excess_blob_gas = 0xabcd00;
     // 0x1d is the result of ref implementation in SIP-4844

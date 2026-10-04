@@ -10,7 +10,7 @@ namespace sivmone::test
 namespace
 {
 /// Converts Sivm revision to the fork name commonly used in tests.
-std::string_view to_test_fork_name(evmc_revision rev) noexcept
+std::string_view to_test_fork_name(sivmc_revision rev) noexcept
 {
     return sivm_revision_to_string(rev);
 }
@@ -72,7 +72,7 @@ json::json to_json(const state::StateDiff& diff)
 }
 
 json::json to_state_test(std::string_view test_name, const state::BlockInfo& block,
-    state::Transaction& tx, const TestState& pre, evmc_revision rev,
+    state::Transaction& tx, const TestState& pre, sivmc_revision rev,
     const std::variant<state::TransactionReceipt, std::error_code>& res, const TestState& post)
 {
     using state::Transaction;

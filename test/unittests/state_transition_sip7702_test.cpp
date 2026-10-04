@@ -6,7 +6,7 @@
 #include "state_transition.hpp"
 #include <sivmone/constants.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace intx;
 using namespace sivmone::test;
 
@@ -64,7 +64,7 @@ constexpr Authorization AUTHORITY_DELEGATION_TO_SELFDESTRUCTING{
 
 TEST_F(state_transition, sip7702_set_code_transaction)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[delegate] = {.code = bytecode{OP_STOP}};
@@ -81,7 +81,7 @@ TEST_F(state_transition, sip7702_set_code_transaction)
 
 TEST_F(state_transition, sip7702_set_code_transaction_authority_is_sender)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[delegate] = {.code = bytecode{OP_STOP}};
@@ -101,7 +101,7 @@ TEST_F(state_transition, sip7702_set_code_self_authorization_reaching_nonce_max)
 {
     // A self-authorization that bumps the sender nonce to MAX_NONCE (2^64-1) is valid: only a
     // tx nonce == MAX_NONCE is rejected by SIP-2681, not reaching it during execution.
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
 
@@ -113,7 +113,7 @@ TEST_F(state_transition, sip7702_set_code_self_authorization_reaching_nonce_max)
     tx.authorization_list = {SENDER_DELEGATION_NONCE_MAX};
     pre[To] = {.code = sstore(0, 1)};
 
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
     expect.post[Sender].nonce = MAX_NONCE;
     expect.post[Sender].code = bytes{0xef, 0x01, 0x00} + hex(delegate);
     expect.post[To].storage[0x00_bytes32] = 0x01_bytes32;  // Proves the top-level call executed.
@@ -121,7 +121,7 @@ TEST_F(state_transition, sip7702_set_code_self_authorization_reaching_nonce_max)
 
 TEST_F(state_transition, sip7702_set_code_transaction_authority_is_to)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[delegate] = {.code = bytecode{OP_STOP}};
@@ -136,7 +136,7 @@ TEST_F(state_transition, sip7702_set_code_transaction_authority_is_to)
 
 TEST_F(state_transition, sip7702_set_code_transaction_invalid_y_parity)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[AUTHORITY] = {.nonce = 1};
@@ -156,7 +156,7 @@ TEST_F(state_transition, sip7702_set_code_transaction_invalid_y_parity)
 TEST_F(state_transition, sip7702_set_code_transaction_unrecoverable_signature)
 {
     // An authorization with no recoverable authority must be skipped, leaving no account behind.
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     tx.to = To;
@@ -174,7 +174,7 @@ TEST_F(state_transition, sip7702_set_code_transaction_unrecoverable_signature)
 
 TEST_F(state_transition, sip7702_extcodesize)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto callee = 0xca11ee_address;
     constexpr auto delegate = 0xde1e_address;
@@ -190,7 +190,7 @@ TEST_F(state_transition, sip7702_extcodesize)
 
 TEST_F(state_transition, sip7702_extcodehash_delegation_to_empty)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto callee = 0xca11ee_address;
     constexpr auto delegate = 0xde1e_address;
@@ -206,7 +206,7 @@ TEST_F(state_transition, sip7702_extcodehash_delegation_to_empty)
 
 TEST_F(state_transition, sip7702_extcodecopy)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto callee = 0xca11ee_address;
     constexpr auto delegate = 0xde1e_address;
@@ -224,7 +224,7 @@ TEST_F(state_transition, sip7702_extcodecopy)
 
 TEST_F(state_transition, sip7702_call)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto callee = 0xca11ee_address;
     constexpr auto delegate = 0xde1e_address;
@@ -240,7 +240,7 @@ TEST_F(state_transition, sip7702_call)
 
 TEST_F(state_transition, sip7702_call_with_value)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto callee = 0xca11ee_address;
     constexpr auto delegate = 0xde1e_address;
@@ -258,7 +258,7 @@ TEST_F(state_transition, sip7702_call_with_value)
 
 TEST_F(state_transition, sip7702_call_warms_up_delegate)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto callee = 0xca11ee_address;
     constexpr auto delegate = 0xde1e_address;
@@ -279,7 +279,7 @@ TEST_F(state_transition, sip7702_call_warms_up_delegate)
 
 TEST_F(state_transition, sip7702_transaction_from_delegated_account)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[Sender].code = bytes{0xef, 0x01, 0x00} + hex(delegate);
@@ -294,7 +294,7 @@ TEST_F(state_transition, sip7702_transaction_from_delegated_account)
 
 TEST_F(state_transition, sip7702_transaction_to_delegated_account)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[To].code = bytes{0xef, 0x01, 0x00} + hex(delegate);
@@ -309,7 +309,7 @@ TEST_F(state_transition, sip7702_transaction_to_delegated_account)
 
 TEST_F(state_transition, sip7702_transaction_to_delegation_to_precompile)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto ecadd_precompile = 0x06_address;  // reverts on invalid input
     pre[To].code = bytes{0xef, 0x01, 0x00} + hex(ecadd_precompile);
@@ -317,27 +317,27 @@ TEST_F(state_transition, sip7702_transaction_to_delegation_to_precompile)
     tx.to = To;
     tx.data = "01"_hex;
 
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
     expect.post[To].exists = true;
 }
 
 TEST_F(state_transition, sip7702_transaction_to_delegation_to_empty)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     pre[To].code = bytes{0xef, 0x01, 0x00} + hex(delegate);
 
     tx.to = To;
 
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
     expect.post[To].exists = true;
     expect.post[delegate].exists = false;
 }
 
 TEST_F(state_transition, sip7702_delegated_mode_propagation_call)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
     constexpr auto identity_precompile = 0x04_address;
@@ -353,7 +353,7 @@ TEST_F(state_transition, sip7702_delegated_mode_propagation_call)
 
 TEST_F(state_transition, sip7702_selfdestruct)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     constexpr auto callee = 0xca11ee_address;
     constexpr bytes32 salt{0xff};
 
@@ -377,7 +377,7 @@ TEST_F(state_transition, sip7702_selfdestruct)
 
 TEST_F(state_transition, sip7702_set_code_transaction_with_selfdestruct)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     const auto callee = AUTHORITY;  // The delegation is installed on the called account.
     constexpr bytes32 salt{0xff};
 

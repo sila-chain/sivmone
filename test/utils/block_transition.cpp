@@ -33,9 +33,9 @@ public:
 };
 }  // namespace
 
-TransitionResult apply_block(const TestState& state, evmc::VM& vm, const state::BlockInfo& block,
+TransitionResult apply_block(const TestState& state, sivmc::VM& vm, const state::BlockInfo& block,
     const state::BlockHashes& block_hashes, const std::vector<state::Transaction>& txs,
-    evmc_revision rev, int64_t blob_gas_limit, const BlockTransitionOptions& opts)
+    sivmc_revision rev, int64_t blob_gas_limit, const BlockTransitionOptions& opts)
 {
     const bool trace_enabled = static_cast<bool>(opts.open_trace);
     if (trace_enabled)
@@ -75,7 +75,7 @@ TransitionResult apply_block(const TestState& state, evmc::VM& vm, const state::
 
             cumulative_gas_used += receipt.gas_used;
             receipt.cumulative_gas_used = cumulative_gas_used;
-            if (rev < EVMC_BYZANTIUM)
+            if (rev < SIVMC_SILA_BYZANTIUM)
                 receipt.post_state = state::mpt_hash(block_state);
 
             // Block gas accounting, with SIP-7778 applied in transition(). The execution
@@ -91,7 +91,7 @@ TransitionResult apply_block(const TestState& state, evmc::VM& vm, const state::
     std::error_code requests_error;
     if (!opts.skip_system_calls)
     {
-        if (rev >= EVMC_PRAGUE)
+        if (rev >= SIVMC_SILA_PRAGUE)
         {
             if (auto opt_deposits = collect_deposit_requests(receipts); opt_deposits.has_value())
                 requests.emplace_back(std::move(*opt_deposits));

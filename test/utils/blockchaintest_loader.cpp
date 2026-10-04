@@ -74,7 +74,7 @@ static TestBlock load_test_block(
                                           std::nullopt;
 
         // Override prev_randao with difficulty pre-Merge
-        if (rev < EVMC_PARIS)
+        if (rev < SIVMC_SILA_PARIS)
         {
             tb.block_info.prev_randao =
                 intx::be::store<bytes32>(intx::uint256{tb.block_info.difficulty});

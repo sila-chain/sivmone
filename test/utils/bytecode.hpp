@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
-#include <sivmone/instructions_traits.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
+#include <sivmone/instructions_traits.hpp>
 #include <test/utils/utils.hpp>
 #include <algorithm>
 #include <ostream>
@@ -16,8 +16,8 @@ namespace sivmone::test
 struct bytecode;
 
 inline bytecode push(uint64_t n);
-inline bytecode push(evmc::address addr);
-inline bytecode push(evmc::bytes32 bs);
+inline bytecode push(sivmc::address addr);
+inline bytecode push(sivmc::bytes32 bs);
 
 using enum sivmone::Opcode;
 using sivmone::Opcode;
@@ -40,9 +40,9 @@ struct bytecode : bytes
 
     bytecode(uint64_t n) : bytes{push(n)} {}
 
-    bytecode(evmc::address addr) : bytes{push(addr)} {}
+    bytecode(sivmc::address addr) : bytes{push(addr)} {}
 
-    bytecode(evmc::bytes32 bs) : bytes{push(bs)} {}
+    bytecode(sivmc::bytes32 bs) : bytes{push(bs)} {}
 
     operator bytes_view() const noexcept { return {data(), size()}; }
 };
@@ -152,13 +152,13 @@ inline bytecode push(uint64_t n)
     return push(data);
 }
 
-inline bytecode push(evmc::bytes32 bs)
+inline bytecode push(sivmc::bytes32 bs)
 {
     bytes_view data{bs.bytes, sizeof(bs.bytes)};
     return push(data.substr(std::min(data.find_first_not_of(uint8_t{0}), size_t{31})));
 }
 
-inline bytecode push(evmc::address addr)
+inline bytecode push(sivmc::address addr)
 {
     return push({std::data(addr.bytes), std::size(addr.bytes)});
 }
@@ -470,7 +470,7 @@ inline auto create2()
 
 inline std::string hex(Opcode opcode) noexcept
 {
-    return evmc::hex(static_cast<uint8_t>(opcode));
+    return sivmc::hex(static_cast<uint8_t>(opcode));
 }
 
 inline std::string decode(bytes_view bytecode)
@@ -490,13 +490,13 @@ inline std::string decode(bytes_view bytecode)
 
                 if (imm_size != 0)
                 {
-                    s += " + \"" + evmc::hex({&*imm_start, imm_size}) + '"';
+                    s += " + \"" + sivmc::hex({&*imm_start, imm_size}) + '"';
                     it += imm_size;
                 }
             }
         }
         else
-            s += " + \"" + evmc::hex(opcode) + '"';
+            s += " + \"" + sivmc::hex(opcode) + '"';
     }
 
     return s;

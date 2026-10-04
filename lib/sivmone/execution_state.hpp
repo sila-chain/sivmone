@@ -4,8 +4,8 @@
 #pragma once
 
 #include "state_gas.hpp"
-#include <evmc/evmc.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <cassert>
 #include <exception>
 #include <memory>
@@ -23,9 +23,9 @@ namespace baseline
 class CodeAnalysis;
 }
 
-using evmc::bytes;
-using evmc::bytes_view;
 using intx::uint256;
+using sivmc::bytes;
+using sivmc::bytes_view;
 
 
 /// Provides memory for Sivm stack.
@@ -131,20 +131,20 @@ class ExecutionState
 public:
     int64_t gas_refund = 0;
     Memory memory;
-    const evmc_message* msg = nullptr;
-    evmc::HostContext host;
-    evmc_revision rev = {};
+    const sivmc_message* msg = nullptr;
+    sivmc::HostContext host;
+    sivmc_revision rev = {};
     bytes return_data;
 
     /// Reference to original Sivm code.
     bytes_view original_code;
 
-    evmc_status_code status = EVMC_SUCCESS;
+    sivmc_status_code status = SIVMC_SUCCESS;
     size_t output_offset = 0;
     size_t output_size = 0;
 
 private:
-    evmc_tx_context m_tx = {};
+    sivmc_tx_context m_tx = {};
 
 public:
     /// Pointer to code analysis.
@@ -165,8 +165,8 @@ public:
 
     ExecutionState() noexcept = default;
 
-    ExecutionState(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    ExecutionState(const sivmc_message& message, sivmc_revision revision,
+        const sivmc_host_interface& host_interface, sivmc_host_context* host_ctx,
         bytes_view _code) noexcept
       : msg{&message},
         host{host_interface, host_ctx},
@@ -176,8 +176,8 @@ public:
     {}
 
     /// Resets the contents of the ExecutionState so that it could be reused.
-    void reset(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    void reset(const sivmc_message& message, sivmc_revision revision,
+        const sivmc_host_interface& host_interface, sivmc_host_context* host_ctx,
         bytes_view _code) noexcept
     {
         gas_refund = 0;
@@ -188,15 +188,15 @@ public:
         rev = revision;
         return_data.clear();
         original_code = _code;
-        status = EVMC_SUCCESS;
+        status = SIVMC_SUCCESS;
         output_offset = 0;
         output_size = 0;
         m_tx = {};
     }
 
-    [[nodiscard]] bool in_static_mode() const { return (msg->flags & EVMC_STATIC) != 0; }
+    [[nodiscard]] bool in_static_mode() const { return (msg->flags & SIVMC_STATIC) != 0; }
 
-    const evmc_tx_context& get_tx_context() noexcept
+    const sivmc_tx_context& get_tx_context() noexcept
     {
         if (INTX_UNLIKELY(m_tx.block_timestamp == 0))
             m_tx = host.get_tx_context();
@@ -209,9 +209,9 @@ public:
 /// Applies the frame-exit rules shared by the baseline and advanced interpreters: an exceptional
 /// halt consumes all gas (only a success or revert keeps it), the gas refund counts only on
 /// success, and the output is the memory range recorded in the state.
-inline evmc_result make_execution_result(ExecutionState& state, int64_t gas_left) noexcept
+inline sivmc_result make_execution_result(ExecutionState& state, int64_t gas_left) noexcept
 {
-    if (state.rev >= EVMC_AMSTERDAM && state.status != EVMC_SUCCESS)
+    if (state.rev >= SIVMC_SILA_AMSTERDAM && state.status != SIVMC_SUCCESS)
     {
         // Unsuccessful frame doesn't commit any state changes, roll-back all state-gas costs.
         gas_left += state.state_gas.spilled;
@@ -220,12 +220,12 @@ inline evmc_result make_execution_result(ExecutionState& state, int64_t gas_left
     }
 
     // An exceptional halt consumes all gas; only a success or revert keeps gas_left.
-    if (state.status != EVMC_SUCCESS && state.status != EVMC_REVERT)
+    if (state.status != SIVMC_SUCCESS && state.status != SIVMC_REVERT)
         gas_left = 0;
-    const auto gas_refund = (state.status == EVMC_SUCCESS) ? state.gas_refund : 0;
+    const auto gas_refund = (state.status == SIVMC_SUCCESS) ? state.gas_refund : 0;
 
     assert(state.output_size != 0 || state.output_offset == 0);
-    return evmc::Result{state.status, gas_left, gas_refund,
+    return sivmc::Result{state.status, gas_left, gas_refund,
         state.output_size != 0 ? &state.memory[state.output_offset] : nullptr, state.output_size,
         state.state_gas}
         .release_raw();

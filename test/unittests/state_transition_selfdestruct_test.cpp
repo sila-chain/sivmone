@@ -5,12 +5,12 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, selfdestruct_shanghai)
 {
-    rev = EVMC_SHANGHAI;
+    rev = SIVMC_SILA_SHANGHAI;
     tx.to = To;
     pre[*tx.to] = {.balance = 0x4e, .code = selfdestruct(0xbe_address)};
 
@@ -20,7 +20,7 @@ TEST_F(state_transition, selfdestruct_shanghai)
 
 TEST_F(state_transition, selfdestruct_cancun)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     tx.to = To;
     pre[*tx.to] = {.balance = 0x4e, .code = selfdestruct(0xbe_address)};
 
@@ -30,7 +30,7 @@ TEST_F(state_transition, selfdestruct_cancun)
 
 TEST_F(state_transition, selfdestruct_to_self_cancun)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     tx.to = To;
     pre[*tx.to] = {.balance = 0x4e, .code = selfdestruct(To)};
 
@@ -39,7 +39,7 @@ TEST_F(state_transition, selfdestruct_to_self_cancun)
 
 TEST_F(state_transition, selfdestruct_same_tx_cancun)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     tx.value = 0x4e;
     tx.data = selfdestruct(0xbe_address);
     pre[Sender].balance += 0x4e;
@@ -52,7 +52,7 @@ TEST_F(state_transition, selfdestruct_same_create_cancun)
     // Use CREATE to temporarily create an account using initcode with SELFDESTRUCT.
     // The CREATE should succeed by returning proper address, but the created account
     // should not be in the post state.
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     static constexpr auto BENEFICIARY = 0x4a0000be_address;
     const auto initcode = selfdestruct(BENEFICIARY);
 
@@ -73,7 +73,7 @@ TEST_F(state_transition, selfdestruct_beneficiary_with_code)
     // Send SIL via SELFDESTRUCT to an account with code.
     // This test checks if the beneficiary's code in the state is not somehow disturbed
     // by this action as we likely don't load the code from database.
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     static constexpr auto BENEFICIARY = 0x4a0000be_address;
 
     tx.to = To;
@@ -86,7 +86,7 @@ TEST_F(state_transition, selfdestruct_beneficiary_with_code)
 
 TEST_F(state_transition, selfdestruct_double_revert)
 {
-    rev = EVMC_SHANGHAI;
+    rev = SIVMC_SILA_SHANGHAI;
 
     static constexpr auto CALL_PROXY = 0xc0_address;
     static constexpr auto REVERT_PROXY = 0xd0_address;
@@ -108,7 +108,7 @@ TEST_F(state_transition, selfdestruct_double_revert)
 
 TEST_F(state_transition, selfdestruct_initcode)
 {
-    rev = EVMC_SHANGHAI;
+    rev = SIVMC_SILA_SHANGHAI;
     tx.data = selfdestruct(0xbe_address);
 
     expect.post[compute_create_address(tx.sender, tx.nonce)].exists = false;
@@ -119,7 +119,7 @@ TEST_F(state_transition, selfdestruct_initcode_amsterdam)
 {
     // A same-tx-created account that self-destructs ending with a zero balance must not be in the
     // final state (SIP-8246). In this test we use initcode.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.data = selfdestruct(0xbe_address);
 
     expect.post[compute_create_address(tx.sender, tx.nonce)].exists = false;
@@ -129,7 +129,7 @@ TEST_F(state_transition, selfdestruct_initcode_amsterdam)
 TEST_F(state_transition, selfdestruct_prefunded)
 {
     // Although burn is removed in SIP-8246, the deletion of a pre-funded account still happens.
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
     tx.data = selfdestruct(0xbe_address);  // Transfer to distinct beneficiary.
@@ -141,7 +141,7 @@ TEST_F(state_transition, selfdestruct_prefunded)
 TEST_F(state_transition, selfdestruct_prefunded_amsterdam)
 {
     // Although burn is removed in SIP-8246, the deletion of a pre-funded account still happens.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
     tx.data = selfdestruct(0xbe_address);  // Transfer to distinct beneficiary.
@@ -153,7 +153,7 @@ TEST_F(state_transition, selfdestruct_prefunded_amsterdam)
 TEST_F(state_transition, selfdestruct_prefunded_burn)
 {
     // Burn pre-funded SIL by self-destruct to self.
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
     tx.data = selfdestruct(created);
@@ -164,7 +164,7 @@ TEST_F(state_transition, selfdestruct_prefunded_burn)
 TEST_F(state_transition, selfdestruct_prefunded_burn_amsterdam)
 {
     // Burn is removed with SIP-8246, the balance must be preserved.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
     tx.data = selfdestruct(created);
@@ -178,7 +178,7 @@ TEST_F(state_transition, selfdestruct_sibling_create_then_destruct_amsterdam)
 {
     // A contract created in one sub-call and self-destructed in a sibling sub-call of the same
     // transaction must still be removed (especially its code).
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     static constexpr auto F = 0xfac0_address;  // Factory address.
 
     const auto runtime = selfdestruct(0xbe_address);
@@ -200,7 +200,7 @@ TEST_F(state_transition, selfdestruct_sibling_create_then_destruct_amsterdam)
 
 TEST_F(state_transition, massdestruct_shanghai)
 {
-    rev = EVMC_SHANGHAI;
+    rev = SIVMC_SILA_SHANGHAI;
 
     static constexpr auto BASE = 0xdead0000_address;
     static constexpr auto SINK = 0xbeef_address;
@@ -229,7 +229,7 @@ TEST_F(state_transition, massdestruct_shanghai)
 
 TEST_F(state_transition, massdestruct_cancun)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
 
     static constexpr auto BASE = 0xdead0000_address;
     static constexpr auto SINK = 0xbeef_address;
@@ -261,7 +261,7 @@ TEST_F(state_transition, sip7708_transfer_log_selfdestruct_existing)
 {
     // A pre-existing contract self-destructing to a distinct beneficiary emits a SIL transfer log
     // for the moved balance (SIP-7708).
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     static constexpr auto Beneficiary = 0xbe_address;
     tx.to = To;
     pre[To] = {.balance = 0x99, .code = selfdestruct(Beneficiary)};
@@ -275,7 +275,7 @@ TEST_F(state_transition, sip7708_transfer_log_create_tx_then_selfdestruct)
 {
     // A CREATE-transaction endowment emits a SIL transfer log, then the same-tx-created account
     // self-destructing in its initcode emits a second SIL transfer log (SIP-7708).
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     static constexpr auto Beneficiary = 0xbe_address;
     tx.value = 0x99;
     tx.data = selfdestruct(Beneficiary);

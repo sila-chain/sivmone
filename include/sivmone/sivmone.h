@@ -5,14 +5,14 @@
 #ifndef SIVMONE_H
 #define SIVMONE_H
 
-#include <evmc/evmc.h>
-#include <evmc/utils.h>
+#include <sivmc/sivmc.h>
+#include <sivmc/utils.h>
 
 #if __cplusplus
 extern "C" {
 #endif
 
-EVMC_EXPORT struct evmc_vm* evmc_create_sivmone(void) EVMC_NOEXCEPT;
+SIVMC_EXPORT struct sivmc_vm* sivmc_create_sivmone(void) SIVMC_NOEXCEPT;
 
 #if __cplusplus
 }

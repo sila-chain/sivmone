@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <test/state/state_view.hpp>
 #include <map>
 #include <span>
@@ -26,10 +26,10 @@ struct Withdrawal;
 
 namespace test
 {
-using evmc::address;
-using evmc::bytes;
-using evmc::bytes32;
 using intx::uint256;
+using sivmc::address;
+using sivmc::bytes;
+using sivmc::bytes32;
 
 /// Sila account representation for tests.
 struct TestAccount
@@ -71,22 +71,22 @@ public:
 /// Wrapping of state::transition() which operates on TestState.
 [[nodiscard]] std::variant<state::TransactionReceipt, std::error_code> transition(TestState& state,
     const state::BlockInfo& block, const state::BlockHashes& block_hashes,
-    const state::Transaction& tx, evmc_revision rev, evmc::VM& vm, int64_t block_gas_left,
+    const state::Transaction& tx, sivmc_revision rev, sivmc::VM& vm, int64_t block_gas_left,
     int64_t block_state_gas_left, int64_t blob_gas_left);
 
 /// Wrapping of state::finalize() which operates on TestState.
-void finalize(TestState& state, evmc_revision rev, const address& coinbase,
+void finalize(TestState& state, sivmc_revision rev, const address& coinbase,
     std::optional<uint64_t> block_reward, std::span<const state::Ommer> ommers,
     std::span<const state::Withdrawal> withdrawals);
 
 /// Wrapping of state::system_call_block_start() which operates on TestState.
 void system_call_block_start(TestState& state, const state::BlockInfo& block,
-    const state::BlockHashes& block_hashes, evmc_revision rev, evmc::VM& vm);
+    const state::BlockHashes& block_hashes, sivmc_revision rev, sivmc::VM& vm);
 
 /// Wrapping of state::system_call_block_end() which operates on TestState.
 /// Returns the collected requests, or the error code if the collection failed.
 std::variant<std::vector<state::Requests>, std::error_code> system_call_block_end(TestState& state,
-    const state::BlockInfo& block, const state::BlockHashes& block_hashes, evmc_revision rev,
-    evmc::VM& vm);
+    const state::BlockInfo& block, const state::BlockHashes& block_hashes, sivmc_revision rev,
+    sivmc::VM& vm);
 }  // namespace test
 }  // namespace sivmone

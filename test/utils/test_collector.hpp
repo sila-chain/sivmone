@@ -24,10 +24,10 @@ void ignore_test_files(std::vector<std::filesystem::path>& files, const std::fil
 /// is not a directory. The tests hold @p options and @p vm by reference, so both must outlive
 /// them.
 void collect_tests(std::vector<TestCase>& cases, const std::filesystem::path& root,
-    const RunOptions& options, evmc::VM& vm);
+    const RunOptions& options, sivmc::VM& vm);
 
 /// Runs the Sila tests collected under every path in @p roots, reporting to @p out.
 /// Returns the process exit code.
-[[nodiscard]] int test(evmc::VM& vm, std::span<const std::filesystem::path> roots,
+[[nodiscard]] int test(sivmc::VM& vm, std::span<const std::filesystem::path> roots,
     const RunOptions& options, std::ostream& out);
 }  // namespace sivmone::test

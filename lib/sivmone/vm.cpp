@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /// @file
-/// EVMC instance (class VM) and entry point of sivmone is defined here.
+/// SIVMC instance (class VM) and entry point of sivmone is defined here.
 
 #include "vm.hpp"
 #include "advanced_execution.hpp"
@@ -16,13 +16,13 @@ namespace sivmone
 {
 namespace
 {
-void destroy(evmc_vm* vm) noexcept
+void destroy(sivmc_vm* vm) noexcept
 {
     assert(vm != nullptr);
     delete static_cast<VM*>(vm);
 }
 
-evmc_set_option_result set_option(evmc_vm* c_vm, char const* c_name, char const* c_value) noexcept
+sivmc_set_option_result set_option(sivmc_vm* c_vm, char const* c_name, char const* c_value) noexcept
 {
     const auto name = (c_name != nullptr) ? std::string_view{c_name} : std::string_view{};
     const auto value = (c_value != nullptr) ? std::string_view{c_value} : std::string_view{};
@@ -31,7 +31,7 @@ evmc_set_option_result set_option(evmc_vm* c_vm, char const* c_name, char const*
     if (name == "advanced")
     {
         c_vm->execute = sivmone::advanced::execute;
-        return EVMC_SET_OPTION_SUCCESS;
+        return SIVMC_SET_OPTION_SUCCESS;
     }
     else if (name == "cgoto")
     {
@@ -39,36 +39,36 @@ evmc_set_option_result set_option(evmc_vm* c_vm, char const* c_name, char const*
         if (value == "no")
         {
             vm.cgoto = false;
-            return EVMC_SET_OPTION_SUCCESS;
+            return SIVMC_SET_OPTION_SUCCESS;
         }
-        return EVMC_SET_OPTION_INVALID_VALUE;
+        return SIVMC_SET_OPTION_INVALID_VALUE;
 #else
-        return EVMC_SET_OPTION_INVALID_NAME;
+        return SIVMC_SET_OPTION_INVALID_NAME;
 #endif
     }
     else if (name == "trace")
     {
         vm.add_tracer(create_instruction_tracer(std::clog));
-        return EVMC_SET_OPTION_SUCCESS;
+        return SIVMC_SET_OPTION_SUCCESS;
     }
     else if (name == "histogram")
     {
         vm.add_tracer(create_histogram_tracer(std::clog));
-        return EVMC_SET_OPTION_SUCCESS;
+        return SIVMC_SET_OPTION_SUCCESS;
     }
     else if (name == "opcode.count")
     {
         vm.add_tracer(create_instruction_counter(value));
     }
-    return EVMC_SET_OPTION_INVALID_NAME;
+    return SIVMC_SET_OPTION_INVALID_NAME;
 }
 
 }  // namespace
 
 
 VM::VM() noexcept
-  : evmc_vm{
-        EVMC_ABI_VERSION,
+  : sivmc_vm{
+        SIVMC_ABI_VERSION,
         "sivmone",
         PROJECT_VERSION,
         sivmone::destroy,
@@ -93,7 +93,7 @@ ExecutionState& VM::get_execution_state(size_t depth) noexcept
 }  // namespace sivmone
 
 extern "C" {
-EVMC_EXPORT evmc_vm* evmc_create_sivmone() noexcept
+SIVMC_EXPORT sivmc_vm* sivmc_create_sivmone() noexcept
 {
     return new sivmone::VM{};
 }

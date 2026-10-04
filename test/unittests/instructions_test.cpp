@@ -2,9 +2,9 @@
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/evmc.hpp>
-#include <sivmone/instructions_traits.hpp>
 #include <gtest/gtest.h>
+#include <sivmc/sivmc.hpp>
+#include <sivmone/instructions_traits.hpp>
 
 namespace sivmone::test
 {
@@ -14,7 +14,7 @@ constexpr int UNSPECIFIED = -1000000;
 
 consteval int get_revision_defined_in(uint8_t op) noexcept
 {
-    for (size_t r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+    for (size_t r = SIVMC_FRONTIER; r <= SIVMC_MAX_REVISION; ++r)
     {
         if (instr::gas_costs[r][op] != instr::undefined)
             return static_cast<int>(r);

@@ -10,7 +10,7 @@
 #include <test/utils/utils.hpp>
 #include <bit>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace intx;
 using namespace sivmone;
 using namespace sivmone::test;

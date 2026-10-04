@@ -2,12 +2,12 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <sivmone/create_address.hpp>
 #include <gtest/gtest.h>
+#include <sivmone/create_address.hpp>
 #include <test/utils/rlp.hpp>
 
-using namespace evmc;
-using namespace evmc::literals;
+using namespace sivmc;
+using namespace sivmc::literals;
 
 TEST(create_address, create_examples)
 {
@@ -86,7 +86,7 @@ TEST(create_address, create_rlp)
     // Compute the RLP payload for keccak256 hash producing the final CREATE address.
     // This test is to visualize what RLP inputs are reaching the final keccak256 hash.
     static constexpr auto rlp = [](const address& addr, uint64_t nonce) {
-        return evmc::hex(sivmone::rlp::encode_tuple(addr, nonce));
+        return sivmc::hex(sivmone::rlp::encode_tuple(addr, nonce));
     };
 
     // The address does not matter for length so use a fixed one.

@@ -7,35 +7,35 @@
 
 #include "sivm_fixture.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace intx::literals;
 using namespace sivmone::test;
 
 TEST_P(sivm, blobbasefee_pre_cancun)
 {
-    rev = EVMC_SHANGHAI;
+    rev = SIVMC_SILA_SHANGHAI;
     const auto code = bytecode{OP_BLOBBASEFEE};
 
     execute(code);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(SIVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(sivm, blobbasefee_1)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     host.tx_context.blob_base_fee = 0x01_bytes32;
 
     execute(bytecode{} + OP_BLOBBASEFEE);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 2);
 
     execute(bytecode{} + OP_BLOBBASEFEE + ret_top());
-    EXPECT_GAS_USED(EVMC_SUCCESS, 17);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 17);
     EXPECT_OUTPUT_INT(1);
 }
 
 TEST_P(sivm, blobbasefee_dede)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     host.tx_context.blob_base_fee =
         0x8ededededededededededededededededededededededededededededededed1_bytes32;
 

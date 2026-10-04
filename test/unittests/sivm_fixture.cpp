@@ -9,11 +9,11 @@ namespace sivmone::test
 {
 namespace
 {
-evmc::VM advanced_vm{evmc_create_sivmone(), {{"advanced", ""}}};
-evmc::VM baseline_vm{evmc_create_sivmone()};
-evmc::VM bnocgoto_vm{evmc_create_sivmone(), {{"cgoto", "no"}}};
+sivmc::VM advanced_vm{sivmc_create_sivmone(), {{"advanced", ""}}};
+sivmc::VM baseline_vm{sivmc_create_sivmone()};
+sivmc::VM bnocgoto_vm{sivmc_create_sivmone(), {{"cgoto", "no"}}};
 
-const char* print_vm_name(const testing::TestParamInfo<evmc::VM*>& info) noexcept
+const char* print_vm_name(const testing::TestParamInfo<sivmc::VM*>& info) noexcept
 {
     if (info.param == &advanced_vm)
         return "advanced";

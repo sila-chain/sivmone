@@ -26,7 +26,7 @@ using namespace sivmone::test;
 using enum PrecompileId;
 
 /// The revision used for the precompile benchmarks.
-constexpr auto REV = EVMC_OSAKA;
+constexpr auto REV = SIVMC_SILA_OSAKA;
 
 using ExecuteFn = ExecutionResult(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;
@@ -219,7 +219,7 @@ void precompile(benchmark::State& state)
         for (const auto& input : inputs<Id>)
         {
             const auto [status, _] = Fn(input.data(), input.size(), output.get(), max_output_size);
-            if (status != EVMC_SUCCESS) [[unlikely]]
+            if (status != SIVMC_SUCCESS) [[unlikely]]
             {
                 state.SkipWithError("invalid result");
                 return;

@@ -39,8 +39,8 @@ protected:
 
     static constexpr auto Coinbase = 0xc014bace_address;
 
-    static inline evmc::VM vm{evmc_create_sivmone()};
-    static inline evmc::VM tracing_vm{evmc_create_sivmone(), {{"trace", "1"}}};
+    static inline sivmc::VM vm{sivmc_create_sivmone()};
+    static inline sivmc::VM tracing_vm{sivmc_create_sivmone(), {{"trace", "1"}}};
 
     struct ExpectedAccount
     {
@@ -62,7 +62,7 @@ protected:
         ErrorCode tx_error = SUCCESS;
 
         /// The expected Sivm status code of the transaction execution.
-        evmc_status_code status = EVMC_SUCCESS;
+        sivmc_status_code status = SIVMC_SUCCESS;
 
         /// The expected amount of gas used by the transaction.
         std::optional<int64_t> gas_used;
@@ -88,7 +88,7 @@ protected:
     };
 
 
-    evmc_revision rev = EVMC_SHANGHAI;
+    sivmc_revision rev = SIVMC_SILA_SHANGHAI;
     uint64_t block_reward = 0;
     BlockInfo block{
         .number = 1,  // Some Sivms don't like blocks with number 0.

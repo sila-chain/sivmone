@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
-#include <evmc/utils.h>
+#include <sivmc/sivmc.hpp>
+#include <sivmc/utils.h>
 #include <memory>
 
 namespace sivmone
 {
-using evmc::bytes_view;
+using sivmc::bytes_view;
 class ExecutionState;
 class VM;
 
@@ -89,15 +89,15 @@ public:
 /// This builds the map of valid JUMPDESTs.
 ///
 /// @param code         The reference to the Sivm code to be analyzed.
-EVMC_EXPORT CodeAnalysis analyze(bytes_view code);
+SIVMC_EXPORT CodeAnalysis analyze(bytes_view code);
 
-/// Executes in Baseline interpreter using EVMC-compatible parameters.
-evmc_result execute(evmc_vm* vm, const evmc_host_interface* host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message* msg, const uint8_t* code, size_t code_size) noexcept;
+/// Executes in Baseline interpreter using SIVMC-compatible parameters.
+sivmc_result execute(sivmc_vm* vm, const sivmc_host_interface* host, sivmc_host_context* ctx,
+    sivmc_revision rev, const sivmc_message* msg, const uint8_t* code, size_t code_size) noexcept;
 
 /// Executes in Baseline interpreter with the pre-processed code.
-EVMC_EXPORT evmc_result execute(VM&, const evmc_host_interface& host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message& msg, const CodeAnalysis& analysis) noexcept;
+SIVMC_EXPORT sivmc_result execute(VM&, const sivmc_host_interface& host, sivmc_host_context* ctx,
+    sivmc_revision rev, const sivmc_message& msg, const CodeAnalysis& analysis) noexcept;
 
 }  // namespace baseline
 }  // namespace sivmone

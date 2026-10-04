@@ -4,6 +4,10 @@
 
 cmake_minimum_required(VERSION 3.25...4.2)
 
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/sivmc/.git OR NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cable/.git)
+    message(FATAL_ERROR "Git submodules not initialized, execute:\n  git submodule update --init")
+endif()
+
 option(BUILD_SHARED_LIBS "Build sivmone as a shared library" ON)
 option(COVERAGE "Build with coverage instrumentation" OFF)
 option(ASSERTIONS "Force enable the assertions in the code ignoring the CMAKE_BUILD_TYPE default" OFF)
@@ -36,10 +40,13 @@ if(PROJECT_VERSION_MAJOR EQUAL 0)
     set(PROJECT_SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
 endif()
 
+option(SIVMC_TOOLS "Build SIVMC tools" OFF)
+option(SIVMC_INSTALL "Install SIVMC" OFF)
+
 block()
     set(CMAKE_C_CLANG_TIDY "")
     set(CMAKE_CXX_CLANG_TIDY "")
-    add_subdirectory(evmc)
+    add_subdirectory(sivmc)
 endblock()
 
 cable_configure_compiler(NO_STACK_PROTECTION)

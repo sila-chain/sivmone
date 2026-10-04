@@ -1,8 +1,8 @@
-// sivmone-fuzzer: LibFuzzer based testing tool for EVMC-compatible Sivm implementations.
+// sivmone-fuzzer: LibFuzzer based testing tool for SIVMC-compatible Sivm implementations.
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/mocked_host.hpp>
+#include <sivmc/mocked_host.hpp>
 #include <sivmone/sivmone.h>
 #include <test/utils/bytecode.hpp>
 #include <test/utils/utils.hpp>
@@ -12,12 +12,12 @@
 
 using namespace sivmone::test;
 
-inline std::ostream& operator<<(std::ostream& os, const evmc_address& addr)
+inline std::ostream& operator<<(std::ostream& os, const sivmc_address& addr)
 {
     return os << hex({addr.bytes, sizeof(addr.bytes)});
 }
 
-inline std::ostream& operator<<(std::ostream& os, const evmc_bytes32& v)
+inline std::ostream& operator<<(std::ostream& os, const sivmc_bytes32& v)
 {
     return os << hex({v.bytes, sizeof(v.bytes)});
 }
@@ -56,19 +56,19 @@ template <typename T1, typename T2>
 static auto print_input = std::getenv("PRINT");
 
 /// The reference VM: sivmone Baseline
-static auto ref_vm = evmc::VM{evmc_create_sivmone()};
+static auto ref_vm = sivmc::VM{sivmc_create_sivmone()};
 
-static evmc::VM external_vms[] = {
-    evmc::VM{evmc_create_sivmone(), {{"advanced", ""}}},
+static sivmc::VM external_vms[] = {
+    sivmc::VM{sivmc_create_sivmone(), {{"advanced", ""}}},
 };
 
 
-class FuzzHost : public evmc::MockedHost
+class FuzzHost : public sivmc::MockedHost
 {
 public:
     uint8_t gas_left_factor = 0;
 
-    evmc::Result call(const evmc_message& msg) noexcept override
+    sivmc::Result call(const sivmc_message& msg) noexcept override
     {
         auto result = MockedHost::call(msg);
 
@@ -85,15 +85,15 @@ public:
 };
 
 /// The newest "old" Sivm revision. Lower priority.
-static constexpr auto old_rev = EVMC_SPURIOUS_DRAGON;
+static constexpr auto old_rev = SIVMC_SIP158;
 
 /// The additional gas limit cap for "old" Sivm revisions.
 static constexpr auto old_rev_max_gas = 500000;
 
 struct fuzz_input
 {
-    evmc_revision rev{};
-    evmc_message msg{};
+    sivmc_revision rev{};
+    sivmc_message msg{};
     FuzzHost host;
 
     /// Creates invalid input.
@@ -102,14 +102,14 @@ struct fuzz_input
     explicit operator bool() const noexcept { return msg.gas != -1; }
 };
 
-inline evmc::uint256be generate_interesting_value(uint8_t b) noexcept
+inline sivmc::uint256be generate_interesting_value(uint8_t b) noexcept
 {
     const auto s = (b >> 6) & 0b11;
     const auto fill = (b >> 5) & 0b1;
     const auto above = (b >> 4) & 0b1;
     const auto val = b & 0b1111;
 
-    auto z = evmc::uint256be{};
+    auto z = sivmc::uint256be{};
 
     const size_t size = s == 0 ? 1 : 1 << (s + 2);
 
@@ -127,14 +127,14 @@ inline evmc::uint256be generate_interesting_value(uint8_t b) noexcept
     return z;
 }
 
-inline evmc::address generate_interesting_address(uint8_t b) noexcept
+inline sivmc::address generate_interesting_address(uint8_t b) noexcept
 {
     const auto s = (b >> 6) & 0b11;
     const auto fill = (b >> 5) & 0b1;
     const auto above = (b >> 4) & 0b1;
     const auto val = b & 0b1111;
 
-    auto z = evmc::address{};
+    auto z = sivmc::address{};
 
     const size_t size = s == 3 ? 20 : 1 << s;
 
@@ -194,7 +194,7 @@ fuzz_input populate_input(const uint8_t* data, size_t data_size) noexcept
     const auto destination_8bits = data[6];
     const auto sender_8bits = data[7];
     const auto value_8bits = data[8];
-    // data[9] unused (was the create2_salt, dropped from evmc_message).
+    // data[9] unused (was the create2_salt, dropped from sivmc_message).
 
     const auto tx_gas_price_8bits = data[10];
     const auto tx_origin_8bits = data[11];
@@ -220,13 +220,13 @@ fuzz_input populate_input(const uint8_t* data, size_t data_size) noexcept
     if (data_size < input_size_16bits)  // Not enough data for input.
         return in;
 
-    in.rev = (rev_4bits > EVMC_LATEST_STABLE_REVISION) ? EVMC_LATEST_STABLE_REVISION :
-                                                         static_cast<evmc_revision>(rev_4bits);
+    in.rev = (rev_4bits > SIVMC_LATEST_STABLE_REVISION) ? SIVMC_LATEST_STABLE_REVISION :
+                                                          static_cast<sivmc_revision>(rev_4bits);
 
     // The message king should not matter but this 1 bit was free.
-    in.msg.kind = kind_1bit ? EVMC_CREATE : EVMC_CALL;
+    in.msg.kind = kind_1bit ? SIVMC_CREATE : SIVMC_CALL;
 
-    in.msg.flags = static_1bit ? EVMC_STATIC : 0;
+    in.msg.flags = static_1bit ? SIVMC_STATIC : 0;
     in.msg.depth = generate_depth(depth_2bits);
 
     // Set the gas limit. For old revisions cap the gas limit more because:
@@ -265,7 +265,7 @@ fuzz_input populate_input(const uint8_t* data, size_t data_size) noexcept
     account.codehash = generate_interesting_value(account_codehash_8bits);
     account.code = {data, data_size};  // Use remaining data as code.
 
-    in.host.call_result.status_code = static_cast<evmc_status_code>(call_result_status_4bits);
+    in.host.call_result.status_code = static_cast<sivmc_status_code>(call_result_status_4bits);
     in.host.gas_left_factor = call_result_gas_left_factor_4bits;
 
     // Use 3/5 of the input from the and as the potential call output.
@@ -276,15 +276,15 @@ fuzz_input populate_input(const uint8_t* data, size_t data_size) noexcept
     return in;
 }
 
-inline auto hex(const evmc_address& addr) noexcept
+inline auto hex(const sivmc_address& addr) noexcept
 {
     return hex({addr.bytes, sizeof(addr)});
 }
 
-inline evmc_status_code check_and_normalize(evmc_status_code status) noexcept
+inline sivmc_status_code check_and_normalize(sivmc_status_code status) noexcept
 {
     ASSERT(status >= 0);
-    return status <= EVMC_REVERT ? status : EVMC_FAILURE;
+    return status <= SIVMC_REVERT ? status : SIVMC_FAILURE;
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noexcept
@@ -316,7 +316,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
 
     const auto ref_res = ref_vm.execute(ref_host, in.rev, in.msg, code.data(), code.size());
     const auto ref_status = check_and_normalize(ref_res.status_code);
-    if (ref_status == EVMC_FAILURE)
+    if (ref_status == SIVMC_FAILURE)
         ASSERT_EQ(ref_res.gas_left, 0);
 
     for (auto& vm : external_vms)
@@ -330,7 +330,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
         ASSERT_EQ(bytes_view(res.output_data, res.output_size),
             bytes_view(ref_res.output_data, ref_res.output_size));
 
-        if (ref_status != EVMC_FAILURE)
+        if (ref_status != SIVMC_FAILURE)
         {
             ASSERT_EQ(ref_host.recorded_calls.size(), host.recorded_calls.size());
 
@@ -343,11 +343,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
                 ASSERT_EQ(m1.flags, m2.flags);
                 ASSERT_EQ(m1.depth, m2.depth);
                 ASSERT_EQ(m1.gas, m2.gas);
-                ASSERT_EQ(evmc::address{m1.recipient}, evmc::address{m2.recipient});
-                ASSERT_EQ(evmc::address{m1.sender}, evmc::address{m2.sender});
+                ASSERT_EQ(sivmc::address{m1.recipient}, sivmc::address{m2.recipient});
+                ASSERT_EQ(sivmc::address{m1.sender}, sivmc::address{m2.sender});
                 ASSERT_EQ(bytes_view(m1.input_data, m1.input_size),
                     bytes_view(m2.input_data, m2.input_size));
-                ASSERT_EQ(evmc::uint256be{m1.value}, evmc::uint256be{m2.value});
+                ASSERT_EQ(sivmc::uint256be{m1.value}, sivmc::uint256be{m2.value});
             }
 
             ASSERT(std::equal(ref_host.recorded_logs.begin(), ref_host.recorded_logs.end(),

@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <test/state/authorization.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace intx;
 using namespace sivmone;
 

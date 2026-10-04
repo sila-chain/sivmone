@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "test/utils/bytecode.hpp"
-#include <evmc/evmc.hpp>
-#include <evmc/mocked_host.hpp>
-#include <sivmone/sivmone.h>
+#include <gmock/gmock.h>
+#include <sivmc/mocked_host.hpp>
+#include <sivmc/sivmc.hpp>
 #include <sivmone/instructions_traits.hpp>
+#include <sivmone/sivmone.h>
 #include <sivmone/tracing.hpp>
 #include <sivmone/vm.hpp>
-#include <gmock/gmock.h>
 
 using namespace testing;
 using namespace sivmone::test;
@@ -17,23 +17,23 @@ using namespace sivmone::test;
 class tracing : public Test
 {
 private:
-    evmc::VM m_baseline_vm;
+    sivmc::VM m_baseline_vm;
 
 protected:
     sivmone::VM& vm;
-    evmc::MockedHost host;
+    sivmc::MockedHost host;
 
     std::ostringstream trace_stream;
 
     tracing()
-      : m_baseline_vm{evmc_create_sivmone()},
+      : m_baseline_vm{sivmc_create_sivmone()},
         vm{*static_cast<sivmone::VM*>(m_baseline_vm.get_raw_pointer())}
     {}
 
-    std::string trace(
-        bytes_view code, int32_t depth = 0, uint32_t flags = 0, evmc_revision rev = EVMC_BERLIN)
+    std::string trace(bytes_view code, int32_t depth = 0, uint32_t flags = 0,
+        sivmc_revision rev = SIVMC_SILA_BERLIN)
     {
-        evmc_message msg{};
+        sivmc_message msg{};
         msg.depth = depth;
         msg.flags = flags;
         msg.gas = 1000000;
@@ -50,12 +50,12 @@ protected:
         bytes_view m_code;
 
         void on_execution_start(
-            evmc_revision /*rev*/, const evmc_message& /*msg*/, bytes_view code) noexcept override
+            sivmc_revision /*rev*/, const sivmc_message& /*msg*/, bytes_view code) noexcept override
         {
             m_code = code;
         }
 
-        void on_execution_end(const evmc_result& /*result*/) noexcept override { m_code = {}; }
+        void on_execution_end(const sivmc_result& /*result*/) noexcept override { m_code = {}; }
 
         void on_instruction_start(uint32_t pc, const intx::uint256* /*stack_top*/,
             int /*stack_height*/, int64_t /*gas*/,
@@ -76,12 +76,12 @@ protected:
         bytes m_last_code;
 
         void on_execution_start(
-            evmc_revision /*rev*/, const evmc_message& /*msg*/, bytes_view code) noexcept override
+            sivmc_revision /*rev*/, const sivmc_message& /*msg*/, bytes_view code) noexcept override
         {
             m_last_code = code;
         }
 
-        void on_execution_end(const evmc_result& /*result*/) noexcept override {}
+        void on_execution_end(const sivmc_result& /*result*/) noexcept override {}
 
         void on_instruction_start(uint32_t /*pc*/, const intx::uint256* /*stack_top*/,
             int /*stack_height*/, int64_t /*gas*/,
@@ -269,7 +269,7 @@ TEST_F(tracing, trace_revert)
 //     vm.add_tracer(sivmone::create_instruction_tracer(trace_stream));
 //
 //     trace_stream << '\n';
-//     EXPECT_EQ(trace({}, 2, EVMC_STATIC), R"(
+//     EXPECT_EQ(trace({}, 2, SIVMC_STATIC), R"(
 //{"depth":2,"rev":"SilaBerlin","static":true}
 //{"error":null,"gas":0xf4240,"gasUsed":0x0,"output":""}
 //)");
@@ -302,7 +302,7 @@ TEST_F(tracing, trace_code_containing_zero)
 
 TEST_F(tracing, trace_create_instruction)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
 
     vm.add_tracer(sivmone::create_instruction_tracer(trace_stream));
 
@@ -314,7 +314,7 @@ TEST_F(tracing, trace_create_instruction)
     host.call_result.output_data = result_data.data();
     host.call_result.output_size = result_data.size();
 
-    EXPECT_EQ(trace(code, 0, 0, EVMC_BERLIN), R"(
+    EXPECT_EQ(trace(code, 0, 0, SIVMC_SILA_BERLIN), R"(
 {"pc":0,"op":96,"gas":"0xf4240","gasCost":"0x3","memSize":0,"stack":[],"depth":1,"refund":0,"opName":"PUSH1"}
 {"pc":2,"op":96,"gas":"0xf423d","gasCost":"0x3","memSize":0,"stack":["0xa"],"depth":1,"refund":0,"opName":"PUSH1"}
 {"pc":4,"op":96,"gas":"0xf423a","gasCost":"0x3","memSize":0,"stack":["0xa","0x0"],"depth":1,"refund":0,"opName":"PUSH1"}

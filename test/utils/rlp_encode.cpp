@@ -87,7 +87,7 @@ namespace sivmone::state
                                 bytes{} :
                                 bytes{stdx::to_underlying(receipt.type)};
 
-        return prefix + rlp::encode_tuple(receipt.status == EVMC_SUCCESS,
+        return prefix + rlp::encode_tuple(receipt.status == SIVMC_SUCCESS,
                             static_cast<uint64_t>(receipt.cumulative_gas_used),
                             bytes_view(receipt.logs_bloom_filter), receipt.logs);
     }

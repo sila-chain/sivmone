@@ -6,7 +6,7 @@
 
 #include "hash_utils.hpp"
 #include "transaction.hpp"
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 #include <span>
 
 namespace sivmone::state

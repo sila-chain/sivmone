@@ -253,9 +253,9 @@ void register_synthetic_benchmarks()
     for (auto& [vm_name, vm] : registered_vms)
     {
         RegisterBenchmark(bench_name(std::string{vm_name} + "/total/synth/loop_v1"),
-            [&vm](State& state) { bench_evmc_execute(state, vm, generate_loop_v1({})); });
+            [&vm](State& state) { bench_sivmc_execute(state, vm, generate_loop_v1({})); });
         RegisterBenchmark(bench_name(std::string{vm_name} + "/total/synth/loop_v2"),
-            [&vm](State& state) { bench_evmc_execute(state, vm, generate_loop_v2({})); });
+            [&vm](State& state) { bench_sivmc_execute(state, vm, generate_loop_v2({})); });
     }
 
     for (const auto params : params_list)
@@ -265,7 +265,7 @@ void register_synthetic_benchmarks()
             RegisterBenchmark(
                 bench_name(std::string{vm_name} + "/total/synth/" + to_string(params)),
                 [&vm, params](
-                    State& state) { bench_evmc_execute(state, vm, generate_code(params)); })
+                    State& state) { bench_sivmc_execute(state, vm, generate_code(params)); })
                 ->Unit(kMicrosecond);
         }
     }

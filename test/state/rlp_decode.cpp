@@ -105,12 +105,12 @@ bool decode(bytes_view& from, bytes& to) noexcept
     return true;
 }
 
-bool decode(bytes_view& from, evmc::bytes32& to) noexcept
+bool decode(bytes_view& from, sivmc::bytes32& to) noexcept
 {
     return decode(from, to.bytes);
 }
 
-bool decode(bytes_view& from, evmc::address& to) noexcept
+bool decode(bytes_view& from, sivmc::address& to) noexcept
 {
     return decode(from, to.bytes);
 }

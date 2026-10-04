@@ -7,88 +7,88 @@
 namespace sivmone::test
 {
 
-evmc_revision to_rev(std::string_view s)
+sivmc_revision to_rev(std::string_view s)
 {
     if (s == "Frontier")
-        return EVMC_FRONTIER;
+        return SIVMC_FRONTIER;
     if (s == "SilaHomestead")
-        return EVMC_HOMESTEAD;
+        return SIVMC_SILA_HOMESTEAD;
     if (s == "SIP150")
-        return EVMC_TANGERINE_WHISTLE;
+        return SIVMC_SIP150;
     if (s == "SIP158")
-        return EVMC_SPURIOUS_DRAGON;
+        return SIVMC_SIP158;
     if (s == "SilaByzantium")
-        return EVMC_BYZANTIUM;
+        return SIVMC_SILA_BYZANTIUM;
     if (s == "SilaConstantinopleFix")
-        return EVMC_PETERSBURG;
+        return SIVMC_SILA_CONSTANTINOPLE_FIX;
     if (s == "SilaIstanbul")
-        return EVMC_ISTANBUL;
+        return SIVMC_SILA_ISTANBUL;
     if (s == "SilaBerlin")
-        return EVMC_BERLIN;
+        return SIVMC_SILA_BERLIN;
     if (s == "SilaLondon")
-        return EVMC_LONDON;
+        return SIVMC_SILA_LONDON;
     if (s == "SilaParis")
-        return EVMC_PARIS;
+        return SIVMC_SILA_PARIS;
     if (s == "SilaShanghai")
-        return EVMC_SHANGHAI;
+        return SIVMC_SILA_SHANGHAI;
     if (s == "SilaCancun")
-        return EVMC_CANCUN;
+        return SIVMC_SILA_CANCUN;
     if (s == "SilaPrague")
-        return EVMC_PRAGUE;
+        return SIVMC_SILA_PRAGUE;
     if (s == "SilaOsaka")
-        return EVMC_OSAKA;
+        return SIVMC_SILA_OSAKA;
     if (s == "SilaAmsterdam")
-        return EVMC_AMSTERDAM;
+        return SIVMC_SILA_AMSTERDAM;
     if (s == "SilaOsakaToBPO1AtTime15k")
-        return EVMC_OSAKA;
+        return SIVMC_SILA_OSAKA;
     if (s == "BPO1ToBPO2AtTime15k")
-        return EVMC_OSAKA;
+        return SIVMC_SILA_OSAKA;
     if (s == "BPO2ToBPO3AtTime15k")
-        return EVMC_OSAKA;
+        return SIVMC_SILA_OSAKA;
     if (s == "BPO3ToBPO4AtTime15k")
-        return EVMC_OSAKA;
+        return SIVMC_SILA_OSAKA;
     if (s == "BPO2ToSilaAmsterdamAtTime15k")
-        return EVMC_OSAKA;
+        return SIVMC_SILA_OSAKA;
     if (s == "Experimental")
-        return EVMC_EXPERIMENTAL;
+        return SIVMC_EXPERIMENTAL;
     throw std::invalid_argument{"unknown revision: " + std::string{s}};
 }
 
-std::string_view sivm_revision_to_string(evmc_revision rev) noexcept
+std::string_view sivm_revision_to_string(sivmc_revision rev) noexcept
 {
     switch (rev)
     {
-    case EVMC_FRONTIER:
+    case SIVMC_FRONTIER:
         return "Frontier";
-    case EVMC_HOMESTEAD:
+    case SIVMC_SILA_HOMESTEAD:
         return "SilaHomestead";
-    case EVMC_TANGERINE_WHISTLE:
+    case SIVMC_SIP150:
         return "SIP150";
-    case EVMC_SPURIOUS_DRAGON:
+    case SIVMC_SIP158:
         return "SIP158";
-    case EVMC_BYZANTIUM:
+    case SIVMC_SILA_BYZANTIUM:
         return "SilaByzantium";
-    case EVMC_PETERSBURG:
+    case SIVMC_SILA_CONSTANTINOPLE_FIX:
         return "SilaConstantinopleFix";
-    case EVMC_ISTANBUL:
+    case SIVMC_SILA_ISTANBUL:
         return "SilaIstanbul";
-    case EVMC_BERLIN:
+    case SIVMC_SILA_BERLIN:
         return "SilaBerlin";
-    case EVMC_LONDON:
+    case SIVMC_SILA_LONDON:
         return "SilaLondon";
-    case EVMC_PARIS:
+    case SIVMC_SILA_PARIS:
         return "SilaParis";
-    case EVMC_SHANGHAI:
+    case SIVMC_SILA_SHANGHAI:
         return "SilaShanghai";
-    case EVMC_CANCUN:
+    case SIVMC_SILA_CANCUN:
         return "SilaCancun";
-    case EVMC_PRAGUE:
+    case SIVMC_SILA_PRAGUE:
         return "SilaPrague";
-    case EVMC_OSAKA:
+    case SIVMC_SILA_OSAKA:
         return "SilaOsaka";
-    case EVMC_AMSTERDAM:
+    case SIVMC_SILA_AMSTERDAM:
         return "SilaAmsterdam";
-    case EVMC_EXPERIMENTAL:
+    case SIVMC_EXPERIMENTAL:
         return "Experimental";
     }
     return "<unknown>";
@@ -97,17 +97,17 @@ std::string_view sivm_revision_to_string(evmc_revision rev) noexcept
 RevisionSchedule to_rev_schedule(std::string_view s)
 {
     if (s == "SilaBerlinToSilaLondonAt5")
-        return {EVMC_BERLIN, EVMC_LONDON, 5};
+        return {SIVMC_SILA_BERLIN, SIVMC_SILA_LONDON, 5};
     if (s == "SilaParisToSilaShanghaiAtTime15k")
-        return {EVMC_PARIS, EVMC_SHANGHAI, 15'000};
+        return {SIVMC_SILA_PARIS, SIVMC_SILA_SHANGHAI, 15'000};
     if (s == "SilaShanghaiToSilaCancunAtTime15k")
-        return {EVMC_SHANGHAI, EVMC_CANCUN, 15'000};
+        return {SIVMC_SILA_SHANGHAI, SIVMC_SILA_CANCUN, 15'000};
     if (s == "SilaCancunToSilaPragueAtTime15k")
-        return {EVMC_CANCUN, EVMC_PRAGUE, 15'000};
+        return {SIVMC_SILA_CANCUN, SIVMC_SILA_PRAGUE, 15'000};
     if (s == "SilaPragueToSilaOsakaAtTime15k")
-        return {EVMC_PRAGUE, EVMC_OSAKA, 15'000};
+        return {SIVMC_SILA_PRAGUE, SIVMC_SILA_OSAKA, 15'000};
     if (s == "BPO2ToSilaAmsterdamAtTime15k")
-        return {EVMC_OSAKA, EVMC_AMSTERDAM, 15'000};
+        return {SIVMC_SILA_OSAKA, SIVMC_SILA_AMSTERDAM, 15'000};
 
     const auto single_rev = to_rev(s);
     return {single_rev, single_rev, 0};

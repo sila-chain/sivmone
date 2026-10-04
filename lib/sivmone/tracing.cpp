@@ -5,7 +5,7 @@
 #include "tracing.hpp"
 #include "execution_state.hpp"
 #include "instructions_traits.hpp"
-#include <evmc/hex.hpp>
+#include <sivmc/hex.hpp>
 #include <fstream>
 #include <stack>
 
@@ -17,7 +17,7 @@ std::string get_name(uint8_t opcode)
 {
     // TODO: Create constexpr tables of names (maybe even per revision).
     const auto name = instr::traits[opcode].name;
-    return (name != nullptr) ? name : "0x" + evmc::hex(opcode);
+    return (name != nullptr) ? name : "0x" + sivmc::hex(opcode);
 }
 
 /// @see create_histogram_tracer()
@@ -36,7 +36,7 @@ class HistogramTracer : public Tracer
     std::ostream& m_out;
 
     void on_execution_start(
-        evmc_revision /*rev*/, const evmc_message& msg, bytes_view code) noexcept override
+        sivmc_revision /*rev*/, const sivmc_message& msg, bytes_view code) noexcept override
     {
         m_contexts.emplace(msg.depth, code.data());
     }
@@ -48,7 +48,7 @@ class HistogramTracer : public Tracer
         ++ctx.counts[ctx.code[pc]];
     }
 
-    void on_execution_end(const evmc_result& /*result*/) noexcept override
+    void on_execution_end(const sivmc_result& /*result*/) noexcept override
     {
         const auto& ctx = m_contexts.top();
 
@@ -73,7 +73,7 @@ class InstructionCounter : public Tracer
     std::string m_out_file_path;
 
     void on_execution_start(
-        evmc_revision /*rev*/, const evmc_message& /*msg*/, bytes_view code) noexcept override
+        sivmc_revision /*rev*/, const sivmc_message& /*msg*/, bytes_view code) noexcept override
     {
         m_codes.emplace(code);
     }
@@ -85,7 +85,7 @@ class InstructionCounter : public Tracer
         m_counters[code[pc]]++;
     }
 
-    void on_execution_end(const evmc_result& /*result*/) noexcept override { m_codes.pop(); }
+    void on_execution_end(const sivmc_result& /*result*/) noexcept override { m_codes.pop(); }
 
 public:
     explicit InstructionCounter(std::string_view out_file_path) noexcept
@@ -142,7 +142,7 @@ class InstructionTracer : public Tracer
     }
 
     void on_execution_start(
-        evmc_revision /*rev*/, const evmc_message& msg, bytes_view code) noexcept override
+        sivmc_revision /*rev*/, const sivmc_message& msg, bytes_view code) noexcept override
     {
         m_contexts.emplace(msg.depth, code.data(), msg.gas);
     }
@@ -159,13 +159,13 @@ class InstructionTracer : public Tracer
         m_out << R"(,"gas":"0x)" << std::hex << gas << '"';
         m_out << R"(,"gasCost":"0x)" << std::hex << instr::gas_costs[state.rev][opcode] << '"';
 
-        // Full memory can be dumped as evmc::hex({state.memory.data(), state.memory.size()}),
+        // Full memory can be dumped as sivmc::hex({state.memory.data(), state.memory.size()}),
         // but this should not be done by default. Adding --tracing=+memory option would be nice.
         m_out << R"(,"memSize":)" << std::dec << state.memory.size();
 
         output_stack(stack_top, stack_height);
         if (!state.return_data.empty())
-            m_out << R"(,"returnData":"0x)" << evmc::hex(state.return_data) << '"';
+            m_out << R"(,"returnData":"0x)" << sivmc::hex(state.return_data) << '"';
         m_out << R"(,"depth":)" << std::dec << (ctx.depth + 1);
         m_out << R"(,"refund":)" << std::dec << state.gas_refund;
         m_out << R"(,"opName":")" << get_name(opcode) << '"';
@@ -173,7 +173,7 @@ class InstructionTracer : public Tracer
         m_out << "}\n";
     }
 
-    void on_execution_end(const evmc_result& /*result*/) noexcept override { m_contexts.pop(); }
+    void on_execution_end(const sivmc_result& /*result*/) noexcept override { m_contexts.pop(); }
 
 public:
     explicit InstructionTracer(std::ostream& out) noexcept : m_out{out}

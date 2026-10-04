@@ -72,7 +72,7 @@ bytes32 TestBlockHashes::get_block_hash(int64_t block_number) const noexcept
 
 [[nodiscard]] std::variant<state::TransactionReceipt, std::error_code> transition(TestState& state,
     const state::BlockInfo& block, const state::BlockHashes& block_hashes,
-    const state::Transaction& tx, evmc_revision rev, evmc::VM& vm, int64_t block_gas_left,
+    const state::Transaction& tx, sivmc_revision rev, sivmc::VM& vm, int64_t block_gas_left,
     int64_t block_state_gas_left, int64_t blob_gas_left)
 {
     const auto tx_props_or_error = state::validate_transaction(
@@ -86,7 +86,7 @@ bytes32 TestBlockHashes::get_block_hash(int64_t block_number) const noexcept
     return receipt;
 }
 
-void finalize(TestState& state, evmc_revision rev, const address& coinbase,
+void finalize(TestState& state, sivmc_revision rev, const address& coinbase,
     std::optional<uint64_t> block_reward, std::span<const state::Ommer> ommers,
     std::span<const state::Withdrawal> withdrawals)
 {
@@ -95,15 +95,15 @@ void finalize(TestState& state, evmc_revision rev, const address& coinbase,
 }
 
 void system_call_block_start(TestState& state, const state::BlockInfo& block,
-    const state::BlockHashes& block_hashes, evmc_revision rev, evmc::VM& vm)
+    const state::BlockHashes& block_hashes, sivmc_revision rev, sivmc::VM& vm)
 {
     const auto diff = state::system_call_block_start(state, block, block_hashes, rev, vm);
     state.apply(diff);
 }
 
 std::variant<std::vector<state::Requests>, std::error_code> system_call_block_end(TestState& state,
-    const state::BlockInfo& block, const state::BlockHashes& block_hashes, evmc_revision rev,
-    evmc::VM& vm)
+    const state::BlockInfo& block, const state::BlockHashes& block_hashes, sivmc_revision rev,
+    sivmc::VM& vm)
 {
     auto result = state::system_call_block_end(state, block, block_hashes, rev, vm);
     if (const auto* error = std::get_if<std::error_code>(&result))

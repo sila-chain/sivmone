@@ -2,15 +2,15 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <sivmone_precompiles/secp256k1.hpp>
 #include <gtest/gtest.h>
+#include <sivmone_precompiles/secp256k1.hpp>
 #include <test/state/rlp_decode.hpp>
 #include <test/state/transaction.hpp>
 #include <test/utils/rlp.hpp>
 #include <test/utils/rlp_encode.hpp>
 #include <test/utils/utils.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace intx;
 using namespace sivmone;
 using namespace sivmone::test;

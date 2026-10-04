@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
 #include <nlohmann/json.hpp>
+#include <sivmc/sivmc.hpp>
 #include <test/state/block.hpp>
 #include <test/state/bloom_filter.hpp>
 #include <test/state/transaction.hpp>
@@ -80,5 +80,5 @@ std::vector<BlockchainTest> load_blockchain_tests(std::istream& input);
 BlockchainTest make_blockchain_test(const std::string& name, const json::json& j);
 
 /// Execute the blockchain @p test using the @p vm, recording what does not match into @p report.
-void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& report);
+void run_blockchain_test(const BlockchainTest& test, sivmc::VM& vm, TestReport& report);
 }  // namespace sivmone::test

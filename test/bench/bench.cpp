@@ -6,7 +6,7 @@
 #include "helpers.hpp"
 #include "synthetic_benchmarks.hpp"
 #include <benchmark/benchmark.h>
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 #include <sivmone/sivmone.h>
 #include <filesystem>
 #include <fstream>
@@ -19,7 +19,7 @@ using namespace benchmark;
 
 namespace sivmone::test
 {
-std::map<std::string_view, evmc::VM> registered_vms;
+std::map<std::string_view, sivmc::VM> registered_vms;
 
 namespace
 {
@@ -102,9 +102,9 @@ std::vector<BenchmarkCase> load_benchmarks_from_dir(  // NOLINT(misc-no-recursio
 
 void register_benchmarks(std::span<const BenchmarkCase> benchmark_cases)
 {
-    evmc::VM* advanced_vm = nullptr;
-    evmc::VM* baseline_vm = nullptr;
-    evmc::VM* basel_cg_vm = nullptr;
+    sivmc::VM* advanced_vm = nullptr;
+    sivmc::VM* baseline_vm = nullptr;
+    sivmc::VM* basel_cg_vm = nullptr;
     if (const auto it = registered_vms.find("advanced"); it != registered_vms.end())
         advanced_vm = &it->second;
     if (const auto it = registered_vms.find("baseline"); it != registered_vms.end())
@@ -162,7 +162,7 @@ void register_benchmarks(std::span<const BenchmarkCase> benchmark_cases)
             {
                 const auto name = bench_name(std::string{vm_name} + "/total/" + case_name);
                 RegisterBenchmark(name, [&vm, &b, &input](State& state) {
-                    bench_evmc_execute(state, vm, b.code, input.input, input.expected_output);
+                    bench_sivmc_execute(state, vm, b.code, input.input, input.expected_output);
                 })->Unit(kMicrosecond);
             }
         }
@@ -250,9 +250,9 @@ int main(int argc, char** argv)
         if (ec != 0)
             return ec;
 
-        registered_vms["advanced"] = evmc::VM{evmc_create_sivmone(), {{"advanced", ""}}};
-        registered_vms["baseline"] = evmc::VM{evmc_create_sivmone()};
-        registered_vms["bnocgoto"] = evmc::VM{evmc_create_sivmone(), {{"cgoto", "no"}}};
+        registered_vms["advanced"] = sivmc::VM{sivmc_create_sivmone(), {{"advanced", ""}}};
+        registered_vms["baseline"] = sivmc::VM{sivmc_create_sivmone()};
+        registered_vms["bnocgoto"] = sivmc::VM{sivmc_create_sivmone(), {{"cgoto", "no"}}};
         register_benchmarks(benchmark_cases);
         register_synthetic_benchmarks();
         RunSpecifiedBenchmarks();

@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/bytes.hpp>
+#include <sivmc/bytes.hpp>
 #include <vector>
 
 namespace sivmone::exp::jda
 {
-using evmc::bytes_view;
+using sivmc::bytes_view;
 
 /// Bitset of valid jumpdest positions.
 class JumpdestBitset : std::vector<bool>

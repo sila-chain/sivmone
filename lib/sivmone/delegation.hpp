@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/bytes.hpp>
-#include <evmc/evmc.hpp>
-#include <evmc/utils.h>
+#include <sivmc/bytes.hpp>
+#include <sivmc/sivmc.hpp>
+#include <sivmc/utils.h>
 
 namespace sivmone
 {
-using evmc::bytes_view;
+using sivmc::bytes_view;
 
 /// Prefix of code for delegated accounts
 /// defined by [SIP-7702](https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7702.md)
@@ -23,6 +23,6 @@ constexpr bool is_code_delegated(bytes_view code) noexcept
 }
 
 /// Get SIP-7702 delegate address from the code of addr, if it is delegated.
-EVMC_EXPORT std::optional<evmc::address> get_delegate_address(
-    const evmc::HostInterface& host, const evmc::address& addr) noexcept;
+SIVMC_EXPORT std::optional<sivmc::address> get_delegate_address(
+    const sivmc::HostInterface& host, const sivmc::address& addr) noexcept;
 }  // namespace sivmone

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <CLI/CLI.hpp>
-#include <evmc/hex.hpp>
+#include <sivmc/hex.hpp>
 #include <sivmone/sivmone.h>
 #include <test/utils/run.hpp>
 #include <test/utils/t8n.hpp>
@@ -22,20 +22,20 @@ namespace
 /// If the argument starts with @ returns the hex-decoded contents of the file
 /// at the path following the @. Otherwise, returns the argument.
 /// @todo The file content is expected to be a hex string but not validated.
-evmc::bytes load_from_hex(const std::string& str)
+sivmc::bytes load_from_hex(const std::string& str)
 {
     if (str.starts_with('@'))  // The argument is file path.
     {
         const auto path = str.substr(1);
         std::ifstream file{path};
-        auto out = evmc::from_spaced_hex(
+        auto out = sivmc::from_spaced_hex(
             std::istreambuf_iterator<char>{file}, std::istreambuf_iterator<char>{});
         if (!out)
             throw std::invalid_argument{"invalid hex in " + path};
         return out.value();
     }
 
-    return evmc::from_hex(str).value();  // Should be validated already.
+    return sivmc::from_hex(str).value();  // Should be validated already.
 }
 
 struct HexOrFileValidator : CLI::Validator
@@ -45,7 +45,7 @@ struct HexOrFileValidator : CLI::Validator
         func_ = [](const std::string& str) -> std::string {
             if (str.starts_with('@'))
                 return CLI::ExistingFile(str.substr(1));
-            if (!evmc::validate_hex(str))
+            if (!sivmc::validate_hex(str))
                 return "invalid hex";
             return {};
         };
@@ -94,7 +94,7 @@ const CLI::App& setup_t8n_cmd(CLI::App& app, T8nOptions& opts)
     return cmd;
 }
 
-int exec_t8n_cmd(evmc::VM& vm, const T8nOptions& opts)
+int exec_t8n_cmd(sivmc::VM& vm, const T8nOptions& opts)
 {
     sivmone::tooling::T8NArgs args;
     args.rev = sivmone::test::to_rev(opts.state_fork);
@@ -141,10 +141,10 @@ int exec_t8n_cmd(evmc::VM& vm, const T8nOptions& opts)
 
     if (opts.trace)
     {
-        args.open_trace = [&](size_t tx_index, const evmc::bytes32& tx_hash) -> std::ostream& {
+        args.open_trace = [&](size_t tx_index, const sivmc::bytes32& tx_hash) -> std::ostream& {
             trace_file =
                 std::ofstream{opts.output_dir / ("trace-" + std::to_string(tx_index) + "-0x" +
-                                                    evmc::hex(tx_hash) + ".jsonl")};
+                                                    sivmc::hex(tx_hash) + ".jsonl")};
             return trace_file;
         };
     }
@@ -180,7 +180,7 @@ const CLI::App& setup_test_cmd(
     return cmd;
 }
 
-int exec_test_cmd(evmc::VM& vm, std::span<const fs::path> paths, sivmone::test::RunOptions opts,
+int exec_test_cmd(sivmc::VM& vm, std::span<const fs::path> paths, sivmone::test::RunOptions opts,
     bool trace, bool histogram)
 {
     // main() has switched the tracer on already. Its line per instruction is worth
@@ -198,7 +198,7 @@ int exec_test_cmd(evmc::VM& vm, std::span<const fs::path> paths, sivmone::test::
 
 int main(int argc, const char* const* argv) noexcept
 {
-    using namespace evmc;
+    using namespace sivmc;
 
     try
     {
@@ -206,14 +206,14 @@ int main(int argc, const char* const* argv) noexcept
 
         std::string code_arg;
         int64_t gas = 1000000;
-        auto rev = EVMC_LATEST_STABLE_REVISION;
+        auto rev = SIVMC_LATEST_STABLE_REVISION;
         std::string input_arg;
         auto create = false;
         auto bench = false;
         auto trace = false;
         auto histogram = false;
 
-        VM vm{evmc_create_sivmone()};
+        VM vm{sivmc_create_sivmone()};
 
         CLI::App app{"sivmone Sivm tool"};
         app.require_subcommand(0, 1);  // Forbid multiple subcommands: run would hijack the rest.

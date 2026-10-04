@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 
 namespace sivmone::state
 {
 struct ExecutionResult
 {
-    evmc_status_code status_code;
+    sivmc_status_code status_code;
     size_t output_size;
 };
 
@@ -19,24 +19,26 @@ struct PrecompileAnalysis
     size_t max_output_size;
 };
 
-PrecompileAnalysis ecrecover_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis sha256_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis ripemd160_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis identity_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis expmod_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis ecadd_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis ecmul_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis ecpairing_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis blake2bf_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis point_evaluation_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_g1add_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_g1msm_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_g2add_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_g2msm_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_pairing_check_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_map_fp_to_g1_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis bls12_map_fp2_to_g2_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
-PrecompileAnalysis p256verify_analyze(evmc::bytes_view input, evmc_revision rev) noexcept;
+PrecompileAnalysis ecrecover_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis sha256_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis ripemd160_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis identity_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis expmod_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis ecadd_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis ecmul_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis ecpairing_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis blake2bf_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis point_evaluation_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_g1add_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_g1msm_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_g2add_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_g2msm_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_pairing_check_analyze(
+    sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_map_fp_to_g1_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis bls12_map_fp2_to_g2_analyze(
+    sivmc::bytes_view input, sivmc_revision rev) noexcept;
+PrecompileAnalysis p256verify_analyze(sivmc::bytes_view input, sivmc_revision rev) noexcept;
 
 ExecutionResult ecrecover_execute(
     const uint8_t* input, size_t input_size, uint8_t* output, size_t output_size) noexcept;

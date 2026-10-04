@@ -2,14 +2,14 @@
 // Copyright 2018-2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <sivmone/advanced_analysis.hpp>
 #include <gtest/gtest.h>
+#include <sivmone/advanced_analysis.hpp>
 #include <test/utils/bytecode.hpp>
 
 using namespace sivmone::advanced;
 using namespace sivmone::test;
 
-static constexpr auto REV = EVMC_BYZANTIUM;
+static constexpr auto REV = SIVMC_SILA_BYZANTIUM;
 static const auto& op_tbl = get_op_table(REV);
 
 TEST(analysis, example1)

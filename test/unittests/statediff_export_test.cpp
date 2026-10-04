@@ -7,7 +7,7 @@
 
 using namespace sivmone;
 using namespace sivmone::state;
-using namespace evmc::literals;
+using namespace sivmc::literals;
 
 TEST(statediff_export, state_diff_empty)
 {

@@ -6,23 +6,23 @@
 #include <sivmone/constants.hpp>
 #include <numeric>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace intx;
 using namespace sivmone::test;
 
 TEST_P(sivm, empty)
 {
     execute(0, {});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 0);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 0);
 
     execute(1, {});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 0);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 0);
 }
 
 TEST_P(sivm, push_and_pop)
 {
     execute(11, push("0102") + OP_POP + push("010203040506070809") + OP_POP);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 10);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 10);
 }
 
 TEST_P(sivm, push_implicit_data)
@@ -38,23 +38,23 @@ TEST_P(sivm, push_implicit_data)
     {
         code.back() = op;
         execute(code);
-        EXPECT_GAS_USED(EVMC_SUCCESS, 307);
+        EXPECT_GAS_USED(SIVMC_SUCCESS, 307);
     }
 }
 
 TEST_P(sivm, stack_underflow)
 {
     execute(13, push(1) + OP_POP + push(1) + OP_POP + OP_POP);
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(SIVMC_STACK_UNDERFLOW);
 
     execute(bytecode{OP_NOT});
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(SIVMC_STACK_UNDERFLOW);
 }
 
 TEST_P(sivm, add)
 {
     execute(25, add(7, 13) + ret_top());
-    EXPECT_GAS_USED(EVMC_SUCCESS, 24);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 24);
     EXPECT_OUTPUT_INT(20);
 }
 
@@ -67,7 +67,7 @@ TEST_P(sivm, dup)
     // 0 7 3 5 (20 0)
     // 0 7 3 5 3 0
     execute(bytecode{"6000600760036005818180850101018452602084f3"});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 48);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 48);
     EXPECT_OUTPUT_INT(20);
 }
 
@@ -75,7 +75,7 @@ TEST_P(sivm, dup_all_1)
 {
     execute(push(1) + "808182838485868788898a8b8c8d8e8f" + "01010101010101010101010101010101" +
             ret_top());
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
     EXPECT_OUTPUT_INT(17);
 }
 
@@ -86,22 +86,22 @@ TEST_P(sivm, dup_stack_overflow)
         code += "8f";
 
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
     execute(code + "8f");
-    EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+    EXPECT_STATUS(SIVMC_STACK_OVERFLOW);
 }
 
 TEST_P(sivm, push1_stack_overflow)
 {
-    for (const auto r :
-        {EVMC_FRONTIER, EVMC_BYZANTIUM, EVMC_OSAKA, EVMC_AMSTERDAM, EVMC_MAX_REVISION})
+    for (const auto r : {SIVMC_FRONTIER, SIVMC_SILA_BYZANTIUM, SIVMC_SILA_OSAKA,
+             SIVMC_SILA_AMSTERDAM, SIVMC_MAX_REVISION})
     {
         rev = r;
         // PUSH1 has an immediate byte, so it must not bypass the stack overflow check.
         execute(1024 * push(1));
-        EXPECT_STATUS(EVMC_SUCCESS);
+        EXPECT_STATUS(SIVMC_SUCCESS);
         execute(1025 * push(1));
-        EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+        EXPECT_STATUS(SIVMC_STACK_OVERFLOW);
     }
 }
 
@@ -111,7 +111,7 @@ TEST_P(sivm, dup_stack_underflow)
     {
         const auto op = static_cast<Opcode>(OP_DUP1 + i);
         execute(i * push(0) + op);
-        EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+        EXPECT_STATUS(SIVMC_STACK_UNDERFLOW);
     }
 }
 
@@ -119,7 +119,7 @@ TEST_P(sivm, sub_and_swap)
 {
     execute(33, push(1) + OP_DUP1 + OP_DUP2 + OP_SUB + OP_DUP1 + OP_DUP3 + OP_SWAP1 + OP_MSTORE +
                     push(32) + OP_SWAP1 + OP_RETURN);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 32);
     EXPECT_EQ(result.output_data[31], 1);
@@ -129,21 +129,21 @@ TEST_P(sivm, swapsn_jumpdest)
 {
     // Test demonstrating possible problem with introducing multibyte SWAP/DUP instructions as per
     // SIP-663 variants B and C.
-    // When SWAPSN is implemented execution will fail with EVMC_BAD_JUMP_DESTINATION.
+    // When SWAPSN is implemented execution will fail with SIVMC_BAD_JUMP_DESTINATION.
     const auto swapsn = "b3";
     const auto code = push(4) + OP_JUMP + swapsn + OP_JUMPDEST + push(0) + ret_top();
 
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 30);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 30);
 
-    rev = EVMC_ISTANBUL;
+    rev = SIVMC_SILA_ISTANBUL;
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
 
-    rev = EVMC_MAX_REVISION;
+    rev = SIVMC_MAX_REVISION;
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
 }
 
 TEST_P(sivm, swapsn_push)
@@ -154,23 +154,23 @@ TEST_P(sivm, swapsn_push)
     const auto swapsn = "b3";
     const auto code = push(5) + OP_JUMP + swapsn + push(uint8_t{OP_JUMPDEST}) + push(0) + ret_top();
 
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(SIVMC_BAD_JUMP_DESTINATION);
 
-    rev = EVMC_ISTANBUL;
+    rev = SIVMC_SILA_ISTANBUL;
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(SIVMC_BAD_JUMP_DESTINATION);
 
-    rev = EVMC_MAX_REVISION;
+    rev = SIVMC_MAX_REVISION;
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(SIVMC_BAD_JUMP_DESTINATION);
 }
 
 TEST_P(sivm, gas)
 {
     execute(40, "5a5a5a010160005360016000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 13);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 38 + 36 + 34);
@@ -191,7 +191,7 @@ TEST_P(sivm, arith)
     s += "0315";                  // 1
     s += "60005360016000f3";
     execute(100, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 26);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 1);
@@ -210,7 +210,7 @@ TEST_P(sivm, comparison)
     s += "818113600653";          // m[6] = -2 s> -1
     s += "60076000f3";
     execute(s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(gas_used, 138);
     ASSERT_EQ(result.output_size, 7);
     EXPECT_EQ(result.output_data[0], 0);
@@ -231,7 +231,7 @@ TEST_P(sivm, bitwise)
     s += "818118600253";  // m[2] = aa ^ ff
     s += "60036000f3";
     execute(60, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 3);
     EXPECT_EQ(result.output_data[0], 0xaa & 0xff);
@@ -253,7 +253,7 @@ TEST_P(sivm, byte)
     s += "600653";      // m[6] = 00
     s += "60076000f3";  // RETURN(0,7)
     execute(72, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 7);
     EXPECT_EQ(result.output_data[0], 0);
@@ -285,7 +285,7 @@ TEST_P(sivm, addmod_mulmod)
     s += "602052";      // m[32..]
     s += "60406000f3";  // RETURN(0,64)
     execute(67, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 64);
     EXPECT_EQ(bytes_view(&result.output_data[0], 32),
@@ -298,7 +298,7 @@ TEST_P(sivm, divmod)
 {
     // Div and mod the -1 by the input and return.
     execute(bytecode{"600035600160000381810460005281810660205260406000f3"}, "0d"_hex);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(gas_used, 61);
     ASSERT_EQ(result.output_size, 64);
     EXPECT_EQ(bytes_view(&result.output_data[0], 32),
@@ -310,7 +310,7 @@ TEST_P(sivm, divmod)
 TEST_P(sivm, div_by_zero)
 {
     execute(34, dup1(push(0)) + push(0xff) + OP_DIV + OP_SDIV + ret_top());
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     EXPECT_OUTPUT_INT(0);
 }
@@ -318,7 +318,7 @@ TEST_P(sivm, div_by_zero)
 TEST_P(sivm, mod_by_zero)
 {
     execute(dup1(push(0)) + push(0xeffe) + OP_MOD + OP_SMOD + ret_top());
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(gas_used, 34);
     EXPECT_OUTPUT_INT(0);
 }
@@ -326,7 +326,7 @@ TEST_P(sivm, mod_by_zero)
 TEST_P(sivm, addmod_mulmod_by_zero)
 {
     execute(bytecode{"6000358080808008091560005260206000f3"});
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(gas_used, 52);
     ASSERT_EQ(result.output_size, 32);
     EXPECT_EQ(result.output_data[31], 1);
@@ -342,7 +342,7 @@ TEST_P(sivm, signextend)
     s += "602052";      // m[32..]
     s += "60406000f3";  // RETURN(0,64)
     execute(49, s);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 49);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 49);
     ASSERT_EQ(result.output_size, 64);
     EXPECT_EQ(hex(bytes(&result.output_data[0], 32)),
         "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe");
@@ -352,14 +352,14 @@ TEST_P(sivm, signextend)
 
 TEST_P(sivm, signextend_31)
 {
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
 
     execute(bytecode{"61010160000360081c601e0b60005260206000f3"});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 38);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 38);
     EXPECT_OUTPUT_INT(0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe_u256);
 
     execute(bytecode{"61010160000360081c601f0b60005260206000f3"});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 38);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 38);
     EXPECT_OUTPUT_INT(0x00fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe_u256);
 }
 
@@ -404,7 +404,7 @@ TEST_P(sivm, exp)
 {
     const auto code = push(0x2019) + push(3) + OP_EXP + ret_top();
     execute(131, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 131);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 131);
     ASSERT_EQ(result.output_size, 32);
     EXPECT_OUTPUT_INT(0x263cf24662b24c371a647c1340022619306e431bf3a4298d4b5998a3f1c1aaa3_u256);
 }
@@ -413,7 +413,7 @@ TEST_P(sivm, exp_1_0)
 {
     const auto code = push(0) + push(1) + OP_EXP + ret_top();
     execute(31, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 31);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 31);
     EXPECT_OUTPUT_INT(1);
 }
 
@@ -421,7 +421,7 @@ TEST_P(sivm, exp_0_0)
 {
     const auto code = push(0) + push(0) + OP_EXP + ret_top();
     execute(31, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 31);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 31);
     EXPECT_OUTPUT_INT(1);
 }
 
@@ -429,34 +429,34 @@ TEST_P(sivm, exp_oog)
 {
     auto code = "6001600003800a";
     execute(1622, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
 
     execute(1621, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
     EXPECT_EQ(result.gas_left, 0);
 }
 
 TEST_P(sivm, exp_pre_spurious_dragon)
 {
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = SIVMC_SIP150;
     const auto code = push(0x012019) + push(3) + OP_EXP + ret_top();
     execute(131 - 70, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 131 - 70);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 131 - 70);
     EXPECT_OUTPUT_INT(0x422ea3761c4f6517df7f102bb18b96abf4735099209ca21256a6b8ac4d1daaa3_u256);
 }
 
 TEST_P(sivm, calldataload)
 {
     execute(mstore(0, calldataload(3)) + ret(0, 10), "0102030405"_hex);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 21);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 21);
     EXPECT_EQ(bytes(result.output_data, result.output_size), "04050000000000000000"_hex);
 }
 
 TEST_P(sivm, calldataload_outofrange)
 {
     execute(calldataload(1) + ret_top());
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 32);
 }
 
@@ -465,7 +465,7 @@ TEST_P(sivm, address)
     msg.recipient.bytes[0] = 0xcc;
     const auto code = mstore(0, OP_ADDRESS) + ret(10, 10);
     execute(17, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 17);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 17);
     ASSERT_EQ(result.output_size, 10);
     EXPECT_EQ(bytes_view(&result.output_data[0], 10), "0000cc00000000000000"_hex);
 }
@@ -476,7 +476,7 @@ TEST_P(sivm, caller_callvalue)
     msg.value.bytes[13] = 0xee;
     const auto code = add(OP_CALLVALUE, OP_CALLER) + mstore(0) + ret(10, 10);
     execute(22, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 22);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 22);
     ASSERT_EQ(result.output_size, 10);
     EXPECT_EQ(bytes_view(&result.output_data[0], 10), "0000ddee000000000000"_hex);
 }
@@ -484,14 +484,14 @@ TEST_P(sivm, caller_callvalue)
 TEST_P(sivm, undefined)
 {
     execute(1, "2a");
-    EXPECT_EQ(result.status_code, EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_EQ(result.status_code, SIVMC_UNDEFINED_INSTRUCTION);
     EXPECT_EQ(result.gas_left, 0);
 }
 
 TEST_P(sivm, invalid)
 {
     execute(1, "fe");
-    EXPECT_EQ(result.status_code, EVMC_INVALID_INSTRUCTION);
+    EXPECT_EQ(result.status_code, SIVMC_INVALID_INSTRUCTION);
     EXPECT_EQ(result.gas_left, 0);
 }
 
@@ -499,42 +499,42 @@ TEST_P(sivm, inner_stop)
 {
     const auto code = push(0) + OP_STOP + OP_POP;
     execute(3, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 3);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 3);
 }
 
 TEST_P(sivm, inner_return)
 {
     const auto code = ret(0, 0) + push(0);
     execute(6, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 6);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 6);
 }
 
 TEST_P(sivm, inner_revert)
 {
     const auto code = revert(0, 0) + push(0);
     execute(6, code);
-    EXPECT_GAS_USED(EVMC_REVERT, 6);
+    EXPECT_GAS_USED(SIVMC_REVERT, 6);
 }
 
 TEST_P(sivm, inner_invalid)
 {
     const auto code = push(0) + "fe" + OP_POP;
     execute(5, code);
-    EXPECT_GAS_USED(EVMC_INVALID_INSTRUCTION, 5);
+    EXPECT_GAS_USED(SIVMC_INVALID_INSTRUCTION, 5);
 }
 
 TEST_P(sivm, inner_selfdestruct)
 {
-    rev = EVMC_FRONTIER;
+    rev = SIVMC_FRONTIER;
     const auto code = push(0) + OP_SELFDESTRUCT + push(0);
     execute(3, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 3);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 3);
 }
 
 TEST_P(sivm, keccak256)
 {
     execute(push(0x0800) + push(0x03ff) + OP_KECCAK256 + ret_top());
-    EXPECT_GAS_USED(EVMC_SUCCESS, 738);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 738);
     EXPECT_OUTPUT_INT(0xaeffb38c06e111d84216396baefeb7fed397f303d5cb84a33f1e8b485c4a22da_u256);
 }
 
@@ -554,7 +554,7 @@ TEST_P(sivm, revert)
     s += "600260edfd";  // REVERT(ee,1)
     execute(s);
     EXPECT_EQ(gas_used, 39);
-    EXPECT_EQ(result.status_code, EVMC_REVERT);
+    EXPECT_EQ(result.status_code, SIVMC_REVERT);
     ASSERT_EQ(result.output_size, 2);
     EXPECT_EQ(result.output_data[0], 0);
     EXPECT_EQ(result.output_data[1], 0xee);
@@ -563,7 +563,7 @@ TEST_P(sivm, revert)
 TEST_P(sivm, return_empty_buffer_at_offset_0)
 {
     execute(dup1(OP_MSIZE) + OP_RETURN);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 5);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 5);
 }
 
 TEST_P(sivm, return_empty_buffer_at_high_offset)
@@ -572,19 +572,19 @@ TEST_P(sivm, return_empty_buffer_at_high_offset)
         0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1_bytes32;
 
     execute(push(0) + OP_PREVRANDAO + OP_RETURN);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
 
     execute(push(0) + OP_PREVRANDAO + OP_REVERT);
-    EXPECT_STATUS(EVMC_REVERT);
+    EXPECT_STATUS(SIVMC_REVERT);
 }
 
 TEST_P(sivm, shl)
 {
     const bytecode code = "600560011b6000526001601ff3";
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     execute(code);
     EXPECT_EQ(gas_used, 24);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 5 << 1);
 }
@@ -592,10 +592,10 @@ TEST_P(sivm, shl)
 TEST_P(sivm, shr)
 {
     const bytecode code = "600560011c6000526001601ff3";
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     execute(code);
     EXPECT_EQ(gas_used, 24);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 5 >> 1);
 }
@@ -603,10 +603,10 @@ TEST_P(sivm, shr)
 TEST_P(sivm, sar)
 {
     const bytecode code = "600160000360021d60005260016000f3";
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     execute(code);
     EXPECT_EQ(gas_used, 30);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 0xff);  // MSB of (-1 >> 2) == -1
 }
@@ -614,21 +614,21 @@ TEST_P(sivm, sar)
 TEST_P(sivm, sar_01)
 {
     const bytecode code = "600060011d60005260016000f3";
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     execute(code);
     EXPECT_EQ(gas_used, 24);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 0);
 }
 
 TEST_P(sivm, shift_overflow)
 {
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     for (auto op : {OP_SHL, OP_SHR, OP_SAR})
     {
         execute(not_(0) + 0x100 + op + ret_top());
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
         ASSERT_EQ(result.output_size, 32);
         auto a = std::accumulate(result.output_data, result.output_data + result.output_size, 0);
         EXPECT_EQ(a, op == OP_SAR ? 32 * 0xff : 0);
@@ -637,16 +637,16 @@ TEST_P(sivm, shift_overflow)
 
 TEST_P(sivm, undefined_instructions)
 {
-    for (auto i = 0; i <= EVMC_MAX_REVISION; ++i)
+    for (auto i = 0; i <= SIVMC_MAX_REVISION; ++i)
     {
-        const auto r = evmc_revision(i);
+        const auto r = sivmc_revision(i);
         for (uint8_t opcode = 0; opcode <= 0xfe; ++opcode)
         {
             if (sivmone::instr::gas_costs[r][opcode] != sivmone::instr::undefined)
                 continue;
 
             auto res = vm.execute(host, r, {}, &opcode, sizeof(opcode));
-            EXPECT_EQ(res.status_code, EVMC_UNDEFINED_INSTRUCTION)
+            EXPECT_EQ(res.status_code, SIVMC_UNDEFINED_INSTRUCTION)
                 << " for opcode " << hex(opcode) << " on revision " << r;
         }
     }
@@ -654,39 +654,39 @@ TEST_P(sivm, undefined_instructions)
 
 TEST_P(sivm, undefined_instruction_analysis_overflow)
 {
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
 
     execute(bytecode{"0c"});  // undefined opcode
-    EXPECT_EQ(result.status_code, EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_EQ(result.status_code, SIVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(sivm, undefined_instruction_block_cost_negative)
 {
-    // For undefined instructions EVMC instruction tables have cost -1.
+    // For undefined instructions SIVMC instruction tables have cost -1.
     // If naively counted block costs can become negative.
 
     const auto max_gas = std::numeric_limits<int64_t>::max();
 
     const auto code1 = bytecode{} + "0f";  // Block cost -1.
     execute(max_gas, code1);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(SIVMC_UNDEFINED_INSTRUCTION);
 
     const auto code2 = bytecode{} + OP_JUMPDEST + "c6" + "4b" + OP_STOP;  // Block cost -1.
     execute(max_gas, code2);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(SIVMC_UNDEFINED_INSTRUCTION);
 
     const auto code3 = bytecode{} + OP_ADDRESS + "2a" + "2b" + "2c" + "2d";  // Block cost -2.
     execute(max_gas, code3);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(SIVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(sivm, abort)
 {
-    for (auto r = 0; r <= EVMC_MAX_REVISION; ++r)
+    for (auto r = 0; r <= SIVMC_MAX_REVISION; ++r)
     {
         auto opcode = uint8_t{0xfe};
-        auto res = vm.execute(host, evmc_revision(r), {}, &opcode, sizeof(opcode));
-        EXPECT_EQ(res.status_code, EVMC_INVALID_INSTRUCTION);
+        auto res = vm.execute(host, sivmc_revision(r), {}, &opcode, sizeof(opcode));
+        EXPECT_EQ(res.status_code, SIVMC_INVALID_INSTRUCTION);
     }
 }
 
@@ -694,13 +694,13 @@ TEST_P(sivm, staticmode)
 {
     auto code_prefix = 1 + 6 * OP_DUP1;
 
-    rev = EVMC_PETERSBURG;
+    rev = SIVMC_SILA_CONSTANTINOPLE_FIX;
     for (auto op : {OP_SSTORE, OP_LOG0, OP_LOG1, OP_LOG2, OP_LOG3, OP_LOG4, OP_CALL, OP_CREATE,
              OP_CREATE2, OP_SELFDESTRUCT})
     {
-        msg.flags |= EVMC_STATIC;
+        msg.flags |= SIVMC_STATIC;
         execute(code_prefix + hex(op));
-        EXPECT_EQ(result.status_code, EVMC_STATIC_MODE_VIOLATION) << hex(op);
+        EXPECT_EQ(result.status_code, SIVMC_STATIC_MODE_VIOLATION) << hex(op);
         EXPECT_EQ(result.gas_left, 0);
     }
 }
@@ -711,10 +711,10 @@ TEST_P(sivm, max_code_size_push1)
     ASSERT_EQ(code.size(), sivmone::MAX_CODE_SIZE);
 
     execute(code);
-    EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+    EXPECT_STATUS(SIVMC_STACK_OVERFLOW);
 
     execute({code.data(), code.size() - 1});
-    EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+    EXPECT_STATUS(SIVMC_STACK_OVERFLOW);
 }
 
 TEST_P(sivm, reverse_16_stack_items)
@@ -742,7 +742,7 @@ TEST_P(sivm, reverse_16_stack_items)
 
     execute(code);
 
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
     ASSERT_EQ(result.output_size, n);
     EXPECT_EQ(hex({result.output_data, result.output_size}), "0102030405060708090a0b0c0d0e0f10");
 }

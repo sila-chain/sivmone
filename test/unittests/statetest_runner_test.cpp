@@ -5,10 +5,10 @@
 /// Tests of what the state test runner reports when a fixture does not hold. Those paths run only
 /// when sivmone disagrees with a fixture, which a green EEST run never does.
 
-#include <evmc/evmc.hpp>
-#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <sivmc/sivmc.hpp>
+#include <sivmone/sivmone.h>
 #include <test/utils/statetest.hpp>
 
 #include <sstream>
@@ -154,7 +154,7 @@ Run run(std::string_view fixture, bool trace_summary = false, bool state_diff = 
     std::ostringstream output;
     std::vector<Failure> failures;
     TestReport report{[&](const Failure& failure) { failures.push_back(failure); }};
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
     for (const auto& t : tests)
         run_state_test(t, vm,
             {.output = output, .trace_summary = trace_summary, .state_diff = state_diff}, report);

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 #include <test/utils/test_report.hpp>
 #include <filesystem>
 #include <optional>
@@ -100,6 +100,6 @@ struct RunOptions
 /// Runs every selected fixture of one fixture file, which together are one test, and returns
 /// what each produced. A file which holds no fixture, or does not parse, is the one result.
 [[nodiscard]] std::vector<Result> run_fixture_file(
-    const std::filesystem::path& path, const RunOptions& options, evmc::VM& vm);
+    const std::filesystem::path& path, const RunOptions& options, sivmc::VM& vm);
 
 }  // namespace sivmone::test

@@ -5,7 +5,7 @@
 
 #include "ecc.hpp"
 #include "hash_types.h"
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 #include <optional>
 
 namespace sivmone::crypto::secp256k1
@@ -52,10 +52,10 @@ std::optional<Curve::Fp> field_sqrt(const Curve::Fp& x) noexcept;
 std::optional<Curve::Fp> calculate_y(const Curve::Fp& x, bool y_parity) noexcept;
 
 /// Hash the secp256k1 uncompressed public key to Sila address.
-evmc::address to_address(std::span<const uint8_t, 64> pubkey) noexcept;
+sivmc::address to_address(std::span<const uint8_t, 64> pubkey) noexcept;
 
 /// Convert the secp256k1 point (uncompressed public key) to Sila address.
-evmc::address to_address(const AffinePoint& pt) noexcept;
+sivmc::address to_address(const AffinePoint& pt) noexcept;
 
 /// The strictness of the signer recovery from a signature.
 enum class RecoveryMode : bool
@@ -71,7 +71,7 @@ std::optional<AffinePoint> secp256k1_ecdsa_recover(std::span<const uint8_t, 32> 
 /// Recovers the address that signed the message @p hash.
 ///
 /// TODO: Make strict mode the default.
-std::optional<evmc::address> ecrecover(std::span<const uint8_t, 32> hash,
+std::optional<sivmc::address> ecrecover(std::span<const uint8_t, 32> hash,
     std::span<const uint8_t, 32> r_bytes, std::span<const uint8_t, 32> s_bytes, bool parity,
     RecoveryMode mode = RecoveryMode::malleable) noexcept;
 

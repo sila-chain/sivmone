@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <test/state/requests.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::state;
 
 TEST(state_deposit_requests, collect_invalid_deposit_requests)

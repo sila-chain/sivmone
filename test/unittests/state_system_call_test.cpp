@@ -2,21 +2,21 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <sivmone/sivmone.h>
 #include <gtest/gtest.h>
+#include <sivmone/sivmone.h>
 #include <test/state/state.hpp>
 #include <test/state/system_contracts.hpp>
 #include <test/utils/bytecode.hpp>
 #include <test/utils/test_state.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::state;
 using namespace sivmone::test;
 
 class state_system_call : public testing::Test
 {
 protected:
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
     TestState state;
     TestBlockHashes block_hashes;
 };
@@ -24,10 +24,10 @@ protected:
 TEST_F(state_system_call, non_existient)
 {
     // Use MAX revision to invoke all activate system contracts.
-    system_call_block_start(state, {}, block_hashes, EVMC_MAX_REVISION, vm);
+    system_call_block_start(state, {}, block_hashes, SIVMC_MAX_REVISION, vm);
     EXPECT_EQ(state.size(), 0) << "State must remain unchanged";
 
-    system_call_block_end(state, {}, block_hashes, EVMC_MAX_REVISION, vm);
+    system_call_block_end(state, {}, block_hashes, SIVMC_MAX_REVISION, vm);
     EXPECT_EQ(state.size(), 0) << "State must remain unchanged";
 }
 
@@ -37,7 +37,7 @@ TEST_F(state_system_call, beacon_roots)
     state[BEACON_ROOTS_ADDRESS] = {
         .code = sstore(OP_NUMBER, calldataload(0)) + sstore(0, OP_CALLER)};
 
-    system_call_block_start(state, block, block_hashes, EVMC_CANCUN, vm);
+    system_call_block_start(state, block, block_hashes, SIVMC_SILA_CANCUN, vm);
 
     ASSERT_EQ(state.size(), 1);
     EXPECT_FALSE(state.contains(SYSTEM_ADDRESS));
@@ -58,7 +58,7 @@ TEST_F(state_system_call, history_storage)
     state[HISTORY_STORAGE_ADDRESS] = {
         .code = sstore(OP_NUMBER, calldataload(0)) + sstore(0, OP_CALLER)};
 
-    system_call_block_start(state, block, block_hashes, EVMC_PRAGUE, vm);
+    system_call_block_start(state, block, block_hashes, SIVMC_SILA_PRAGUE, vm);
 
     ASSERT_EQ(state.size(), 1);
     EXPECT_FALSE(state.contains(SYSTEM_ADDRESS));
@@ -80,7 +80,7 @@ TEST_F(state_system_call, withdrawal)
     // The consolidation system contract must not be empty and should not fail.
     state[CONSOLIDATION_REQUEST_ADDRESS].code = bytecode{OP_STOP};
 
-    const auto r = system_call_block_end(state, block, block_hashes, EVMC_PRAGUE, vm);
+    const auto r = system_call_block_end(state, block, block_hashes, SIVMC_SILA_PRAGUE, vm);
     ASSERT_TRUE(std::holds_alternative<std::vector<Requests>>(r));
     const auto& requests = std::get<std::vector<Requests>>(r);
 
@@ -108,7 +108,7 @@ TEST_F(state_system_call, consolidation)
     // The withdrawal system contract must not be empty and should not fail.
     state[WITHDRAWAL_REQUEST_ADDRESS].code = bytecode{OP_STOP};
 
-    const auto r = system_call_block_end(state, block, block_hashes, EVMC_PRAGUE, vm);
+    const auto r = system_call_block_end(state, block, block_hashes, SIVMC_SILA_PRAGUE, vm);
     ASSERT_TRUE(std::holds_alternative<std::vector<Requests>>(r));
     const auto& requests = std::get<std::vector<Requests>>(r);
 

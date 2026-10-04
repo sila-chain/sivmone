@@ -2,15 +2,15 @@
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/evmc.hpp>
+#include <gtest/gtest.h>
+#include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <sivmone_precompiles/kzg.hpp>
 #include <sivmone_precompiles/kzg_precomputed_lines.hpp>
 #include <sivmone_precompiles/sha256.hpp>
-#include <gtest/gtest.h>
-#include <intx/intx.hpp>
 #include <span>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::crypto;
 
 namespace

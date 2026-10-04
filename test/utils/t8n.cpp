@@ -4,8 +4,8 @@
 
 #include "t8n.hpp"
 #include <nlohmann/json.hpp>
-#include <test/state/silash_difficulty.hpp>
 #include <test/state/requests.hpp>
+#include <test/state/silash_difficulty.hpp>
 #include <test/utils/block_transition.hpp>
 #include <test/utils/mpt_hash.hpp>
 #include <test/utils/rlp.hpp>
@@ -20,7 +20,7 @@ namespace sivmone::tooling
 using JSON = nlohmann::json;
 using namespace sivmone::test;
 
-void t8n(evmc::VM& vm, const T8NArgs& args)
+void t8n(sivmc::VM& vm, const T8NArgs& args)
 {
     const auto rev = args.rev;
 
@@ -64,11 +64,11 @@ void t8n(evmc::VM& vm, const T8NArgs& args)
         j_result["currentDifficulty"] = hex0x(current_difficulty);
         block.difficulty = current_difficulty;
 
-        if (rev < EVMC_PARIS)  // Override prev_randao with difficulty pre-Merge
+        if (rev < SIVMC_SILA_PARIS)  // Override prev_randao with difficulty pre-Merge
             block.prev_randao = intx::be::store<bytes32>(intx::uint256{current_difficulty});
     }
 
-    if (rev >= EVMC_LONDON)
+    if (rev >= SIVMC_SILA_LONDON)
         j_result["currentBaseFee"] = hex0x(block.base_fee);
 
     const auto blob_gas_limit = static_cast<int64_t>(state::max_blob_gas_per_block(blob_params));
@@ -156,7 +156,7 @@ void t8n(evmc::VM& vm, const T8NArgs& args)
                 // SIP-658 status. Emit both, as go-sila does: the root takes precedence.
                 j_receipt["root"] =
                     receipt.post_state.has_value() ? hex0x(*receipt.post_state) : "";
-                j_receipt["status"] = hex0x(uint64_t{receipt.status == EVMC_SUCCESS});
+                j_receipt["status"] = hex0x(uint64_t{receipt.status == SIVMC_SUCCESS});
                 j_receipt["transactionIndex"] = hex0x(i);
                 transactions.emplace_back(std::move(txs[i]));
             }
@@ -182,18 +182,18 @@ void t8n(evmc::VM& vm, const T8NArgs& args)
 
     j_result["logsBloom"] = hex0x(bloom);
     j_result["receiptsRoot"] = hex0x(state::mpt_hash(receipts));
-    if (rev >= EVMC_SHANGHAI)
+    if (rev >= SIVMC_SILA_SHANGHAI)
         j_result["withdrawalsRoot"] = hex0x(state::mpt_hash(block.withdrawals));
 
     j_result["txRoot"] = hex0x(state::mpt_hash(transactions));
     j_result["gasUsed"] = hex0x(gas_used);
-    if (rev >= EVMC_CANCUN)
+    if (rev >= SIVMC_SILA_CANCUN)
     {
         j_result["blobGasUsed"] = hex0x(blob_gas_limit - blob_gas_left);
         if (block.excess_blob_gas.has_value())
             j_result["currentExcessBlobGas"] = hex0x(*block.excess_blob_gas);
     }
-    if (rev >= EVMC_PRAGUE)
+    if (rev >= SIVMC_SILA_PRAGUE)
     {
         // SIP-7685: General purpose execution layer requests
         j_result["requests"] = JSON::array();

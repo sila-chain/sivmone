@@ -2,8 +2,8 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <sivmone/sivmone.h>
 #include <gmock/gmock.h>
+#include <sivmone/sivmone.h>
 #include <test/utils/bytecode.hpp>
 #include <test/utils/run.hpp>
 #include <sstream>
@@ -15,10 +15,10 @@ using namespace testing;
 
 TEST(tooling_run, execute)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
     const auto code = push(1);
     std::ostringstream out;
-    const auto rc = run(vm, EVMC_OSAKA, 100, code, {}, false, false, out);
+    const auto rc = run(vm, SIVMC_SILA_OSAKA, 100, code, {}, false, false, out);
     EXPECT_EQ(rc, 0);
     EXPECT_THAT(out.str(), HasSubstr("Executing"));
     EXPECT_THAT(out.str(), HasSubstr("SilaOsaka"));
@@ -28,10 +28,10 @@ TEST(tooling_run, execute)
 
 TEST(tooling_run, create)
 {
-    evmc::VM vm{evmc_create_sivmone()};
+    sivmc::VM vm{sivmc_create_sivmone()};
     const auto code = mstore(0, 0x5f) + ret(31, 1);
     std::ostringstream out;
-    const auto rc = run(vm, EVMC_OSAKA, 100, code, {}, true, false, out);
+    const auto rc = run(vm, SIVMC_SILA_OSAKA, 100, code, {}, true, false, out);
     EXPECT_EQ(rc, 0);
     EXPECT_THAT(out.str(), HasSubstr("Creating"));
     EXPECT_THAT(out.str(), HasSubstr("SilaOsaka"));

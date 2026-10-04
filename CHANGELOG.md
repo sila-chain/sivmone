@@ -12,9 +12,11 @@ sivmone, the Sila Virtual Machine (Sivm) implementation, starts here.
 ### Changed
 
 - The project, its libraries, headers, CMake targets and options, binaries and the
-  exported `evmc_create_sivmone` symbol are named sivmone.
+  exported `sivmc_create_sivmone` symbol are named sivmone.
 - Revisions are named after the Sila forks (`SilaHomestead` … `SilaAmsterdam`,
   `SIP150`, `SIP158`) through `sivm_revision_to_string()`; each revision has a single name.
+- The VM API is [SIVMC] (the `sivmc` submodule) and the build uses [Cable] (the `cmake/cable`
+  submodule); the revisions are the SIVMC ones (`SIVMC_SILA_HOMESTEAD`, `SIVMC_SIP150` …).
 - The benchmarks come from [sivm-benchmarks], generated for `SilaLondon`.
 - Improvement proposals are referenced as SIPs.
 - The vendored Keccak implementation is named silash.
@@ -22,5 +24,7 @@ sivmone, the Sila Virtual Machine (Sivm) implementation, starts here.
 
 [Unreleased]: https://github.com/sila-chain/sivmone/commits/master
 [sivm-benchmarks]: https://github.com/sila-chain/sivm-benchmarks
+[SIVMC]: https://github.com/sila-chain/sivmc
+[Cable]: https://github.com/sila-chain/cable
 [Keep a Changelog]: https://keepachangelog.com/en/1.1.0/
 [Semantic Versioning]: https://semver.org

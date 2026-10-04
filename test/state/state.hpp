@@ -31,7 +31,7 @@ class State
 
     struct JournalAccountFlags : JournalBase
     {
-        evmc_access_status access_status;
+        sivmc_access_status access_status;
         bool nonexistent;
         bool destructed;
         bool erase_if_empty;
@@ -41,7 +41,7 @@ class State
     {
         StorageValue* slot = nullptr;  ///< Storage slot in a node-based container (stable refs).
         bytes32 prev_value;
-        evmc_access_status prev_access_status;
+        sivmc_access_status prev_access_status;
     };
 
     struct JournalTransientStorageChange
@@ -92,7 +92,7 @@ public:
 
     StorageValue& get_storage(const address& addr, const bytes32& key);
 
-    StateDiff build_diff(evmc_revision rev) const;
+    StateDiff build_diff(sivmc_revision rev) const;
 
     /// Returns the state journal checkpoint. It can be later used to in rollback()
     /// to revert changes newer than the checkpoint.
@@ -130,7 +130,7 @@ public:
 ///
 /// Applies block reward to coinbase, withdrawals (post Shanghai) and deletes empty touched accounts
 /// (post Spurious Dragon).
-[[nodiscard]] StateDiff finalize(const StateView& state_view, evmc_revision rev,
+[[nodiscard]] StateDiff finalize(const StateView& state_view, sivmc_revision rev,
     const address& coinbase, std::optional<uint64_t> block_reward, std::span<const Ommer> ommers,
     std::span<const Withdrawal> withdrawals);
 
@@ -138,7 +138,7 @@ public:
 ///
 /// @return Transaction receipt with state diff.
 TransactionReceipt transition(const StateView& state, const BlockInfo& block,
-    const BlockHashes& block_hashes, const Transaction& tx, evmc_revision rev, evmc::VM& vm,
+    const BlockHashes& block_hashes, const Transaction& tx, sivmc_revision rev, sivmc::VM& vm,
     const TransactionProperties& tx_props);
 
 /// Validate a transaction.
@@ -146,6 +146,6 @@ TransactionReceipt transition(const StateView& state, const BlockInfo& block,
 /// @param block_state_gas_left  Remaining block state-gas (SIP-8037).
 /// @return The transaction's computed gas properties or a validation error.
 [[nodiscard]] std::variant<TransactionProperties, std::error_code> validate_transaction(
-    const StateView& state_view, const BlockInfo& block, const Transaction& tx, evmc_revision rev,
+    const StateView& state_view, const BlockInfo& block, const Transaction& tx, sivmc_revision rev,
     int64_t block_gas_left, int64_t block_state_gas_left, int64_t blob_gas_left) noexcept;
 }  // namespace sivmone::state

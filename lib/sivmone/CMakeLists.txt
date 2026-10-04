@@ -34,7 +34,7 @@ add_library(sivmone
     vm.hpp
 )
 target_compile_features(sivmone PUBLIC cxx_std_20)
-target_link_libraries(sivmone PUBLIC evmc::evmc intx::intx PRIVATE sivmone::precompiles)
+target_link_libraries(sivmone PUBLIC sivmc::sivmc intx::intx PRIVATE sivmone::precompiles)
 
 # Nested Sivm calls recurse ~2.6 KB of stack per frame, too much for Windows' 1 MB default.
 target_link_options(sivmone INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/STACK:8388608>)

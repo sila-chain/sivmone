@@ -8,7 +8,7 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, precompile_proxy)
@@ -16,7 +16,7 @@ TEST_F(state_transition, precompile_proxy)
     // Redirects the calldata input to the contract at the address of the callvalue.
     // Then stores the return code and the output in the storage.
 
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     static constexpr auto PRECOMPILE_PROXY = 0x707265636f6d70696c652070726f7879_address;
 
     const auto store_loop_head = 29;

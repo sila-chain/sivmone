@@ -2,9 +2,9 @@
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/bytes.hpp>
-#include <sivmone_precompiles/bls.hpp>
 #include <gtest/gtest.h>
+#include <sivmc/bytes.hpp>
+#include <sivmone_precompiles/bls.hpp>
 #include <test/utils/utils.hpp>
 #include <array>
 
@@ -13,7 +13,7 @@ using sivmone::test::operator""_hex;
 namespace
 {
 /// G1 group point at infinity.
-const auto G1_inf = evmc::bytes(128, 0);
+const auto G1_inf = sivmc::bytes(128, 0);
 /// G1 subgroup generator.
 const auto G1_1 =
     "0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1"_hex;
@@ -25,7 +25,7 @@ const auto G1_3 =
     "000000000000000000000000000000000a40300ce2dec9888b60690e9a41d3004fda4886854573974fab73b046d3147ba5b7a5bde85279ffede1b45b3918d82d0000000000000000000000000000000006d3d887e9f53b9ec4eb6cedf5607226754b07c01ace7834f57f3e7315faefb739e59018e22c492006190fba4a870025"_hex;
 
 /// G2 group point at infinity.
-const auto G2_inf = evmc::bytes(256, 0);
+const auto G2_inf = sivmc::bytes(256, 0);
 /// G2 subgroup generator.
 const auto G2_1 =
     "00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be"_hex;
@@ -58,8 +58,8 @@ TEST(bls, g1_add)
     const auto expected_y =
         "0000000000000000000000000000000006d3d887e9f53b9ec4eb6cedf5607226754b07c01ace7834f57f3e7315faefb739e59018e22c492006190fba4a870025"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g1_add_not_on_curve)
@@ -116,8 +116,8 @@ TEST(bls, g1_mul)
     const auto expected_y =
         "00000000000000000000000000000000166a9d8cabc673a322fda673779d8e3822ba3ecb8670e461f73bb9021d5fd76a4c56d9d4cd16bd1bba86881979749d28"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g2_add)
@@ -141,8 +141,8 @@ TEST(bls, g2_add)
     const auto expected_y =
         "0000000000000000000000000000000014e60a76a29ef85cbd69f251b9f29147b67cfe3ed2823d3f9776b3a0efd2731941d47436dc6d2b58d9e65f8438bad073000000000000000000000000000000001586c3c910d95754fef7a732df78e279c3d37431c6a2b77e67a00c7c130a8fcd4d19f159cbeb997a178108fffffcbd20"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g2_mul)
@@ -163,13 +163,13 @@ TEST(bls, g2_mul)
     const auto expected_y =
         "000000000000000000000000000000000468fb440d82b0630aeb8dca2b5256789a66da69bf91009cbfe6bd221e47aa8ae88dece9764bf3bd999d95d71e4c9899000000000000000000000000000000000f6d4552fa65dd2638b361543f887136a43253d9c66c411697003f7a13c308f5422e1aa0a59c8967acdefd8b6e36ccf3"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g1_msm)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f17"
         "1bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e"
@@ -185,13 +185,13 @@ TEST(bls, g1_msm)
     const auto expected_y =
         "00000000000000000000000000000000166a9d8cabc673a322fda673779d8e3822ba3ecb8670e461f73bb9021d5fd76a4c56d9d4cd16bd1bba86881979749d28"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g1_msm_inf_0)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e10000000000000000000000000000000000000000000000000000000000000000"_hex;
     uint8_t rx[64];
@@ -204,13 +204,13 @@ TEST(bls, g1_msm_inf_0)
     const auto expected_y =
         "00000000000000000000000000000000166a9d8cabc673a322fda673779d8e3822ba3ecb8670e461f73bb9021d5fd76a4c56d9d4cd16bd1bba86881979749d28"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g1_msm_inf_2)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002"_hex;
     uint8_t rx[64];
@@ -223,19 +223,19 @@ TEST(bls, g1_msm_inf_2)
     const auto expected_y =
         "00000000000000000000000000000000166a9d8cabc673a322fda673779d8e3822ba3ecb8670e461f73bb9021d5fd76a4c56d9d4cd16bd1bba86881979749d28"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g1_msm_inf_3)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
 
     const auto P0 =
         "0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f17"
         "1bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e"
         "30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1"_hex;
-    const auto P_INF = evmc::bytes(P0.size(), 0);
+    const auto P_INF = sivmc::bytes(P0.size(), 0);
     const auto ONE = "0000000000000000000000000000000000000000000000000000000000000001"_hex;
 
 
@@ -251,13 +251,13 @@ TEST(bls, g1_msm_inf_3)
     const auto expected_y =
         "00000000000000000000000000000000166a9d8cabc673a322fda673779d8e3822ba3ecb8670e461f73bb9021d5fd76a4c56d9d4cd16bd1bba86881979749d28"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g2_msm)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0000000000000000000000000000000000000000000000000000000000000002"_hex;
     uint8_t rx[128];
@@ -270,13 +270,13 @@ TEST(bls, g2_msm)
     const auto expected_y =
         "000000000000000000000000000000000468fb440d82b0630aeb8dca2b5256789a66da69bf91009cbfe6bd221e47aa8ae88dece9764bf3bd999d95d71e4c9899000000000000000000000000000000000f6d4552fa65dd2638b361543f887136a43253d9c66c411697003f7a13c308f5422e1aa0a59c8967acdefd8b6e36ccf3"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g2_msm_inf_0)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0000000000000000000000000000000000000000000000000000000000000000"_hex;
     uint8_t rx[128];
@@ -289,13 +289,13 @@ TEST(bls, g2_msm_inf_0)
     const auto expected_y =
         "000000000000000000000000000000000468fb440d82b0630aeb8dca2b5256789a66da69bf91009cbfe6bd221e47aa8ae88dece9764bf3bd999d95d71e4c9899000000000000000000000000000000000f6d4552fa65dd2638b361543f887136a43253d9c66c411697003f7a13c308f5422e1aa0a59c8967acdefd8b6e36ccf3"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g2_msm_inf_2)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002"_hex;
     uint8_t rx[128];
@@ -308,13 +308,13 @@ TEST(bls, g2_msm_inf_2)
     const auto expected_y =
         "000000000000000000000000000000000468fb440d82b0630aeb8dca2b5256789a66da69bf91009cbfe6bd221e47aa8ae88dece9764bf3bd999d95d71e4c9899000000000000000000000000000000000f6d4552fa65dd2638b361543f887136a43253d9c66c411697003f7a13c308f5422e1aa0a59c8967acdefd8b6e36ccf3"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, g2_msm_inf_3)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     const auto P0 =
         "00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647a"
         "e3d1770bac0326a805bbefd48056c8c121bdb8"
@@ -325,7 +325,7 @@ TEST(bls, g2_msm_inf_3)
         "000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab57"
         "2e99ab3f370d275cec1da1aaa9075ff05f79be"_hex;
     const auto ONE = "0000000000000000000000000000000000000000000000000000000000000001"_hex;
-    const auto P_INF = evmc::bytes(P0.size(), 0);
+    const auto P_INF = sivmc::bytes(P0.size(), 0);
 
     const auto input = P0 + ONE + P_INF + ONE + P0 + ONE;
 
@@ -339,13 +339,13 @@ TEST(bls, g2_msm_inf_3)
     const auto expected_y =
         "000000000000000000000000000000000468fb440d82b0630aeb8dca2b5256789a66da69bf91009cbfe6bd221e47aa8ae88dece9764bf3bd999d95d71e4c9899000000000000000000000000000000000f6d4552fa65dd2638b361543f887136a43253d9c66c411697003f7a13c308f5422e1aa0a59c8967acdefd8b6e36ccf3"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, map_fp_to_g1)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "00000000000000000000000000000000156c8a6a2c184569d69a76be144b5cdc5141d2d2ca4fe341f011e25e3969c55ad9e9b9ce2eb833c81a908e5fa4ac5f03"_hex;
     uint8_t rx[64];
@@ -358,13 +358,13 @@ TEST(bls, map_fp_to_g1)
     const auto expected_y =
         "0000000000000000000000000000000004407b8d35af4dacc809927071fc0405218f1401a6d15af775810e4e460064bcc9468beeba82fdc751be70476c888bf3"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 TEST(bls, map_fp2_to_g2)
 {
-    using namespace evmc::literals;
+    using namespace sivmc::literals;
     auto input =
         "0000000000000000000000000000000007355d25caf6e7f2f0cb2812ca0e513bd026ed09dda65b177500fa31714e09ea0ded3a078b526bed3307f804d4b93b040000000000000000000000000000000002829ce3c021339ccb5caf3e187f6370e1e2a311dec9b75363117063ab2015603ff52c3d3b98f19c2f65575e99e8b78c"_hex;
     uint8_t rx[128];
@@ -377,8 +377,8 @@ TEST(bls, map_fp2_to_g2)
     const auto expected_y =
         "000000000000000000000000000000000caead0fd7b6176c01436833c79d305c78be307da5f6af6c133c47311def6ff1e0babf57a0fb5539fce7ee12407b0a42000000000000000000000000000000001498aadcf7ae2b345243e281ae076df6de84455d766ab6fcdaad71fab60abb2e8b980a440043cd305db09d283c895e3d"_hex;
 
-    EXPECT_EQ(evmc::bytes_view(rx, sizeof rx), expected_x);
-    EXPECT_EQ(evmc::bytes_view(ry, sizeof ry), expected_y);
+    EXPECT_EQ(sivmc::bytes_view(rx, sizeof rx), expected_x);
+    EXPECT_EQ(sivmc::bytes_view(ry, sizeof ry), expected_y);
 }
 
 
@@ -392,8 +392,8 @@ TEST(bls, pairing_input_test)
         EXPECT_TRUE(sivmone::crypto::bls::g1_add(
             r, &r[64], input.data(), &input[64], &input[128], &input[192]));
 
-        EXPECT_EQ(evmc::bytes_view(r, 64), evmc::bytes_view(G1_3.data(), 64));
-        EXPECT_EQ(evmc::bytes_view(&r[64], 64), evmc::bytes_view(&G1_3[64], 64));
+        EXPECT_EQ(sivmc::bytes_view(r, 64), sivmc::bytes_view(G1_3.data(), 64));
+        EXPECT_EQ(sivmc::bytes_view(&r[64], 64), sivmc::bytes_view(&G1_3[64], 64));
     }
 
     // G2_1 + G2_m1 == Inf => G2_1 = -G2_m1
@@ -404,8 +404,8 @@ TEST(bls, pairing_input_test)
         EXPECT_TRUE(sivmone::crypto::bls::g2_add(
             r, &r[128], input.data(), &input[128], &input[256], &input[384]));
 
-        EXPECT_EQ(evmc::bytes_view(r, 128), evmc::bytes_view(G2_inf.data(), 128));
-        EXPECT_EQ(evmc::bytes_view(&r[128], 128), evmc::bytes_view(&G2_inf[128], 128));
+        EXPECT_EQ(sivmc::bytes_view(r, 128), sivmc::bytes_view(G2_inf.data(), 128));
+        EXPECT_EQ(sivmc::bytes_view(&r[128], 128), sivmc::bytes_view(&G2_inf[128], 128));
     }
 }
 
@@ -417,7 +417,7 @@ TEST(bls, paring_check_three_pairs_correct)
     const auto input = (G1_1 + G2_1) + (G1_2 + G2_1) + (G1_3 + G2_m1);
     uint8_t r[32];
     EXPECT_TRUE(sivmone::crypto::bls::pairing_check(r, input.data(), input.size()));
-    EXPECT_EQ(evmc::bytes_view(r, std::size(r)), RESULT_ONE);
+    EXPECT_EQ(sivmc::bytes_view(r, std::size(r)), RESULT_ONE);
 }
 
 TEST(bls, paring_check_two_pairs_incorrect)
@@ -425,7 +425,7 @@ TEST(bls, paring_check_two_pairs_incorrect)
     const auto input = (G1_1 + G2_1) + (G1_2 + G2_m1);
     uint8_t r[32];
     EXPECT_TRUE(sivmone::crypto::bls::pairing_check(r, input.data(), input.size()));
-    EXPECT_EQ(evmc::bytes_view(r, std::size(r)), RESULT_ZERO);
+    EXPECT_EQ(sivmc::bytes_view(r, std::size(r)), RESULT_ZERO);
 }
 
 TEST(bls, paring_check_one_pair_g1_inf)
@@ -433,7 +433,7 @@ TEST(bls, paring_check_one_pair_g1_inf)
     const auto input = G1_inf + G2_1;
     uint8_t r[32];
     EXPECT_TRUE(sivmone::crypto::bls::pairing_check(r, input.data(), input.size()));
-    EXPECT_EQ(evmc::bytes_view(r, sizeof r), RESULT_ONE);
+    EXPECT_EQ(sivmc::bytes_view(r, sizeof r), RESULT_ONE);
 }
 
 TEST(bls, paring_check_one_pair_g2_inf)
@@ -441,7 +441,7 @@ TEST(bls, paring_check_one_pair_g2_inf)
     const auto input = G1_1 + G2_inf;
     uint8_t r[32];
     EXPECT_TRUE(sivmone::crypto::bls::pairing_check(r, input.data(), input.size()));
-    EXPECT_EQ(evmc::bytes_view(r, sizeof r), RESULT_ONE);
+    EXPECT_EQ(sivmc::bytes_view(r, sizeof r), RESULT_ONE);
 }
 
 TEST(bls, paring_check_two_pairs_g1_inf)
@@ -449,7 +449,7 @@ TEST(bls, paring_check_two_pairs_g1_inf)
     const auto input = (G1_1 + G2_1) + (G1_inf + G2_1);
     uint8_t r[32];
     EXPECT_TRUE(sivmone::crypto::bls::pairing_check(r, input.data(), input.size()));
-    EXPECT_EQ(evmc::bytes_view(r, sizeof r), RESULT_ZERO);
+    EXPECT_EQ(sivmc::bytes_view(r, sizeof r), RESULT_ZERO);
 }
 
 TEST(bls, paring_check_two_pairs_g2_inf)
@@ -457,5 +457,5 @@ TEST(bls, paring_check_two_pairs_g2_inf)
     const auto input = (G1_1 + G2_inf) + (G1_2 + G2_1);
     uint8_t r[32];
     EXPECT_TRUE(sivmone::crypto::bls::pairing_check(r, input.data(), input.size()));
-    EXPECT_EQ(evmc::bytes_view(r, sizeof r), RESULT_ZERO);
+    EXPECT_EQ(sivmc::bytes_view(r, sizeof r), RESULT_ZERO);
 }

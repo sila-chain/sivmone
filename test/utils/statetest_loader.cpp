@@ -6,14 +6,14 @@
 #include "statetest.hpp"
 #include "stdx/utility.hpp"
 #include "utils.hpp"
-#include <sivmone/delegation.hpp>
 #include <nlohmann/json.hpp>
+#include <sivmone/delegation.hpp>
 #include <test/state/precompiles.hpp>
 
 namespace sivmone::test
 {
 namespace json = nlohmann;
-using evmc::from_hex;
+using sivmc::from_hex;
 
 template <>
 uint8_t from_json<uint8_t>(const json::json& j)
@@ -93,7 +93,7 @@ bytes from_json<bytes>(const json::json& j)
 template <>
 address from_json<address>(const json::json& j)
 {
-    const auto v = evmc::from_hex<address>(j.get<std::string>());
+    const auto v = sivmc::from_hex<address>(j.get<std::string>());
     if (!v.has_value())
         throw std::invalid_argument("from_json<address>: must be hexadecimal string");
     return *v;
@@ -106,7 +106,7 @@ hash256 from_json<hash256>(const json::json& j)
     if (s == "0" || s == "0x0")  // Special case to handle "0". Required by exec-spec-tests.
         return 0x00_bytes32;     // TODO: Get rid of it.
 
-    const auto opt_hash = evmc::from_hex<hash256>(s);
+    const auto opt_hash = sivmc::from_hex<hash256>(s);
     if (!opt_hash)
         throw std::invalid_argument("invalid hash: " + s);
     return *opt_hash;
@@ -222,7 +222,7 @@ state::Withdrawal from_json<state::Withdrawal>(const json::json& j)
 }
 
 state::BlockInfo from_json_with_rev(
-    const json::json& j, evmc_revision rev, state::BlobParams blob_params)
+    const json::json& j, sivmc_revision rev, state::BlobParams blob_params)
 {
     // When prev_randao is not defined init it with the difficulty value.
     bytes32 prev_randao;
@@ -256,8 +256,8 @@ state::BlockInfo from_json_with_rev(
     {
         for (const auto& ommer : *ommers_it)
         {
-            ommers.push_back(
-                {from_json<evmc::address>(ommer.at("address")), ommer.at("delta").get<uint32_t>()});
+            ommers.push_back({from_json<sivmc::address>(ommer.at("address")),
+                ommer.at("delta").get<uint32_t>()});
         }
     }
 
@@ -279,7 +279,7 @@ state::BlockInfo from_json_with_rev(
         .timestamp = from_json<int64_t>(j.at("currentTimestamp")),
         .parent_timestamp = load_or<int64_t>(j, "parentTimestamp", 0),
         .gas_limit = from_json<int64_t>(j.at("currentGasLimit")),
-        .coinbase = from_json<evmc::address>(j.at("currentCoinbase")),
+        .coinbase = from_json<sivmc::address>(j.at("currentCoinbase")),
         .difficulty = load_or<int64_t>(j, "currentDifficulty", 0),
         .parent_difficulty = load_or<int64_t>(j, "parentDifficulty", 0),
         .parent_ommers_hash = load_or<hash256>(j, "parentUncleHash", {}),
@@ -342,7 +342,7 @@ static void from_json_tx_common(const json::json& j, state::Transaction& o)
     if (const auto to_it = j.find("to"); to_it != j.end())
     {
         if (!to_it->is_null() && !to_it->get<std::string>().empty())
-            o.to = from_json<evmc::address>(*to_it);
+            o.to = from_json<sivmc::address>(*to_it);
     }
 
     if (const auto gas_price_it = j.find("gasPrice"); gas_price_it != j.end())
@@ -520,25 +520,25 @@ std::vector<StateTransitionTest> load_state_tests(std::istream& input)
     return json::json::parse(input).get<std::vector<StateTransitionTest>>();
 }
 
-void validate_state(const TestState& state, evmc_revision rev)
+void validate_state(const TestState& state, sivmc_revision rev)
 {
     for (const auto& [addr, acc] : state)
     {
         if (state::is_precompile(rev, addr) && !acc.code.empty())
             throw std::invalid_argument("unexpected code at precompile address " + hex0x(addr));
 
-        const bool allowedEF = (rev >= EVMC_PRAGUE && is_code_delegated(acc.code)) ||
+        const bool allowedEF = (rev >= SIVMC_SILA_PRAGUE && is_code_delegated(acc.code)) ||
                                // exceptions to SIP-3541 rule existing on Mainnet
                                acc.code == "EF"_hex || acc.code == "EFF09f918bf09f9fa9"_hex;
-        if (rev >= EVMC_LONDON && !allowedEF && !acc.code.empty() && acc.code[0] == 0xEF)
+        if (rev >= SIVMC_SILA_LONDON && !allowedEF && !acc.code.empty() && acc.code[0] == 0xEF)
             throw std::invalid_argument("unexpected code starting with 0xEF at " + hex0x(addr));
 
-        if (rev >= EVMC_PARIS && acc.code.empty() && acc.balance == 0 && acc.nonce == 0 &&
+        if (rev >= SIVMC_SILA_PARIS && acc.code.empty() && acc.balance == 0 && acc.nonce == 0 &&
             !acc.storage.empty())
             throw std::invalid_argument("empty account with non-empty storage at " + hex0x(addr));
 
-        if (rev >= EVMC_PRAGUE && is_code_delegated(acc.code) &&
-            acc.code.size() != std::size(DELEGATION_MAGIC) + sizeof(evmc::address))
+        if (rev >= SIVMC_SILA_PRAGUE && is_code_delegated(acc.code) &&
+            acc.code.size() != std::size(DELEGATION_MAGIC) + sizeof(sivmc::address))
         {
             throw std::invalid_argument(
                 "SIP-7702 delegation designator at " + hex0x(addr) + " has invalid size");

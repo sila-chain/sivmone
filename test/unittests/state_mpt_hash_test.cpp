@@ -173,7 +173,7 @@ TEST(state_mpt_hash, legacy_and_sip1559_receipt_three_logs_no_logs)
 
     TransactionReceipt receipt0{};
     receipt0.type = sivmone::state::Transaction::Type::legacy;
-    receipt0.status = EVMC_SUCCESS;
+    receipt0.status = SIVMC_SUCCESS;
     receipt0.cumulative_gas_used = 0x24522;
 
     Log l0;
@@ -223,7 +223,7 @@ TEST(state_mpt_hash, legacy_and_sip1559_receipt_three_logs_no_logs)
 
     TransactionReceipt receipt1{};
     receipt1.type = sivmone::state::Transaction::Type::sip1559;
-    receipt1.status = EVMC_SUCCESS;
+    receipt1.status = SIVMC_SUCCESS;
     receipt1.cumulative_gas_used = 0x2cd9b;
     receipt1.logs_bloom_filter = compute_bloom_filter(receipt1.logs);
 

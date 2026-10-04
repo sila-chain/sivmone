@@ -5,12 +5,12 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, extcodehash_existent)
 {
-    rev = EVMC_ISTANBUL;  // before account access
+    rev = SIVMC_SILA_ISTANBUL;  // before account access
     block.base_fee = 0;
 
     static constexpr auto EXT = 0xe4_address;
@@ -25,7 +25,7 @@ TEST_F(state_transition, extcodehash_existent)
 
 TEST_F(state_transition, extcodesize_existent)
 {
-    rev = EVMC_ISTANBUL;  // before account access
+    rev = SIVMC_SILA_ISTANBUL;  // before account access
     block.base_fee = 0;
 
     static constexpr auto EXT = 0xe4_address;

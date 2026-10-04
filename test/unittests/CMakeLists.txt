@@ -100,8 +100,8 @@ if(NOT CMAKE_CXX_CLANG_TIDY)
     target_precompile_headers(
         sivmone-unittests PRIVATE
         <intx/intx.hpp>
-        <evmc/evmc.hpp>
-        <evmc/hex.hpp>
+        <sivmc/sivmc.hpp>
+        <sivmc/hex.hpp>
         <gtest/gtest.h>
     )
 endif()

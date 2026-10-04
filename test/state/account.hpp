@@ -3,16 +3,16 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <unordered_map>
 
 namespace sivmone::state
 {
-using evmc::address;
-using evmc::bytes;
-using evmc::bytes32;
-using namespace evmc::literals;
+using sivmc::address;
+using sivmc::bytes;
+using sivmc::bytes32;
+using namespace sivmc::literals;
 
 /// The representation of the account storage value.
 struct StorageValue
@@ -23,7 +23,7 @@ struct StorageValue
     /// The original value.
     bytes32 original;
 
-    evmc_access_status access_status = EVMC_ACCESS_COLD;
+    sivmc_access_status access_status = SIVMC_ACCESS_COLD;
 };
 
 /// The state account.
@@ -57,7 +57,7 @@ struct Account
 
     /// The account access status (SIP-2929): warm once accessed earlier in the transaction.
     /// Revertible.
-    evmc_access_status access_status = EVMC_ACCESS_COLD;
+    sivmc_access_status access_status = SIVMC_ACCESS_COLD;
 
     /// The account does not exist in the state.
     /// Revertible, usually false→true.

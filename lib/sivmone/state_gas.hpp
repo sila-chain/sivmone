@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 
 #include <algorithm>
 #include <cassert>
@@ -12,7 +12,7 @@
 namespace sivmone
 {
 /// A frame's state-gas counters with the charging rules on top (SIP-8037).
-struct StateGas : evmc::StateGas
+struct StateGas : sivmc::StateGas
 {
     /// Charges `cost`, first from `left`, then from `gas_left` (recorded in `spilled`).
     [[nodiscard]] bool charge(int64_t& gas_left, int64_t cost) noexcept

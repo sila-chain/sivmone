@@ -20,8 +20,9 @@ TEST(statetest_loader, block_info)
             "withdrawals": []
         })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x1111111111111111111111111111111111111111_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 0x0);
@@ -49,8 +50,9 @@ TEST(statetest_loader, block_info_hex)
         "parentUncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x2adc25665018aa1fe0e6bc666dac8fc2697ff9ba_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 100000000000000000);
@@ -78,8 +80,9 @@ TEST(statetest_loader, block_info_dec)
         "parentUncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x2adc25665018aa1fe0e6bc666dac8fc2697ff9ba_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 100000000000000000);
@@ -105,8 +108,9 @@ TEST(statetest_loader, block_info_0_current_difficulty)
         "parentUncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x2adc25665018aa1fe0e6bc666dac8fc2697ff9ba_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 100000000000000000);
@@ -132,8 +136,9 @@ TEST(statetest_loader, block_info_0_parent_difficulty)
         "parentUncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x2adc25665018aa1fe0e6bc666dac8fc2697ff9ba_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 100000000000000000);
@@ -156,8 +161,9 @@ TEST(statetest_loader, block_info_0_random)
             "withdrawals": []
         })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x1111111111111111111111111111111111111111_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 0x0);
@@ -192,8 +198,9 @@ TEST(statetest_loader, block_info_withdrawals)
             ]
         })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x1111111111111111111111111111111111111111_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 0x0);
@@ -231,8 +238,9 @@ TEST(statetest_loader, block_info_ommers)
             "withdrawals": []
         })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x1111111111111111111111111111111111111111_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 0x0);
@@ -263,8 +271,9 @@ TEST(statetest_loader, block_info_parent_blob_gas)
             "parentBlobGasUsed": "0x60000"
         })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x1111111111111111111111111111111111111111_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 0x0);
@@ -288,8 +297,9 @@ TEST(statetest_loader, block_info_current_blob_gas)
             "currentExcessBlobGas": "2"
         })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.coinbase, 0x1111111111111111111111111111111111111111_address);
     EXPECT_EQ(bi.prev_randao, 0x00_bytes32);
     EXPECT_EQ(bi.gas_limit, 0x0);
@@ -315,13 +325,15 @@ TEST(statetest_loader, block_info_blob_gas_used)
         "blobGasUsed": "0"
     })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
 
     // An absent "blobGasUsed" must leave the optional disengaged, not engage it with zero.
-    EXPECT_FALSE(test::from_json_with_rev(json::json::parse(absent_input), EVMC_CANCUN, blob_params)
+    EXPECT_FALSE(
+        test::from_json_with_rev(json::json::parse(absent_input), SIVMC_SILA_CANCUN, blob_params)
             .blob_gas_used.has_value());
-    EXPECT_EQ(test::from_json_with_rev(json::json::parse(zero_input), EVMC_CANCUN, blob_params)
-                  .blob_gas_used,
+    EXPECT_EQ(
+        test::from_json_with_rev(json::json::parse(zero_input), SIVMC_SILA_CANCUN, blob_params)
+            .blob_gas_used,
         0);
 }
 
@@ -335,8 +347,9 @@ TEST(statetest_loader, block_info_parent_beacon_block_root)
         "parentBeaconBlockRoot": "0xbeac045007"
     })";
 
-    const auto blob_params = test::get_blob_params(EVMC_CANCUN);
-    const auto bi = test::from_json_with_rev(json::json::parse(input), EVMC_CANCUN, blob_params);
+    const auto blob_params = test::get_blob_params(SIVMC_SILA_CANCUN);
+    const auto bi =
+        test::from_json_with_rev(json::json::parse(input), SIVMC_SILA_CANCUN, blob_params);
     EXPECT_EQ(bi.parent_beacon_block_root, 0xbeac045007_bytes32);
 }
 

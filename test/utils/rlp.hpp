@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <evmc/bytes.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/bytes.hpp>
 #include <test/state/rlp_common.hpp>
 #include <cassert>
 #include <limits>
@@ -16,8 +16,8 @@
 
 namespace sivmone::rlp
 {
-using evmc::bytes;
-using evmc::bytes_view;
+using sivmc::bytes;
+using sivmc::bytes_view;
 
 namespace internal
 {

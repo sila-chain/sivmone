@@ -2,9 +2,9 @@
 // Copyright 2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
+#include <gtest/gtest.h>
 #include <sivmone/advanced_analysis.hpp>
 #include <sivmone/execution_state.hpp>
-#include <gtest/gtest.h>
 #include <type_traits>
 
 static_assert(std::is_default_constructible_v<sivmone::ExecutionState>);
@@ -21,18 +21,18 @@ static_assert(!std::is_copy_assignable_v<sivmone::advanced::AdvancedExecutionSta
 
 TEST(execution_state, construct)
 {
-    evmc_message msg{};
+    sivmc_message msg{};
     msg.gas = -1;
-    const evmc_host_interface host_interface{};
+    const sivmc_host_interface host_interface{};
     const uint8_t code[]{0x0f};
     const sivmone::ExecutionState st{
-        msg, EVMC_MAX_REVISION, host_interface, nullptr, {code, std::size(code)}};
+        msg, SIVMC_MAX_REVISION, host_interface, nullptr, {code, std::size(code)}};
 
     EXPECT_EQ(st.memory.size(), 0);
     EXPECT_EQ(st.msg, &msg);
-    EXPECT_EQ(st.rev, EVMC_MAX_REVISION);
+    EXPECT_EQ(st.rev, SIVMC_MAX_REVISION);
     EXPECT_EQ(st.return_data.size(), 0);
-    EXPECT_EQ(st.status, EVMC_SUCCESS);
+    EXPECT_EQ(st.status, SIVMC_SUCCESS);
     EXPECT_EQ(st.output_offset, 0);
     EXPECT_EQ(st.output_size, 0);
 }
@@ -43,9 +43,9 @@ TEST(execution_state, default_construct)
 
     EXPECT_EQ(st.memory.size(), 0);
     EXPECT_EQ(st.msg, nullptr);
-    EXPECT_EQ(st.rev, EVMC_FRONTIER);
+    EXPECT_EQ(st.rev, SIVMC_FRONTIER);
     EXPECT_EQ(st.return_data.size(), 0);
-    EXPECT_EQ(st.status, EVMC_SUCCESS);
+    EXPECT_EQ(st.status, SIVMC_SUCCESS);
     EXPECT_EQ(st.output_offset, 0);
     EXPECT_EQ(st.output_size, 0);
 }
@@ -58,9 +58,9 @@ TEST(execution_state, default_construct_advanced)
     EXPECT_EQ(st.stack_size(), 0);
     EXPECT_EQ(st.memory.size(), 0);
     EXPECT_EQ(st.msg, nullptr);
-    EXPECT_EQ(st.rev, EVMC_FRONTIER);
+    EXPECT_EQ(st.rev, SIVMC_FRONTIER);
     EXPECT_EQ(st.return_data.size(), 0);
-    EXPECT_EQ(st.status, EVMC_SUCCESS);
+    EXPECT_EQ(st.status, SIVMC_SUCCESS);
     EXPECT_EQ(st.output_offset, 0);
     EXPECT_EQ(st.output_size, 0);
 
@@ -70,7 +70,7 @@ TEST(execution_state, default_construct_advanced)
 
 TEST(execution_state, reset_advanced)
 {
-    const evmc_message msg{};
+    const sivmc_message msg{};
     const sivmone::advanced::AdvancedCodeAnalysis analysis;
 
     sivmone::advanced::AdvancedExecutionState st;
@@ -79,9 +79,9 @@ TEST(execution_state, reset_advanced)
     st.stack.push(6u);
     st.memory.grow(64);
     st.msg = &msg;
-    st.rev = EVMC_BYZANTIUM;
+    st.rev = SIVMC_SILA_BYZANTIUM;
     st.return_data.push_back('0');
-    st.status = EVMC_FAILURE;
+    st.status = SIVMC_FAILURE;
     st.output_offset = 3;
     st.output_size = 4;
     st.current_block_cost = 5;
@@ -93,21 +93,21 @@ TEST(execution_state, reset_advanced)
     EXPECT_EQ(st.stack.top(), 6u);
     EXPECT_EQ(st.memory.size(), 64);
     EXPECT_EQ(st.msg, &msg);
-    EXPECT_EQ(st.rev, EVMC_BYZANTIUM);
+    EXPECT_EQ(st.rev, SIVMC_SILA_BYZANTIUM);
     EXPECT_EQ(st.return_data.size(), 1);
-    EXPECT_EQ(st.status, EVMC_FAILURE);
+    EXPECT_EQ(st.status, SIVMC_FAILURE);
     EXPECT_EQ(st.output_offset, 3);
     EXPECT_EQ(st.output_size, 4u);
     EXPECT_EQ(st.current_block_cost, 5u);
     EXPECT_EQ(st.analysis.advanced, &analysis);
 
     {
-        evmc_message msg2{};
+        sivmc_message msg2{};
         msg2.gas = 13;
-        const evmc_host_interface host_interface2{};
+        const sivmc_host_interface host_interface2{};
         const uint8_t code2[]{0x80, 0x81};
 
-        st.reset(msg2, EVMC_HOMESTEAD, host_interface2, nullptr, {code2, std::size(code2)});
+        st.reset(msg2, SIVMC_SILA_HOMESTEAD, host_interface2, nullptr, {code2, std::size(code2)});
 
         // TODO: We are not able to test HostContext with current API. It may require an execution
         //       test.
@@ -116,9 +116,9 @@ TEST(execution_state, reset_advanced)
         EXPECT_EQ(st.stack_size(), 0);
         EXPECT_EQ(st.memory.size(), 0);
         EXPECT_EQ(st.msg, &msg2);
-        EXPECT_EQ(st.rev, EVMC_HOMESTEAD);
+        EXPECT_EQ(st.rev, SIVMC_SILA_HOMESTEAD);
         EXPECT_EQ(st.return_data.size(), 0);
-        EXPECT_EQ(st.status, EVMC_SUCCESS);
+        EXPECT_EQ(st.status, SIVMC_SUCCESS);
         EXPECT_EQ(st.output_offset, 0);
         EXPECT_EQ(st.output_size, 0);
         EXPECT_EQ(st.current_block_cost, 0u);

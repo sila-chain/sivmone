@@ -9,7 +9,7 @@ using namespace sivmone::state;
 
 struct DifficultyTest  // NOLINT(clang-analyzer-optin.performance.Padding)
 {
-    evmc_revision rev;
+    sivmc_revision rev;
     const char* name;
     int64_t block_number;
     int64_t difficulty;
@@ -23,7 +23,7 @@ struct DifficultyTest  // NOLINT(clang-analyzer-optin.performance.Padding)
 /// https://github.com/sila-chain/sila-tests/blob/main/DifficultyTests.
 static constexpr DifficultyTest tests[] = {
     {
-        EVMC_FRONTIER,
+        SIVMC_FRONTIER,
         "DifficultyTest1",
         0x0186a0,
         0x6a8d5758858f3fb6,
@@ -33,7 +33,7 @@ static constexpr DifficultyTest tests[] = {
         false,
     },
     {
-        EVMC_FRONTIER,
+        SIVMC_FRONTIER,
         "DifficultyTest1040",
         0x10c8e0,
         0x3857fe2e57047922,
@@ -43,7 +43,7 @@ static constexpr DifficultyTest tests[] = {
         true,
     },
     {
-        EVMC_FRONTIER,
+        SIVMC_FRONTIER,
         "DifficultyTest1031",
         0x030d40,
         0x7b435a6e9d83b81e,
@@ -53,7 +53,7 @@ static constexpr DifficultyTest tests[] = {
         true,
     },
     {
-        EVMC_HOMESTEAD,
+        SIVMC_SILA_HOMESTEAD,
         "DifficultyTest1",
         0x0186a0,
         0x6ab7534e3bcfec27,
@@ -63,7 +63,7 @@ static constexpr DifficultyTest tests[] = {
         false,
     },
     {
-        EVMC_HOMESTEAD,
+        SIVMC_SILA_HOMESTEAD,
         "DifficultyTest1040",
         0x10c8e0,
         0x024bf6f60ecc847d,
@@ -73,7 +73,7 @@ static constexpr DifficultyTest tests[] = {
         true,
     },
     {
-        EVMC_HOMESTEAD,
+        SIVMC_SILA_HOMESTEAD,
         "DifficultyTest1031",
         0x030d40,
         0x39699ae4587a0b05,
@@ -83,7 +83,7 @@ static constexpr DifficultyTest tests[] = {
         true,
     },
     {
-        EVMC_BYZANTIUM,
+        SIVMC_SILA_BYZANTIUM,
         "DifficultyTest1",
         0x0186a0,
         0x69702c7f2c9fad14,
@@ -93,7 +93,7 @@ static constexpr DifficultyTest tests[] = {
         false,
     },
     {
-        EVMC_BYZANTIUM,
+        SIVMC_SILA_BYZANTIUM,
         "DifficultyTest1038",
         0x0dbba0,
         0x79f2cbb8c97579b0,
@@ -103,7 +103,7 @@ static constexpr DifficultyTest tests[] = {
         true,
     },
     {
-        EVMC_BERLIN,
+        SIVMC_SILA_BERLIN,
         "DifficultyTest1",
         0x186a0,
         0x56c67d1e106966c3,
@@ -113,7 +113,7 @@ static constexpr DifficultyTest tests[] = {
         false,
     },
     {
-        EVMC_BERLIN,
+        SIVMC_SILA_BERLIN,
         "DifficultyTest1040",
         0x10c8e0,
         0x68f7512123928555,
@@ -123,7 +123,7 @@ static constexpr DifficultyTest tests[] = {
         true,
     },
     {
-        EVMC_FRONTIER,
+        SIVMC_FRONTIER,
         "min_difficulty_frontier",
         1,
         0x20000,
@@ -133,7 +133,7 @@ static constexpr DifficultyTest tests[] = {
         false,
     },
     {
-        EVMC_HOMESTEAD,
+        SIVMC_SILA_HOMESTEAD,
         "min_difficulty_homestead",
         1,
         0x20000,
@@ -143,7 +143,7 @@ static constexpr DifficultyTest tests[] = {
         false,
     },
     {
-        EVMC_BYZANTIUM,
+        SIVMC_SILA_BYZANTIUM,
         "min_difficulty_byzantium",
         3'000'001,
         0x20000,
@@ -154,7 +154,7 @@ static constexpr DifficultyTest tests[] = {
     },
     {
         // Calculated difficulty is exactly 0x20000 without min cap.
-        EVMC_BYZANTIUM,
+        SIVMC_SILA_BYZANTIUM,
         "min_difficulty_byzantium2",
         3'000'001,
         0x20000,

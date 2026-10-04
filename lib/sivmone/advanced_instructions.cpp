@@ -31,8 +31,8 @@ inline void impl(AdvancedExecutionState& state) noexcept
     state.adjust_stack_size(instr::traits[Op].stack_height_change);
 }
 
-template <Opcode Op, evmc_status_code CoreFn(StackTop, ExecutionState&) noexcept = core::impl<Op>>
-inline evmc_status_code impl(AdvancedExecutionState& state) noexcept
+template <Opcode Op, sivmc_status_code CoreFn(StackTop, ExecutionState&) noexcept = core::impl<Op>>
+inline sivmc_status_code impl(AdvancedExecutionState& state) noexcept
 {
     const auto status = CoreFn(state.stack, state);
     state.adjust_stack_size(instr::traits[Op].stack_height_change);
@@ -40,8 +40,8 @@ inline evmc_status_code impl(AdvancedExecutionState& state) noexcept
 }
 
 template <Opcode Op,
-    evmc_status_code CoreFn(StackTop, int64_t&, ExecutionState&) noexcept = core::impl<Op>>
-inline evmc_status_code impl(AdvancedExecutionState& state) noexcept
+    sivmc_status_code CoreFn(StackTop, int64_t&, ExecutionState&) noexcept = core::impl<Op>>
+inline sivmc_status_code impl(AdvancedExecutionState& state) noexcept
 {
     const auto status = CoreFn(state.stack, state.gas_left, state);
     state.adjust_stack_size(instr::traits[Op].stack_height_change);
@@ -49,7 +49,7 @@ inline evmc_status_code impl(AdvancedExecutionState& state) noexcept
 }
 
 template <Opcode Op, Result CoreFn(StackTop, int64_t, ExecutionState&) noexcept = core::impl<Op>>
-inline evmc_status_code impl(AdvancedExecutionState& state) noexcept
+inline sivmc_status_code impl(AdvancedExecutionState& state) noexcept
 {
     const auto status = CoreFn(state.stack, state.gas_left, state);
     state.gas_left = status.gas_left;
@@ -103,10 +103,10 @@ const Instruction* op(const Instruction* instr, AdvancedExecutionState& state) n
 }
 
 /// Wraps the generic instruction implementation to advanced instruction function signature.
-template <evmc_status_code InstrFn(AdvancedExecutionState&) noexcept>
+template <sivmc_status_code InstrFn(AdvancedExecutionState&) noexcept>
 const Instruction* op(const Instruction* instr, AdvancedExecutionState& state) noexcept
 {
-    if (const auto status_code = InstrFn(state); status_code != EVMC_SUCCESS)
+    if (const auto status_code = InstrFn(state); status_code != SIVMC_SUCCESS)
         return state.exit(status_code);
     return ++instr;
 }
@@ -126,11 +126,11 @@ const Instruction* op_sstore(const Instruction* instr, AdvancedExecutionState& s
     state.gas_left += gas_left_correction;
 
     const auto status = instr::impl<OP_SSTORE>(state);
-    if (status != EVMC_SUCCESS)
+    if (status != SIVMC_SUCCESS)
         return state.exit(status);
 
     if ((state.gas_left -= gas_left_correction) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(SIVMC_OUT_OF_GAS);
 
     return ++instr;
 }
@@ -140,12 +140,12 @@ const Instruction* opx_beginblock(const Instruction* instr, AdvancedExecutionSta
     auto& block = instr->arg.block;
 
     if ((state.gas_left -= block.gas_cost) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(SIVMC_OUT_OF_GAS);
 
     if (const auto stack_size = state.stack_size(); stack_size < block.stack_req)
-        return state.exit(EVMC_STACK_UNDERFLOW);
+        return state.exit(SIVMC_STACK_UNDERFLOW);
     else if (stack_size + block.stack_max_growth > StackSpace::limit)
-        return state.exit(EVMC_STACK_OVERFLOW);
+        return state.exit(SIVMC_STACK_OVERFLOW);
 
     state.current_block_cost = block.gas_cost;
     return ++instr;
@@ -157,7 +157,7 @@ const Instruction* op_jump(const Instruction*, AdvancedExecutionState& state) no
     auto pc = -1;
     if (std::numeric_limits<int>::max() < dst ||
         (pc = find_jumpdest(*state.analysis.advanced, static_cast<int>(dst))) < 0)
-        return state.exit(EVMC_BAD_JUMP_DESTINATION);
+        return state.exit(SIVMC_BAD_JUMP_DESTINATION);
 
     return &state.analysis.advanced->instrs[static_cast<size_t>(pc)];
 }
@@ -211,11 +211,11 @@ const Instruction* op_call(const Instruction* instr, AdvancedExecutionState& sta
     state.gas_left += gas_left_correction;
 
     const auto status = instr::impl<Op>(state);
-    if (status != EVMC_SUCCESS)
+    if (status != SIVMC_SUCCESS)
         return state.exit(status);
 
     if ((state.gas_left -= gas_left_correction) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(SIVMC_OUT_OF_GAS);
 
     return ++instr;
 }
@@ -227,18 +227,18 @@ const Instruction* op_create(const Instruction* instr, AdvancedExecutionState& s
     state.gas_left += gas_left_correction;
 
     const auto status = instr::impl<Op>(state);
-    if (status != EVMC_SUCCESS)
+    if (status != SIVMC_SUCCESS)
         return state.exit(status);
 
     if ((state.gas_left -= gas_left_correction) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(SIVMC_OUT_OF_GAS);
 
     return ++instr;
 }
 
 const Instruction* op_undefined(const Instruction*, AdvancedExecutionState& state) noexcept
 {
-    return state.exit(EVMC_UNDEFINED_INSTRUCTION);
+    return state.exit(SIVMC_UNDEFINED_INSTRUCTION);
 }
 
 
@@ -278,11 +278,11 @@ constexpr std::array<instruction_exec_fn, 256> instruction_implementations = [](
 }();
 }  // namespace
 
-EVMC_EXPORT const OpTable& get_op_table(evmc_revision rev) noexcept
+SIVMC_EXPORT const OpTable& get_op_table(sivmc_revision rev) noexcept
 {
     static constexpr auto op_tables = []() noexcept {
-        std::array<OpTable, EVMC_MAX_REVISION + 1> tables{};
-        for (size_t r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+        std::array<OpTable, SIVMC_MAX_REVISION + 1> tables{};
+        for (size_t r = SIVMC_FRONTIER; r <= SIVMC_MAX_REVISION; ++r)
         {
             auto& table = tables[r];
             for (size_t i = 0; i < table.size(); ++i)

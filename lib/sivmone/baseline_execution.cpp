@@ -39,16 +39,16 @@ namespace
 /// @param          stack_bottom  Pointer to the stack bottom.
 ///                               The stack height is stack_top - stack_bottom.
 /// @return  Status code with information which check has failed
-///          or EVMC_SUCCESS if everything is fine.
+///          or SIVMC_SUCCESS if everything is fine.
 template <Opcode Op>
-inline evmc_status_code check_requirements(const CostTable& cost_table, int64_t& gas_left,
+inline sivmc_status_code check_requirements(const CostTable& cost_table, int64_t& gas_left,
     const uint256* stack_top, const uint256* stack_bottom) noexcept
 {
     static_assert(
-        !instr::has_const_gas_cost(Op) || instr::gas_costs[EVMC_FRONTIER][Op] != instr::undefined,
+        !instr::has_const_gas_cost(Op) || instr::gas_costs[SIVMC_FRONTIER][Op] != instr::undefined,
         "undefined instructions must not be handled by check_requirements()");
 
-    auto gas_cost = instr::gas_costs[EVMC_FRONTIER][Op];  // Init assuming const cost.
+    auto gas_cost = instr::gas_costs[SIVMC_FRONTIER][Op];  // Init assuming const cost.
     if constexpr (!instr::has_const_gas_cost(Op))
     {
         gas_cost = cost_table[Op];  // If not, load the cost from the current revision cost table.
@@ -56,10 +56,10 @@ inline evmc_status_code check_requirements(const CostTable& cost_table, int64_t&
         // Negative cost marks an undefined instruction.
         // This check must be the first to produce the correct error code.
         // By definition not possible if defined since the first revision.
-        if constexpr (instr::traits[Op].since != EVMC_FRONTIER)
+        if constexpr (instr::traits[Op].since != SIVMC_FRONTIER)
         {
             if (INTX_UNLIKELY(gas_cost < 0))
-                return EVMC_UNDEFINED_INSTRUCTION;
+                return SIVMC_UNDEFINED_INSTRUCTION;
         }
     }
 
@@ -70,23 +70,23 @@ inline evmc_status_code check_requirements(const CostTable& cost_table, int64_t&
         static_assert(instr::traits[Op].stack_height_change == 1,
             "unexpected instruction with multiple results");
         if (INTX_UNLIKELY(stack_top == stack_bottom + StackSpace::limit))
-            return EVMC_STACK_OVERFLOW;
+            return SIVMC_STACK_OVERFLOW;
     }
     if constexpr (instr::traits[Op].stack_height_required > 0)
     {
         // Check stack underflow using pointer comparison <= (better optimization).
         static constexpr auto min_offset = instr::traits[Op].stack_height_required - 1;
         if (INTX_UNLIKELY(stack_top <= stack_bottom + min_offset))
-            return EVMC_STACK_UNDERFLOW;
+            return SIVMC_STACK_UNDERFLOW;
     }
 
-    if constexpr (!instr::has_const_gas_cost(Op) || instr::gas_costs[EVMC_FRONTIER][Op] > 0)
+    if constexpr (!instr::has_const_gas_cost(Op) || instr::gas_costs[SIVMC_FRONTIER][Op] > 0)
     {
         if (INTX_UNLIKELY((gas_left -= gas_cost) < 0))
-            return EVMC_OUT_OF_GAS;
+            return SIVMC_OUT_OF_GAS;
     }
 
-    return EVMC_SUCCESS;
+    return SIVMC_SUCCESS;
 }
 
 
@@ -112,7 +112,7 @@ struct Position
 {
     const auto o = instr_fn(pos.stack_end, gas, state);
     gas = o.gas_left;
-    if (o.status != EVMC_SUCCESS)
+    if (o.status != SIVMC_SUCCESS)
     {
         state.status = o.status;
         return nullptr;
@@ -150,7 +150,7 @@ template <Opcode Op>
     Position pos, int64_t& gas, ExecutionState& state) noexcept
 {
     if (const auto status = check_requirements<Op>(cost_table, gas, pos.stack_end, stack_bottom);
-        status != EVMC_SUCCESS)
+        status != SIVMC_SUCCESS)
     {
         state.status = status;
         return {nullptr, pos.stack_end};
@@ -206,7 +206,7 @@ int64_t dispatch(const CostTable& cost_table, ExecutionState& state, int64_t gas
 #undef ON_OPCODE
 
         default:
-            state.status = EVMC_UNDEFINED_INSTRUCTION;
+            state.status = SIVMC_UNDEFINED_INSTRUCTION;
             return gas;
         }
     }
@@ -256,14 +256,14 @@ int64_t dispatch_cgoto(
 #undef ON_OPCODE
 
 TARGET_OP_UNDEFINED:
-    state.status = EVMC_UNDEFINED_INSTRUCTION;
+    state.status = SIVMC_UNDEFINED_INSTRUCTION;
     return gas;
 }
 #endif
 }  // namespace
 
-evmc_result execute(VM& vm, const evmc_host_interface& host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message& msg, const CodeAnalysis& analysis) noexcept
+sivmc_result execute(VM& vm, const sivmc_host_interface& host, sivmc_host_context* ctx,
+    sivmc_revision rev, const sivmc_message& msg, const CodeAnalysis& analysis) noexcept
 {
     const auto code = analysis.code();
     const auto code_begin = code.data();
@@ -300,8 +300,8 @@ evmc_result execute(VM& vm, const evmc_host_interface& host, evmc_host_context* 
     return result;
 }
 
-evmc_result execute(evmc_vm* c_vm, const evmc_host_interface* host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message* msg, const uint8_t* code, size_t code_size) noexcept
+sivmc_result execute(sivmc_vm* c_vm, const sivmc_host_interface* host, sivmc_host_context* ctx,
+    sivmc_revision rev, const sivmc_message* msg, const uint8_t* code, size_t code_size) noexcept
 {
     auto vm = static_cast<VM*>(c_vm);
     const bytes_view container{code, code_size};

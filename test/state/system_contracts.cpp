@@ -27,27 +27,27 @@ struct StorageSystemContract
 {
     using GetInputFn = bytes32(const BlockInfo&, const BlockHashes&) noexcept;
 
-    evmc_revision since = EVMC_MAX_REVISION;  ///< Sivm revision in which added.
-    address addr;                             ///< Address of the system contract.
-    GetInputFn* get_input = nullptr;          ///< How to get the input for the system call.
+    sivmc_revision since = SIVMC_MAX_REVISION;  ///< Sivm revision in which added.
+    address addr;                               ///< Address of the system contract.
+    GetInputFn* get_input = nullptr;            ///< How to get the input for the system call.
 };
 
 /// Information about a registered "requests" system contract. They are executed at the block end
 /// and produce requests: typed sequence of bytes.
 struct RequestsSystemContract
 {
-    evmc_revision since = EVMC_MAX_REVISION;                ///< Sivm revision in which added.
+    sivmc_revision since = SIVMC_MAX_REVISION;              ///< Sivm revision in which added.
     address addr;                                           ///< Address of the system contract.
     Requests::Type request_type = Requests::Type::deposit;  ///< Type of requests produced.
 };
 
 /// Registered "storage" system contracts.
 constexpr std::array STORAGE_SYSTEM_CONTRACTS{
-    StorageSystemContract{EVMC_CANCUN, BEACON_ROOTS_ADDRESS,
+    StorageSystemContract{SIVMC_SILA_CANCUN, BEACON_ROOTS_ADDRESS,
         [](const BlockInfo& block, const BlockHashes&) noexcept {
             return block.parent_beacon_block_root;
         }},
-    StorageSystemContract{EVMC_PRAGUE, HISTORY_STORAGE_ADDRESS,
+    StorageSystemContract{SIVMC_SILA_PRAGUE, HISTORY_STORAGE_ADDRESS,
         [](const BlockInfo& block, const BlockHashes& block_hashes) noexcept {
             return block_hashes.get_block_hash(block.number - 1);
         }},
@@ -56,12 +56,12 @@ constexpr std::array STORAGE_SYSTEM_CONTRACTS{
 /// Registered "requests" system contracts.
 constexpr std::array REQUESTS_SYSTEM_CONTRACTS{
     RequestsSystemContract{
-        EVMC_PRAGUE,
+        SIVMC_SILA_PRAGUE,
         WITHDRAWAL_REQUEST_ADDRESS,
         Requests::Type::withdrawal,
     },
     RequestsSystemContract{
-        EVMC_PRAGUE,
+        SIVMC_SILA_PRAGUE,
         CONSOLIDATION_REQUEST_ADDRESS,
         Requests::Type::consolidation,
     },
@@ -74,12 +74,12 @@ static_assert(std::ranges::is_sorted(REQUESTS_SYSTEM_CONTRACTS, by_rev),
     "system contract entries must be ordered by revision");
 
 
-evmc::Result execute_system_call(State& state, const BlockInfo& block,
-    const BlockHashes& block_hashes, evmc_revision rev, evmc::VM& vm, const address& addr,
+sivmc::Result execute_system_call(State& state, const BlockInfo& block,
+    const BlockHashes& block_hashes, sivmc_revision rev, sivmc::VM& vm, const address& addr,
     bytes_view code, bytes_view input)
 {
-    const evmc_message msg{
-        .kind = EVMC_CALL,
+    const sivmc_message msg{
+        .kind = SIVMC_CALL,
         .gas = 30'000'000,
         .state_gas = 16 * STORAGE_SET_STATE_GAS,  // Additional state-gas (SIP-8037).
         .recipient = addr,
@@ -95,7 +95,7 @@ evmc::Result execute_system_call(State& state, const BlockInfo& block,
 }  // namespace
 
 StateDiff system_call_block_start(const StateView& state_view, const BlockInfo& block,
-    const BlockHashes& block_hashes, evmc_revision rev, evmc::VM& vm)
+    const BlockHashes& block_hashes, sivmc_revision rev, sivmc::VM& vm)
 {
     State state{state_view};
     for (const auto& [since, addr, get_input] : STORAGE_SYSTEM_CONTRACTS)
@@ -112,14 +112,14 @@ StateDiff system_call_block_start(const StateView& state_view, const BlockInfo& 
         const auto input32 = get_input(block, block_hashes);
         const auto res =
             execute_system_call(state, block, block_hashes, rev, vm, addr, code, input32);
-        assert(res.status_code == EVMC_SUCCESS);
+        assert(res.status_code == SIVMC_SUCCESS);
     }
     // TODO: Should we return empty diff if no system contracts?
     return state.build_diff(rev);
 }
 
 std::variant<RequestsResult, std::error_code> system_call_block_end(const StateView& state_view,
-    const BlockInfo& block, const BlockHashes& block_hashes, evmc_revision rev, evmc::VM& vm)
+    const BlockInfo& block, const BlockHashes& block_hashes, sivmc_revision rev, sivmc::VM& vm)
 {
     State state{state_view};
     std::vector<Requests> requests;
@@ -134,7 +134,7 @@ std::variant<RequestsResult, std::error_code> system_call_block_end(const StateV
             return make_error_code(SYSTEM_CONTRACT_EMPTY);
 
         const auto res = execute_system_call(state, block, block_hashes, rev, vm, addr, code, {});
-        if (res.status_code != EVMC_SUCCESS)
+        if (res.status_code != SIVMC_SUCCESS)
             return make_error_code(SYSTEM_CONTRACT_CALL_FAILED);
         requests.emplace_back(request_type, bytes_view{res.output_data, res.output_size});
     }

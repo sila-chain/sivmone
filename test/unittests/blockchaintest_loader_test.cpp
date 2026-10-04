@@ -140,7 +140,7 @@ TEST(json_loader, blockchain_test)
 
     EXPECT_EQ(btt.size(), 1);
     EXPECT_EQ(btt[0].test_blocks.size(), 1);
-    EXPECT_EQ(btt[0].rev.get_revision(0), evmc_revision::EVMC_SHANGHAI);
+    EXPECT_EQ(btt[0].rev.get_revision(0), sivmc_revision::SIVMC_SILA_SHANGHAI);
     EXPECT_EQ(btt[0].name, "000-fork=SilaShanghai-fill_stack");
     EXPECT_EQ(btt[0].genesis_block_header.timestamp, 0);
     EXPECT_EQ(btt[0].genesis_block_header.gas_limit, 0x016345785d8a0000);
@@ -258,8 +258,8 @@ TEST(json_loader, blockchain_test_post_state_hash)
 
     EXPECT_EQ(btt.size(), 1);
     EXPECT_EQ(btt[0].test_blocks.size(), 1);
-    EXPECT_EQ(btt[0].rev.get_revision(0), evmc_revision::EVMC_SHANGHAI);
-    EXPECT_EQ(btt[0].rev.get_revision(15'000), evmc_revision::EVMC_CANCUN);
+    EXPECT_EQ(btt[0].rev.get_revision(0), sivmc_revision::SIVMC_SILA_SHANGHAI);
+    EXPECT_EQ(btt[0].rev.get_revision(15'000), sivmc_revision::SIVMC_SILA_CANCUN);
     EXPECT_EQ(btt[0].name, "000-fork=SilaShanghai-fill_stack");
     EXPECT_EQ(btt[0].genesis_block_header.timestamp, 0);
     EXPECT_EQ(btt[0].genesis_block_header.gas_limit, 0x016345785d8a0000);
@@ -368,7 +368,7 @@ TEST(json_loader, blockchain_test_pre_paris)
 
     EXPECT_EQ(btt.size(), 1);
     EXPECT_EQ(btt[0].test_blocks.size(), 1);
-    EXPECT_EQ(btt[0].rev.get_revision(0), evmc_revision::EVMC_LONDON);
+    EXPECT_EQ(btt[0].rev.get_revision(0), sivmc_revision::SIVMC_SILA_LONDON);
     EXPECT_EQ(btt[0].name, "000-fork=SilaShanghai-fill_stack");
     EXPECT_EQ(btt[0].genesis_block_header.timestamp, 0);
     EXPECT_EQ(btt[0].genesis_block_header.gas_limit, 0x016345785d8a0000);

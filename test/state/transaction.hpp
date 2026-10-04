@@ -130,7 +130,7 @@ struct Log
 struct TransactionReceipt
 {
     Transaction::Type type = Transaction::Type::legacy;
-    evmc_status_code status = EVMC_INTERNAL_ERROR;
+    sivmc_status_code status = SIVMC_INTERNAL_ERROR;
 
     /// Amount of gas used by this transaction (after refund, with the min gas applied).
     int64_t gas_used = 0;

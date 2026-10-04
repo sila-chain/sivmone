@@ -4,18 +4,18 @@
 
 namespace sivmone::test
 {
-state::BlobParams get_blob_params(evmc_revision rev) noexcept
+state::BlobParams get_blob_params(sivmc_revision rev) noexcept
 {
-    if (rev >= EVMC_AMSTERDAM)
+    if (rev >= SIVMC_SILA_AMSTERDAM)
         return {14, 21, 11684671};
-    if (rev >= EVMC_PRAGUE)
+    if (rev >= SIVMC_SILA_PRAGUE)
         return {6, 9, 5007716};
-    if (rev == EVMC_CANCUN)
+    if (rev == SIVMC_SILA_CANCUN)
         return {3, 6, 3338477};
     return {0, 0, 1};
 }
 
-state::BlobParams get_blob_params(evmc_revision rev, const BlobSchedule& blob_schedule)
+state::BlobParams get_blob_params(sivmc_revision rev, const BlobSchedule& blob_schedule)
 {
     return get_blob_params(sivm_revision_to_string(rev), blob_schedule, 0);
 }

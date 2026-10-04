@@ -2,9 +2,9 @@
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/hex.hpp>
 #include <gtest/gtest.h>
 #include <intx/intx.hpp>
+#include <sivmc/hex.hpp>
 #include <test/state/precompiles_internal.hpp>
 #include <test/utils/utils.hpp>
 #ifdef SIVMONE_PRECOMPILES_GMP
@@ -16,10 +16,10 @@ namespace
 using sivmone::state::ExecutionResult;
 
 /// Builds a big-endian value of given size with MSB, optional LSB, and fill byte.
-evmc::bytes make_val(size_t size, uint8_t msb, uint8_t lsb = 0, uint8_t fill = 0)
+sivmc::bytes make_val(size_t size, uint8_t msb, uint8_t lsb = 0, uint8_t fill = 0)
 {
     assert(size >= 2);
-    evmc::bytes v(size, fill);
+    sivmc::bytes v(size, fill);
     v.front() = msb;
     v.back() = lsb;
     return v;
@@ -49,9 +49,10 @@ class expmod : public testing::TestWithParam<ExpmodImpl>
 protected:
     /// Builds modexp precompile input, executes via the parameterized implementation, and returns
     /// the result.
-    static evmc::bytes run(const evmc::bytes& base, const evmc::bytes& exp, const evmc::bytes& mod)
+    static sivmc::bytes run(
+        const sivmc::bytes& base, const sivmc::bytes& exp, const sivmc::bytes& mod)
     {
-        evmc::bytes input(3 * 32, 0);
+        sivmc::bytes input(3 * 32, 0);
         using namespace intx;
         be::unsafe::store(&input[0], uint256{base.size()});
         be::unsafe::store(&input[32], uint256{exp.size()});
@@ -60,10 +61,10 @@ protected:
         input += exp;
         input += mod;
 
-        evmc::bytes result(mod.size(), 0xfe);  // Sentinel fill to detect partial writes.
+        sivmc::bytes result(mod.size(), 0xfe);  // Sentinel fill to detect partial writes.
         const auto [status, output_size] =
             GetParam().fn(input.data(), input.size(), result.data(), result.size());
-        EXPECT_EQ(status, EVMC_SUCCESS);
+        EXPECT_EQ(status, SIVMC_SUCCESS);
         EXPECT_EQ(output_size, mod.size());
         return result;
     }
@@ -392,7 +393,7 @@ TEST_P(expmod, inputs)
     for (const auto& [base_hex, exp_hex, mod_hex, expected_result_hex] : test_cases)
     {
         const auto result =
-            run(*evmc::from_hex(base_hex), *evmc::from_hex(exp_hex), *evmc::from_hex(mod_hex));
+            run(*sivmc::from_hex(base_hex), *sivmc::from_hex(exp_hex), *sivmc::from_hex(mod_hex));
         EXPECT_EQ(hex(result), expected_result_hex);
     }
 }
@@ -462,8 +463,9 @@ TEST(expmod, analysis_oog)
 
     for (const auto& input_hex : inputs)
     {
-        const auto input = evmc::from_spaced_hex(input_hex).value();
-        const auto [gas_cost, max_output_size] = sivmone::state::expmod_analyze(input, EVMC_PRAGUE);
+        const auto input = sivmc::from_spaced_hex(input_hex).value();
+        const auto [gas_cost, max_output_size] =
+            sivmone::state::expmod_analyze(input, SIVMC_SILA_PRAGUE);
         EXPECT_GT(gas_cost, GAS_LIMIT);
     }
 }
@@ -502,14 +504,15 @@ TEST(expmod, incomplete_inputs)
 
     for (const auto& [input_hex, expected_result_hex] : inputs)
     {
-        const auto input = evmc::from_spaced_hex(input_hex).value();
-        const auto [gas_cost, max_output_size] = sivmone::state::expmod_analyze(input, EVMC_PRAGUE);
+        const auto input = sivmc::from_spaced_hex(input_hex).value();
+        const auto [gas_cost, max_output_size] =
+            sivmone::state::expmod_analyze(input, SIVMC_SILA_PRAGUE);
         ASSERT_LT(gas_cost, GAS_LIMIT);
         auto output = std::make_unique_for_overwrite<uint8_t[]>(max_output_size);
         const auto [status, output_size] = sivmone::state::expmod_execute(
             input.data(), input.size(), output.get(), max_output_size);
-        EXPECT_EQ(status, EVMC_SUCCESS);
-        const auto result_hex = evmc::hex({output.get(), output_size});
+        EXPECT_EQ(status, SIVMC_SUCCESS);
+        const auto result_hex = sivmc::hex({output.get(), output_size});
         EXPECT_EQ(result_hex, expected_result_hex);
     }
 }
@@ -522,7 +525,7 @@ TEST(expmod, huge_inputs_analysis)
     //
     // Must be pre-Osaka: SIP-7823 (Osaka) caps mod_len at 1024 bytes, so inputs with
     // larger moduli would return GasCostMax instead of the expected gas below GAS_LIMIT.
-    static constexpr auto REV = EVMC_PRAGUE;
+    static constexpr auto REV = SIVMC_SILA_PRAGUE;
     static constexpr auto GAS_LIMIT = 100'000'000;
     struct TestCase
     {
@@ -546,7 +549,7 @@ TEST(expmod, huge_inputs_analysis)
 
     for (const auto& [input_hex, expected_output_size] : inputs)
     {
-        const auto input = evmc::from_spaced_hex(input_hex).value();
+        const auto input = sivmc::from_spaced_hex(input_hex).value();
         const auto [gas_cost, max_output_size] = sivmone::state::expmod_analyze(input, REV);
         EXPECT_LT(gas_cost, GAS_LIMIT);
         EXPECT_EQ(max_output_size, expected_output_size);

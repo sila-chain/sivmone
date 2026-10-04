@@ -5,14 +5,14 @@
 #include "state_transition.hpp"
 #include <test/utils/bytecode.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, sip7778_sstore_clear_refund_amsterdam)
 {
     // SIP-7778: a clearing SSTORE produces a 4800 refund, but the block counts the pre-refund gas
     // independently of what the user pays.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     pre[To] = {.storage = {{0x01_bytes32, 0x42_bytes32}}, .code = sstore(1, 0)};
 

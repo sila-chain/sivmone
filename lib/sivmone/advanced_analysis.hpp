@@ -6,9 +6,9 @@
 #include "execution_state.hpp"
 #include "instructions.hpp"
 #include "instructions_opcodes.hpp"
-#include <evmc/evmc.hpp>
-#include <evmc/utils.h>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
+#include <sivmc/utils.h>
 #include <array>
 #include <cstdint>
 #include <vector>
@@ -47,8 +47,8 @@ struct AdvancedExecutionState : ExecutionState
 
     AdvancedExecutionState() noexcept = default;
 
-    AdvancedExecutionState(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    AdvancedExecutionState(const sivmc_message& message, sivmc_revision revision,
+        const sivmc_host_interface& host_interface, sivmc_host_context* host_ctx,
         bytes_view _code) noexcept
       : ExecutionState{message, revision, host_interface, host_ctx, _code}, gas_left{message.gas}
     {}
@@ -63,15 +63,15 @@ struct AdvancedExecutionState : ExecutionState
     void adjust_stack_size(int change) noexcept { stack = stack.end() + change; }
 
     /// Terminates the execution with the given status code.
-    const Instruction* exit(evmc_status_code status_code) noexcept
+    const Instruction* exit(sivmc_status_code status_code) noexcept
     {
         status = status_code;
         return nullptr;
     }
 
     /// Resets the contents of the execution_state so that it could be reused.
-    void reset(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    void reset(const sivmc_message& message, sivmc_revision revision,
+        const sivmc_host_interface& host_interface, sivmc_host_context* host_ctx,
         bytes_view _code) noexcept
     {
         ExecutionState::reset(message, revision, host_interface, host_ctx, _code);
@@ -155,8 +155,8 @@ inline int find_jumpdest(const AdvancedCodeAnalysis& analysis, int offset) noexc
                -1;
 }
 
-EVMC_EXPORT AdvancedCodeAnalysis analyze(evmc_revision rev, bytes_view code) noexcept;
+SIVMC_EXPORT AdvancedCodeAnalysis analyze(sivmc_revision rev, bytes_view code) noexcept;
 
-EVMC_EXPORT const OpTable& get_op_table(evmc_revision rev) noexcept;
+SIVMC_EXPORT const OpTable& get_op_table(sivmc_revision rev) noexcept;
 
 }  // namespace sivmone::advanced

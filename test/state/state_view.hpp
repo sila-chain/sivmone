@@ -3,16 +3,16 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
 #include <intx/intx.hpp>
+#include <sivmc/sivmc.hpp>
 #include <optional>
 
 namespace sivmone::state
 {
-using evmc::address;
-using evmc::bytes;
-using evmc::bytes32;
 using intx::uint256;
+using sivmc::address;
+using sivmc::bytes;
+using sivmc::bytes32;
 
 class StateView
 {

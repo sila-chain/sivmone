@@ -10,26 +10,26 @@ namespace sivmone::state
 {
 namespace
 {
-int64_t get_bomb_delay(evmc_revision rev) noexcept
+int64_t get_bomb_delay(sivmc_revision rev) noexcept
 {
     switch (rev)
     {
     default:
         return 0;
-    case EVMC_BYZANTIUM:
+    case SIVMC_SILA_BYZANTIUM:
         return 3'000'000;
-    case EVMC_PETERSBURG:
-    case EVMC_ISTANBUL:
+    case SIVMC_SILA_CONSTANTINOPLE_FIX:
+    case SIVMC_SILA_ISTANBUL:
         return 5'000'000;
-    case EVMC_BERLIN:
+    case SIVMC_SILA_BERLIN:
         return 9'000'000;
-    case EVMC_LONDON:
+    case SIVMC_SILA_LONDON:
         return 9'700'000;
     }
 }
 
 int64_t calculate_difficulty_pre_byzantium(int64_t parent_difficulty, int64_t parent_timestamp,
-    int64_t current_timestamp, int64_t block_number, evmc_revision rev)
+    int64_t current_timestamp, int64_t block_number, sivmc_revision rev)
 {
     // According to https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2.md
     const auto period_count = block_number / 100'000;
@@ -37,7 +37,7 @@ int64_t calculate_difficulty_pre_byzantium(int64_t parent_difficulty, int64_t pa
 
     auto diff = parent_difficulty;
 
-    if (rev < EVMC_HOMESTEAD)
+    if (rev < SIVMC_SILA_HOMESTEAD)
         diff += offset * (current_timestamp - parent_timestamp < 13 ? 1 : -1);
     else
         diff += offset * std::max(1 - (current_timestamp - parent_timestamp) / 10, int64_t{-99});
@@ -52,7 +52,7 @@ int64_t calculate_difficulty_pre_byzantium(int64_t parent_difficulty, int64_t pa
 
 int64_t calculate_difficulty_since_byzantium(int64_t parent_difficulty, bool parent_has_ommers,
     int64_t parent_timestamp, int64_t current_timestamp, int64_t block_number,
-    evmc_revision rev) noexcept
+    sivmc_revision rev) noexcept
 {
     const auto delay = get_bomb_delay(rev);
     const auto fake_block_number = std::max(int64_t{0}, block_number - delay);
@@ -71,16 +71,16 @@ int64_t calculate_difficulty_since_byzantium(int64_t parent_difficulty, bool par
 
 int64_t calculate_difficulty(int64_t parent_difficulty, bool parent_has_ommers,
     int64_t parent_timestamp, int64_t current_timestamp, int64_t block_number,
-    evmc_revision rev) noexcept
+    sivmc_revision rev) noexcept
 {
     // The calculation follows Sila Yellow Paper section 4.3.4. "Block Header Validity".
     static constexpr int64_t MIN_DIFFICULTY = 0x20000;
 
-    if (rev >= EVMC_PARIS)
+    if (rev >= SIVMC_SILA_PARIS)
         return 0;  // No difficulty after the Merge.
 
     const auto difficulty =
-        (rev < EVMC_BYZANTIUM) ?
+        (rev < SIVMC_SILA_BYZANTIUM) ?
             calculate_difficulty_pre_byzantium(
                 parent_difficulty, parent_timestamp, current_timestamp, block_number, rev) :
             calculate_difficulty_since_byzantium(parent_difficulty, parent_has_ommers,

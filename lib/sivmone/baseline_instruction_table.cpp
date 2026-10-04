@@ -11,8 +11,8 @@ namespace
 {
 consteval auto build_cost_tables() noexcept
 {
-    std::array<CostTable, EVMC_MAX_REVISION + 1> tables{};
-    for (size_t r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+    std::array<CostTable, SIVMC_MAX_REVISION + 1> tables{};
+    for (size_t r = SIVMC_FRONTIER; r <= SIVMC_MAX_REVISION; ++r)
     {
         auto& table = tables[r];
         for (size_t op = 0; op < table.size(); ++op)
@@ -28,7 +28,7 @@ consteval auto build_cost_tables() noexcept
 constexpr auto COST_TABLES = build_cost_tables();
 }  // namespace
 
-const CostTable& get_baseline_cost_table(evmc_revision rev) noexcept
+const CostTable& get_baseline_cost_table(sivmc_revision rev) noexcept
 {
     return COST_TABLES[rev];
 }

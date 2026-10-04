@@ -7,28 +7,28 @@
 
 #include "sivm_fixture.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_P(sivm, clz_pre_osaka)
 {
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     const auto code = bytecode{OP_CLZ};
 
     execute(code);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(SIVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(sivm, clz_gas)
 {
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     execute(bytecode{} + OP_PUSH0 + OP_CLZ);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2 + 5);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 2 + 5);
 }
 
 TEST_P(sivm, clz_osaka)
 {
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     const std::vector<std::pair<bytecode, intx::uint256>> cases{
         {0, 256},
         {1, 255},
@@ -43,14 +43,14 @@ TEST_P(sivm, clz_osaka)
     for (const auto& [input, expected_output] : cases)
     {
         execute(clz(input) + ret_top());
-        EXPECT_GAS_USED(EVMC_SUCCESS, 23);
+        EXPECT_GAS_USED(SIVMC_SUCCESS, 23);
         EXPECT_OUTPUT_INT(expected_output);
     }
 }
 
 TEST_P(sivm, clz_stack_underflow)
 {
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     execute(OP_CLZ);
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(SIVMC_STACK_UNDERFLOW);
 }

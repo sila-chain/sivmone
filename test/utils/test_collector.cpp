@@ -52,7 +52,7 @@ void ignore_test_files(
 }
 
 void collect_tests(
-    std::vector<TestCase>& cases, const fs::path& root, const RunOptions& options, evmc::VM& vm)
+    std::vector<TestCase>& cases, const fs::path& root, const RunOptions& options, sivmc::VM& vm)
 {
     // A file named directly is its own collection; the ignored paths are relative to the
     // directory holding it, as they are to a directory named directly.
@@ -70,7 +70,7 @@ void collect_tests(
 }
 
 int test(
-    evmc::VM& vm, std::span<const fs::path> roots, const RunOptions& options, std::ostream& out)
+    sivmc::VM& vm, std::span<const fs::path> roots, const RunOptions& options, std::ostream& out)
 {
     std::vector<TestCase> cases;
     for (const auto& root : roots)

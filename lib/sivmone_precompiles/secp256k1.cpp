@@ -29,15 +29,15 @@ std::optional<Curve::Fp> calculate_y(const Curve::Fp& x, bool y_parity) noexcept
     return (candidate_parity == y_parity) ? y : -y;
 }
 
-evmc::address to_address(std::span<const uint8_t, 64> pubkey) noexcept
+sivmc::address to_address(std::span<const uint8_t, 64> pubkey) noexcept
 {
     const auto hashed = silash::keccak256(pubkey.data(), pubkey.size());
-    evmc::address ret;
+    sivmc::address ret;
     std::copy_n(&hashed.bytes[12], sizeof(ret), ret.bytes);
     return ret;
 }
 
-evmc::address to_address(const AffinePoint& pt) noexcept
+sivmc::address to_address(const AffinePoint& pt) noexcept
 {
     uint8_t serialized[64];
     pt.to_bytes(serialized);
@@ -94,7 +94,7 @@ std::optional<AffinePoint> secp256k1_ecdsa_recover(std::span<const uint8_t, 32> 
     return to_affine(Q);
 }
 
-std::optional<evmc::address> ecrecover(std::span<const uint8_t, 32> hash,
+std::optional<sivmc::address> ecrecover(std::span<const uint8_t, 32> hash,
     std::span<const uint8_t, 32> r_bytes, std::span<const uint8_t, 32> s_bytes, bool parity,
     RecoveryMode mode) noexcept
 {

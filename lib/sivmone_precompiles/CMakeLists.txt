@@ -6,7 +6,7 @@ include(blst)
 
 add_library(sivmone_precompiles STATIC)
 add_library(sivmone::precompiles ALIAS sivmone_precompiles)
-target_link_libraries(sivmone_precompiles PUBLIC evmc::evmc_cpp intx::intx PRIVATE blst::blst)
+target_link_libraries(sivmone_precompiles PUBLIC sivmc::sivmc_cpp intx::intx PRIVATE blst::blst)
 target_include_directories(sivmone_precompiles INTERFACE ..)
 target_sources(
     sivmone_precompiles PRIVATE

@@ -8,21 +8,21 @@
 #include <sivmone/constants.hpp>
 #include <array>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_P(sivm, storage)
 {
     const auto code = sstore(0xee, 0xff) + sload(0xee) + mstore8(0) + ret(0, 1);
     execute(100000, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 20224);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 20224);
     EXPECT_EQ(bytes_view(result.output_data, result.output_size), bytes{0xff});
 }
 
 TEST_P(sivm, sstore_pop_stack)
 {
     execute(100000, sstore(1, dup1(0)) + mstore8(0) + ret(0, 1));
-    EXPECT_GAS_USED(EVMC_SUCCESS, 5024);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 5024);
     EXPECT_EQ(bytes_view(result.output_data, result.output_size), bytes{0x00});
     EXPECT_EQ(
         host.accounts[msg.recipient].storage.find(0x01_bytes32)->second.current, 0x00_bytes32);
@@ -30,9 +30,9 @@ TEST_P(sivm, sstore_pop_stack)
 
 TEST_P(sivm, sload_cost_pre_tangerine_whistle)
 {
-    rev = EVMC_HOMESTEAD;
+    rev = SIVMC_SILA_HOMESTEAD;
     execute(56, sload(dup1(0)));
-    EXPECT_GAS_USED(EVMC_SUCCESS, 56);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 56);
     EXPECT_EQ(host.accounts[msg.recipient].storage.size(), 0);
 }
 
@@ -43,22 +43,22 @@ TEST_P(sivm, sstore_out_of_block_gas)
     // Barely enough gas to execute successfully.
     host.accounts[msg.recipient] = {};  // Reset contract account.
     execute(20011, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 20011);
+    EXPECT_GAS_USED(SIVMC_SUCCESS, 20011);
 
     // Out of block gas - 1 too low.
     host.accounts[msg.recipient] = {};  // Reset contract account.
     execute(20010, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(SIVMC_OUT_OF_GAS);
 
     // Out of block gas - 2 too low.
     host.accounts[msg.recipient] = {};  // Reset contract account.
     execute(20009, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(SIVMC_OUT_OF_GAS);
 
     // SSTORE instructions out of gas.
     host.accounts[msg.recipient] = {};  // Reset contract account.
     execute(20008, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(SIVMC_OUT_OF_GAS);
 }
 
 TEST_P(sivm, sstore_cost)
@@ -67,53 +67,53 @@ TEST_P(sivm, sstore_cost)
 
     constexpr auto v1 = 0x01_bytes32;
 
-    for (auto r : {EVMC_BYZANTIUM, EVMC_PETERSBURG, EVMC_ISTANBUL})
+    for (auto r : {SIVMC_SILA_BYZANTIUM, SIVMC_SILA_CONSTANTINOPLE_FIX, SIVMC_SILA_ISTANBUL})
     {
         rev = r;
 
         // Added:
         storage.clear();
         execute(20006, sstore(1, 1));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
         storage.clear();
         execute(20005, sstore(1, 1));
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
 
         // Deleted:
         storage.clear();
         storage[v1] = v1;
         execute(5006, sstore(1, 0));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
         storage[v1] = v1;
         execute(5005, sstore(1, 0));
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
 
         // Modified:
         storage.clear();
         storage[v1] = v1;
         execute(5006, sstore(1, 2));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
         storage[v1] = v1;
         execute(5005, sstore(1, 2));
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
 
         // Unchanged:
         storage.clear();
         storage[v1] = v1;
         execute(sstore(1, 1));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        if (rev >= EVMC_ISTANBUL)
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
+        if (rev >= SIVMC_SILA_ISTANBUL)
             EXPECT_EQ(gas_used, 806);
         else
             EXPECT_EQ(gas_used, 5006);
         execute(205, sstore(1, 1));
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
 
         // Added & unchanged:
         storage.clear();
         execute(sstore(1, 1) + sstore(1, 1));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        if (rev >= EVMC_ISTANBUL)
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
+        if (rev >= SIVMC_SILA_ISTANBUL)
             EXPECT_EQ(gas_used, 20812);
         else
             EXPECT_EQ(gas_used, 25012);
@@ -122,8 +122,8 @@ TEST_P(sivm, sstore_cost)
         storage.clear();
         storage[v1] = {v1, 0x00_bytes32};
         execute(sstore(1, 2));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        if (rev >= EVMC_ISTANBUL)
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
+        if (rev >= SIVMC_SILA_ISTANBUL)
             EXPECT_EQ(gas_used, 806);
         else
             EXPECT_EQ(gas_used, 5006);
@@ -131,8 +131,8 @@ TEST_P(sivm, sstore_cost)
         // Added & modified again:
         storage.clear();
         execute(sstore(1, 1) + sstore(1, 2));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        if (rev >= EVMC_ISTANBUL)
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
+        if (rev >= SIVMC_SILA_ISTANBUL)
             EXPECT_EQ(gas_used, 20812);
         else
             EXPECT_EQ(gas_used, 25012);
@@ -141,8 +141,8 @@ TEST_P(sivm, sstore_cost)
         storage.clear();
         storage[v1] = v1;
         execute(sstore(1, 2) + sstore(1, 3));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        if (rev >= EVMC_ISTANBUL)
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
+        if (rev >= SIVMC_SILA_ISTANBUL)
             EXPECT_EQ(gas_used, 5812);
         else
             EXPECT_EQ(gas_used, 10012);
@@ -151,8 +151,8 @@ TEST_P(sivm, sstore_cost)
         storage.clear();
         storage[v1] = v1;
         execute(sstore(1, 2) + sstore(1, 1));
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        if (rev >= EVMC_ISTANBUL)
+        EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
+        if (rev >= SIVMC_SILA_ISTANBUL)
             EXPECT_EQ(gas_used, 5812);
         else
             EXPECT_EQ(gas_used, 10012);
@@ -176,18 +176,18 @@ TEST_P(sivm, sstore_cost_legacy)
         int64_t clear = 15000;
     } c;
 
-    const auto test = [this](const evmc::bytes32& original, const evmc::bytes32& current,
-                          const evmc::bytes32& value, int64_t expected_gas_used,
+    const auto test = [this](const sivmc::bytes32& original, const sivmc::bytes32& current,
+                          const sivmc::bytes32& value, int64_t expected_gas_used,
                           int64_t expected_gas_refund) {
         auto& storage_entry = host.accounts[msg.recipient].storage[key];
         storage_entry = {current, original};
         execute(sstore(key, calldataload(0)), value);
         EXPECT_EQ(storage_entry.current, value);
-        EXPECT_GAS_USED(EVMC_SUCCESS, expected_gas_used);
+        EXPECT_GAS_USED(SIVMC_SUCCESS, expected_gas_used);
         EXPECT_EQ(result.gas_refund, expected_gas_refund);
     };
 
-    for (const auto r : {EVMC_FRONTIER, EVMC_BYZANTIUM, EVMC_PETERSBURG})
+    for (const auto r : {SIVMC_FRONTIER, SIVMC_SILA_BYZANTIUM, SIVMC_SILA_CONSTANTINOPLE_FIX})
     {
         rev = r;
 
@@ -212,7 +212,8 @@ TEST_P(sivm, sstore_cost_legacy)
 
 TEST_P(sivm, sstore_cost_net_gas_metering)
 {
-    // Follow the table on https://evmc.ethereum.org/storagestatus.html
+    // Follow the table on
+    // https://github.com/sila-chain/sivmc/blob/0355352ff41e4874f8bc24a25ebf5c64f40ef66f/docs/Sivm_Storage_Change_Status.md
 
     static constexpr auto O = 0x000000000000000000_bytes32;
     static constexpr auto X = 0x00ffffffffffffffff_bytes32;
@@ -231,26 +232,28 @@ TEST_P(sivm, sstore_cost_net_gas_metering)
         int64_t state_set = 0;  ///< Storage creation, charged in state gas (SIP-8037).
     };
 
-    const auto test = [this](const evmc::bytes32& original, const evmc::bytes32& current,
-                          const evmc::bytes32& value, int64_t expected_gas_used,
+    const auto test = [this](const sivmc::bytes32& original, const sivmc::bytes32& current,
+                          const sivmc::bytes32& value, int64_t expected_gas_used,
                           int64_t expected_gas_refund) {
         auto& storage_entry = host.accounts[msg.recipient].storage[key];
         storage_entry.original = original;
         storage_entry.current = current;
-        storage_entry.access_status = EVMC_ACCESS_WARM;
+        storage_entry.access_status = SIVMC_ACCESS_WARM;
         execute(sstore(key, value));
         EXPECT_EQ(storage_entry.current, value);
-        EXPECT_GAS_USED(EVMC_SUCCESS, expected_gas_used);
+        EXPECT_GAS_USED(SIVMC_SUCCESS, expected_gas_used);
         EXPECT_EQ(result.gas_refund, expected_gas_refund);
     };
 
-    std::array<CostConstants, EVMC_MAX_REVISION + 1> cost_constants{};
-    cost_constants[EVMC_ISTANBUL] = {800, 20000, 5000, 15000};
-    cost_constants[EVMC_BERLIN] = {100, 20000, 2900, 15000};
-    cost_constants[EVMC_LONDON] = {100, 20000, 2900, 4800};
-    cost_constants[EVMC_AMSTERDAM] = {100, 10100, 10100, 11616, sivmone::STORAGE_SET_STATE_GAS};
+    std::array<CostConstants, SIVMC_MAX_REVISION + 1> cost_constants{};
+    cost_constants[SIVMC_SILA_ISTANBUL] = {800, 20000, 5000, 15000};
+    cost_constants[SIVMC_SILA_BERLIN] = {100, 20000, 2900, 15000};
+    cost_constants[SIVMC_SILA_LONDON] = {100, 20000, 2900, 4800};
+    cost_constants[SIVMC_SILA_AMSTERDAM] = {
+        100, 10100, 10100, 11616, sivmone::STORAGE_SET_STATE_GAS};
 
-    for (const auto r : {EVMC_ISTANBUL, EVMC_BERLIN, EVMC_LONDON, EVMC_AMSTERDAM})
+    for (const auto r :
+        {SIVMC_SILA_ISTANBUL, SIVMC_SILA_BERLIN, SIVMC_SILA_LONDON, SIVMC_SILA_AMSTERDAM})
     {
         rev = r;
         const auto& c = cost_constants.at(static_cast<size_t>(r));
@@ -278,14 +281,14 @@ TEST_P(sivm, sstore_below_stipend)
 {
     const auto code = sstore(0, 0);
 
-    rev = EVMC_HOMESTEAD;
+    rev = SIVMC_SILA_HOMESTEAD;
     execute(2306, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
 
-    rev = EVMC_ISTANBUL;
+    rev = SIVMC_SILA_ISTANBUL;
     execute(2306, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, SIVMC_OUT_OF_GAS);
 
     execute(2307, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, SIVMC_SUCCESS);
 }

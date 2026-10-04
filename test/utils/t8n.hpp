@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 #include <functional>
 #include <iosfwd>
 #include <optional>
@@ -14,7 +14,7 @@ namespace sivmone::tooling
 /// Arguments for t8n(). Streams are non-owning; the caller manages lifetime.
 struct T8NArgs
 {
-    evmc_revision rev = {};
+    sivmc_revision rev = {};
     uint64_t chain_id = 1;
     std::optional<uint64_t> block_reward;
     bool pre_state_only = false;
@@ -37,7 +37,7 @@ struct T8NArgs
     /// Called once per executed transaction (just before execution) to obtain
     /// a per-tx trace sink; t8n() redirects std::clog to the returned stream
     /// for the duration of that transaction. Unset = tracing disabled.
-    std::function<std::ostream&(size_t tx_index, const evmc::bytes32& tx_hash)> open_trace;
+    std::function<std::ostream&(size_t tx_index, const sivmc::bytes32& tx_hash)> open_trace;
 };
 
 /// Runs the state transition (t8n), used for JSON tests "filling".
@@ -48,5 +48,5 @@ struct T8NArgs
 ///
 /// @param vm    The VM instance. The command may modify/overwrite its config (depends on args).
 /// @param args  The command arguments.
-void t8n(evmc::VM& vm, const T8NArgs& args);
+void t8n(sivmc::VM& vm, const T8NArgs& args);
 }  // namespace sivmone::tooling

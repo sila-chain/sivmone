@@ -5,7 +5,7 @@
 
 #include "execution_state.hpp"
 #include "tracing.hpp"
-#include <evmc/evmc.h>
+#include <sivmc/sivmc.h>
 #include <vector>
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -16,8 +16,8 @@
 
 namespace sivmone
 {
-/// The sivmone EVMC instance.
-class VM : public evmc_vm
+/// The sivmone SIVMC instance.
+class VM : public sivmc_vm
 {
 public:
     bool cgoto = SIVMONE_CGOTO_SUPPORTED;

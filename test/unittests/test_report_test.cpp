@@ -6,8 +6,8 @@
 /// recorded failure is rendered. The rendering is the runners' entire output, and a green fixture
 /// run never reaches it.
 
-#include <evmc/evmc.hpp>
 #include <gtest/gtest.h>
+#include <sivmc/sivmc.hpp>
 #include <test/utils/test_report.hpp>
 #include <sstream>
 #include <system_error>
@@ -15,8 +15,8 @@
 
 using namespace sivmone;
 using namespace sivmone::test;
-using namespace evmc::literals;
-using evmc::bytes;
+using namespace sivmc::literals;
+using sivmc::bytes;
 
 namespace
 {

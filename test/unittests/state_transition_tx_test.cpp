@@ -6,12 +6,12 @@
 #include <sivmone/constants.hpp>
 #include <test/utils/bytecode.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, tx_legacy)
 {
-    rev = EVMC_ISTANBUL;
+    rev = SIVMC_SILA_ISTANBUL;
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
     tx.to = To;
@@ -21,7 +21,7 @@ TEST_F(state_transition, tx_legacy)
 
 TEST_F(state_transition, tx_non_existing_sender)
 {
-    rev = EVMC_BERLIN;
+    rev = SIVMC_SILA_BERLIN;
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
     tx.to = To;
@@ -30,14 +30,14 @@ TEST_F(state_transition, tx_non_existing_sender)
     tx.nonce = 0;
     pre.erase(Sender);
 
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
     expect.post.at(Sender).nonce = 1;
     expect.post[Coinbase].exists = false;
 }
 
 TEST_F(state_transition, invalid_tx_non_existing_sender)
 {
-    rev = EVMC_BERLIN;
+    rev = SIVMC_SILA_BERLIN;
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
     tx.to = To;
@@ -79,7 +79,7 @@ TEST_F(state_transition, invalid_tx_legacy_protected_chain_id_0)
 
 TEST_F(state_transition, tx_legacy_unprotected_chain_id)
 {
-    rev = EVMC_ISTANBUL;
+    rev = SIVMC_SILA_ISTANBUL;
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
     tx.to = To;
@@ -90,7 +90,7 @@ TEST_F(state_transition, tx_legacy_unprotected_chain_id)
 
 TEST_F(state_transition, tx_blob_gas_price)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     tx.type = Transaction::Type::blob;
     tx.to = To;
     tx.gas_limit = 25000;
@@ -108,14 +108,14 @@ TEST_F(state_transition, tx_blob_gas_price)
     pre[tx.sender].balance = GAS_PER_BLOB + tx.gas_limit * tx.max_gas_price;
 
     expect.post[Coinbase].exists = false;  // all gas is burned, Coinbase gets nothing
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
 }
 
 TEST_F(state_transition, invalid_tx_blob_max_fee_overflow)
 {
     // With one blob, GAS_PER_BLOB * max_blob_gas_price is 2^17 * 2^239 = 2^256, which wraps to 0
     // in uint256 and would make the blob fee vanish from the affordability check.
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     tx.type = Transaction::Type::blob;
     tx.to = To;
     tx.gas_limit = 25000;
@@ -137,7 +137,7 @@ TEST_F(state_transition, invalid_tx_blob_max_fee_overflow)
 
 TEST_F(state_transition, empty_coinbase_fee_0_sd)
 {
-    rev = EVMC_SPURIOUS_DRAGON;
+    rev = SIVMC_SIP158;
     block_reward = 0;
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
@@ -151,7 +151,7 @@ TEST_F(state_transition, empty_coinbase_fee_0_sd)
 
 TEST_F(state_transition, empty_coinbase_fee_0_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = SIVMC_SIP150;
     block_reward = 0;
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
@@ -178,7 +178,7 @@ TEST_F(state_transition, access_list_storage)
 TEST_F(state_transition, tx_data_min_cost_exec_0)
 {
     // In this test we bump the gas used to MIN_GAS by SIP-7623. Execution gas is 0.
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto MIN_GAS = 40 + 10;
@@ -189,7 +189,7 @@ TEST_F(state_transition, tx_data_min_cost_exec_0)
 TEST_F(state_transition, tx_data_min_cost_exec_50)
 {
     // In this test the MIN_GAS by SIP-7623 is equal to the execution gas (50).
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto DATA_GAS = 16 + 4;
@@ -203,7 +203,7 @@ TEST_F(state_transition, tx_data_min_cost_exec_50)
 TEST_F(state_transition, tx_data_min_cost_exec_51)
 {
     // In this test the execution gas (51) is above the MIN_GAS by SIP-7623.
-    rev = EVMC_PRAGUE;
+    rev = SIVMC_SILA_PRAGUE;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto DATA_GAS = 16 + 4;
@@ -217,7 +217,7 @@ TEST_F(state_transition, tx_data_min_cost_exec_51)
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_0)
 {
     // SIP-7976: the floor is 64 gas per calldata byte. Execution gas is 0.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto MIN_GAS = 64 * 2;
@@ -228,7 +228,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_0)
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_below_floor)
 {
     // SIP-7976: standard cost (intrinsic data + execution) is 1 below the floor.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto DATA_GAS = 16 + 4;
@@ -242,7 +242,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_below_floor)
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_at_floor)
 {
     // SIP-7976: standard cost (intrinsic data + execution) equals the floor.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto DATA_GAS = 16 + 4;
@@ -256,7 +256,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_at_floor)
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_above_floor)
 {
     // SIP-7976: standard cost (intrinsic data + execution) is 1 above the floor.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
     static constexpr auto DATA_GAS = 16 + 4;
@@ -270,7 +270,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_above_floor)
 TEST_F(state_transition, tx_data_floor_amsterdam_zero_bytes)
 {
     // SIP-7976: zero bytes pay the same 64-gas floor as nonzero bytes.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = "0000"_hex;
     static constexpr auto MIN_GAS = 64 * 2;
@@ -281,7 +281,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_zero_bytes)
 TEST_F(state_transition, tx_data_floor_osaka_uses_sip7623)
 {
     // SIP-7976 is not yet active in Osaka; the SIP-7623 floor (10 gas per token) still applies.
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     tx.to = To;
     tx.data = "0001"_hex;  // tokens = 4 (nonzero) + 1 (zero) = 5
     static constexpr auto MIN_GAS = 10 * 5;
@@ -293,7 +293,7 @@ TEST_F(state_transition, access_list_cost_amsterdam)
 {
     // SIP-7981: 1280 gas (64*20) per address, 2048 gas (64*32) per storage key.
     // SIP-8038: the per-entry prices become 2900 and 2000.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.access_list = {{To, {0x01_bytes32}}};
     // intrinsic = 21000 + 2900 + 2000 + 1280 + 2048 = 29228
@@ -303,7 +303,7 @@ TEST_F(state_transition, access_list_cost_amsterdam)
 TEST_F(state_transition, access_list_cost_osaka_unchanged)
 {
     // SIP-7981 is inactive before Amsterdam.
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     tx.to = To;
     tx.access_list = {{To, {0x01_bytes32}}};
     // intrinsic = 21000 + 2400 + 1900 = 25300
@@ -314,7 +314,7 @@ TEST_F(state_transition, access_list_precompile_with_storage_keys)
 {
     // An access list may name a precompile with storage keys (SIP-2930). Intrinsic gas is charged
     // for both, though access_account() creates no state entry and the key warming is skipped.
-    rev = EVMC_OSAKA;
+    rev = SIVMC_SILA_OSAKA;
     tx.to = To;
     tx.access_list = {{0x01_address, {0x01_bytes32}}};
     // intrinsic = 21000 + 2400 + 1900 = 25300
@@ -324,7 +324,7 @@ TEST_F(state_transition, access_list_precompile_with_storage_keys)
 TEST_F(state_transition, access_list_floor_amsterdam)
 {
     // SIP-7981: access-list bytes count toward the floor.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = bytes(100, 0x00);
     tx.access_list = {{To, {}}};
@@ -336,7 +336,7 @@ TEST_F(state_transition, access_list_floor_amsterdam)
 TEST_F(state_transition, invalid_access_list_amsterdam_gas_limit_below_floor)
 {
     // SIP-7981: gas limit must cover the floor (28680) — the intrinsic cost (25580) is not enough.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.data = bytes(100, 0x00);
     tx.access_list = {{To, {}}};
@@ -352,7 +352,7 @@ TEST_F(state_transition, tx_at_sender_nonce_max_minus_1_call)
     pre[Sender].nonce = MAX_NONCE - 1;
     tx.nonce = MAX_NONCE - 1;
 
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
     expect.post.at(Sender).nonce = MAX_NONCE;
 }
 
@@ -363,7 +363,7 @@ TEST_F(state_transition, tx_at_sender_nonce_max_minus_1_create)
     pre[Sender].nonce = MAX_NONCE - 1;
     tx.nonce = MAX_NONCE - 1;
 
-    expect.status = EVMC_SUCCESS;
+    expect.status = SIVMC_SUCCESS;
     expect.post.at(Sender).nonce = MAX_NONCE;
     expect.post[compute_create_address(Sender, MAX_NONCE - 1)] = {.nonce = 1, .code = bytes{}};
 }
@@ -383,7 +383,7 @@ TEST_F(state_transition, tx_emits_log)
 TEST_F(state_transition, sip7708_transfer_log_tx_value)
 {
     // Top level transaction with value emits log (SIP-7708).
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     tx.to = To;
     tx.value = 0x12345;
     pre[Sender].balance += 0x12345;

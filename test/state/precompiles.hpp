@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
+#include <sivmc/sivmc.hpp>
 
 namespace sivmone::state
 {
@@ -31,8 +31,8 @@ enum class PrecompileId : uint8_t
 };
 
 /// Checks if the address @p addr is considered a precompiled contract in the revision @p rev.
-bool is_precompile(evmc_revision rev, const evmc::address& addr) noexcept;
+bool is_precompile(sivmc_revision rev, const sivmc::address& addr) noexcept;
 
 /// Executes the message to a precompiled contract (msg.code_address must be a precompile).
-evmc::Result call_precompile(evmc_revision rev, const evmc_message& msg) noexcept;
+sivmc::Result call_precompile(sivmc_revision rev, const sivmc_message& msg) noexcept;
 }  // namespace sivmone::state

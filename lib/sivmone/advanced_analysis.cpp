@@ -38,7 +38,7 @@ struct BlockAnalysis
     }
 };
 
-AdvancedCodeAnalysis analyze(evmc_revision rev, bytes_view code) noexcept
+AdvancedCodeAnalysis analyze(sivmc_revision rev, bytes_view code) noexcept
 {
     const auto& op_tbl = get_op_table(rev);
     const auto opx_beginblock_fn = op_tbl[OPX_BEGINBLOCK].fn;

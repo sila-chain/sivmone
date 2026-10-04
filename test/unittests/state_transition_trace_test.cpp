@@ -5,7 +5,7 @@
 #include "state_transition.hpp"
 #include <test/utils/bytecode.hpp>
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, trace_example)
@@ -13,7 +13,7 @@ TEST_F(state_transition, trace_example)
     tx.to = To;
     pre[To] = {.code = revert(0, 1)};
 
-    expect.status = EVMC_REVERT;
+    expect.status = SIVMC_REVERT;
     expect.post[To].exists = true;
 
     expect.trace = R"(

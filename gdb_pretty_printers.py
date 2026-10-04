@@ -1,22 +1,22 @@
 import gdb
 
-EVMC_BYTES_TARGET_TYPES = [
-    "evmc::address",
-    "const evmc::address",
-    "evmc_address",
-    "const evmc_address",
-    "evmc::bytes32",
-    "const evmc::bytes32",
-    "evmc_bytes32",
-    "const evmc_bytes32",
-    "evmc_uint256be",
-    "const evmc_uint256be",
-    "evmc::uint256be",
-    "const evmc::uint256be",
+SIVMC_BYTES_TARGET_TYPES = [
+    "sivmc::address",
+    "const sivmc::address",
+    "sivmc_address",
+    "const sivmc_address",
+    "sivmc::bytes32",
+    "const sivmc::bytes32",
+    "sivmc_bytes32",
+    "const sivmc_bytes32",
+    "sivmc_uint256be",
+    "const sivmc_uint256be",
+    "sivmc::uint256be",
+    "const sivmc::uint256be",
 ]
 
 
-class EvmcBytesPrinter:
+class SivmcBytesPrinter:
     def __init__(self, val):
         self.val = val
 
@@ -44,8 +44,8 @@ class IntxUintPrinter:
 # In CLion these are automatically overwritten by std::* pretty printers.
 # Reload this script manually (`source -v ../../gdb_pretty_printers.py`) to activate them again.
 STRING_TARGET_TYPES = [
-    "std::__cxx11::basic_string<unsigned char, evmc::byte_traits<unsigned char>, std::allocator<unsigned char> >",
-    "const std::__cxx11::basic_string<unsigned char, evmc::byte_traits<unsigned char>, std::allocator<unsigned char> >",
+    "std::__cxx11::basic_string<unsigned char, sivmc::byte_traits<unsigned char>, std::allocator<unsigned char> >",
+    "const std::__cxx11::basic_string<unsigned char, sivmc::byte_traits<unsigned char>, std::allocator<unsigned char> >",
 ]
 
 
@@ -61,8 +61,8 @@ class StdBasicStringUint8Printer:
 
 
 STRING_VIEW_TARGET_TYPES = [
-    "std::basic_string_view<unsigned char, evmc::byte_traits<unsigned char> >",
-    "const std::basic_string_view<unsigned char, evmc::byte_traits<unsigned char> >",
+    "std::basic_string_view<unsigned char, sivmc::byte_traits<unsigned char> >",
+    "const std::basic_string_view<unsigned char, sivmc::byte_traits<unsigned char> >",
 ]
 
 
@@ -86,8 +86,8 @@ def lookup_function(val):
     type_str = str(val.type.strip_typedefs())
     # print("lookup " + type_str)  # uncomment to see exact type requested
 
-    if type_str in EVMC_BYTES_TARGET_TYPES:
-        return EvmcBytesPrinter(val)
+    if type_str in SIVMC_BYTES_TARGET_TYPES:
+        return SivmcBytesPrinter(val)
 
     if type_str in INTX_UINT_TARGET_TYPES:
         return IntxUintPrinter(val)

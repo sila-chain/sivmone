@@ -64,7 +64,7 @@ struct StateTransitionTest
             std::optional<bytes> txbytes;
         };
 
-        evmc_revision rev;
+        sivmc_revision rev;
         std::vector<Expectation> expectations;
         state::BlockInfo block;
     };
@@ -103,7 +103,7 @@ template <>
 bytes from_json<bytes>(const json::json& j);
 
 state::BlockInfo from_json_with_rev(
-    const json::json& j, evmc_revision rev, state::BlobParams blob_params);
+    const json::json& j, sivmc_revision rev, state::BlobParams blob_params);
 
 template <>
 TestBlockHashes from_json<TestBlockHashes>(const json::json& j);
@@ -155,7 +155,7 @@ json::json to_json(const state::StateDiff& diff);
 
 /// Export the state test to JSON format.
 json::json to_state_test(std::string_view test_name, const state::BlockInfo& block,
-    state::Transaction& tx, const TestState& pre, evmc_revision rev,
+    state::Transaction& tx, const TestState& pre, sivmc_revision rev,
     const std::variant<state::TransactionReceipt, std::error_code>& res, const TestState& post);
 
 std::vector<StateTransitionTest> load_state_tests(std::istream& input);
@@ -165,7 +165,7 @@ StateTransitionTest make_state_test(const std::string& name, const json::json& j
 
 /// Validates the invariants of the Sila state (e.g. no zero-value storage entries).
 /// Throws std::invalid_argument exception.
-void validate_state(const TestState& state, evmc_revision rev);
+void validate_state(const TestState& state, sivmc_revision rev);
 
 /// What run_state_test() reports besides the failures, and where.
 struct StateTestOptions
@@ -181,7 +181,7 @@ struct StateTestOptions
 };
 
 /// Execute the state @p test using the @p vm, recording what does not match into @p report.
-void run_state_test(const StateTransitionTest& test, evmc::VM& vm, const StateTestOptions& options,
+void run_state_test(const StateTransitionTest& test, sivmc::VM& vm, const StateTestOptions& options,
     TestReport& report);
 
 /// Computes the hash of the RLP-encoded list of transaction logs.

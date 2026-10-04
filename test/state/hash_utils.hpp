@@ -4,18 +4,18 @@
 
 #pragma once
 
-#include <evmc/evmc.hpp>
-#include <evmc/hex.hpp>
+#include <sivmc/hex.hpp>
+#include <sivmc/sivmc.hpp>
 #include <sivmone_precompiles/keccak.hpp>
 #include <bit>
 
 namespace sivmone
 {
-using evmc::address;
-using evmc::bytes;
-using evmc::bytes32;
-using evmc::bytes_view;
-using namespace evmc::literals;
+using sivmc::address;
+using sivmc::bytes;
+using sivmc::bytes32;
+using sivmc::bytes_view;
+using namespace sivmc::literals;
 
 /// Default type for 256-bit hash.
 ///

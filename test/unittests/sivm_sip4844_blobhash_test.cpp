@@ -7,19 +7,19 @@
 
 #include "sivm_fixture.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_P(sivm, blobhash_undefined)
 {
-    rev = EVMC_SHANGHAI;
+    rev = SIVMC_SILA_SHANGHAI;
     execute(blobhash(0));
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(SIVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(sivm, blobhash_empty)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
     execute(blobhash(0) + ret_top());
     EXPECT_OUTPUT_INT(0);
 
@@ -33,7 +33,7 @@ TEST_P(sivm, blobhash_empty)
 
 TEST_P(sivm, blobhash_one)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
 
     const std::array blob_hashes{
         0x01feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeed_bytes32};
@@ -42,7 +42,7 @@ TEST_P(sivm, blobhash_one)
     host.tx_context.blob_hashes_count = blob_hashes.size();
 
     execute(blobhash(0) + ret_top());
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(SIVMC_SUCCESS);
     EXPECT_EQ(output, blob_hashes[0]);
 
     execute(blobhash(1) + ret_top());
@@ -55,7 +55,7 @@ TEST_P(sivm, blobhash_one)
 
 TEST_P(sivm, blobhash_two)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
 
     const std::array blob_hashes{
         0x0100000000000000000000000000000000000000000000000000000000000001_bytes32,
@@ -67,7 +67,7 @@ TEST_P(sivm, blobhash_two)
     for (size_t i = 0; i < blob_hashes.size(); ++i)
     {
         execute(blobhash(i) + ret_top());
-        EXPECT_STATUS(EVMC_SUCCESS);
+        EXPECT_STATUS(SIVMC_SUCCESS);
         EXPECT_EQ(output, blob_hashes[i]);
     }
 
@@ -81,7 +81,7 @@ TEST_P(sivm, blobhash_two)
 
 TEST_P(sivm, blobhash_invalid_hash_version)
 {
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
 
     // The BLOBHASH instruction does not care about the hash version,
     // it will return whatever is in the array.
@@ -95,7 +95,7 @@ TEST_P(sivm, blobhash_invalid_hash_version)
     for (size_t i = 0; i < blob_hashes.size(); ++i)
     {
         execute(blobhash(i) + ret_top());
-        EXPECT_STATUS(EVMC_SUCCESS);
+        EXPECT_STATUS(SIVMC_SUCCESS);
         EXPECT_EQ(output, blob_hashes[i]);
     }
 

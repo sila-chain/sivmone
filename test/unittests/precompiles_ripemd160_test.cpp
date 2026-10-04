@@ -2,16 +2,16 @@
 // Copyright 2024 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <evmc/hex.hpp>
-#include <sivmone_precompiles/ripemd160.hpp>
 #include <gtest/gtest.h>
+#include <sivmc/hex.hpp>
+#include <sivmone_precompiles/ripemd160.hpp>
 #include <span>
 
 using sivmone::crypto::ripemd160;
 
 static std::string hex(std::span<const std::byte> x)
 {
-    return evmc::hex({reinterpret_cast<const unsigned char*>(x.data()), x.size()});
+    return sivmc::hex({reinterpret_cast<const unsigned char*>(x.data()), x.size()});
 }
 
 TEST(ripemd160, test_vectors)

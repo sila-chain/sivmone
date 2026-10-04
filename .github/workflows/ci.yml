@@ -42,8 +42,9 @@ jobs:
               test -f install/include/sivmone/sivmone.h
               lib=$(find install -name "libsivmone.so" | head -n1)
               test -n "$lib"
-              nm -D --defined-only "$lib" | grep -w evmc_create_sivmone
+              nm -D --defined-only "$lib" | grep -w sivmc_create_sivmone
               if nm -D --defined-only "$lib" | grep -i evmone; then false; fi
+              if nm -D --defined-only "$lib" | grep -E "evmc|EVMC"; then false; fi
               export LD_LIBRARY_PATH="$(dirname "$lib")"
               install/bin/sivmone --version
               install/bin/sivmone run 600160005260206000f3 | grep -q "Result: *success"

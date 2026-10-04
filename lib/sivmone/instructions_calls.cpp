@@ -20,10 +20,10 @@ constexpr auto ACCOUNT_CREATION_COST = 25000;
 ///
 /// Returns SIP-7702 delegate address if addr is delegated, or addr itself otherwise.
 /// Applies gas charge for accessing delegate account and may fail with out of gas.
-inline std::variant<evmc::address, Result> get_target_address(
-    const evmc::address& addr, int64_t& gas_left, ExecutionState& state) noexcept
+inline std::variant<sivmc::address, Result> get_target_address(
+    const sivmc::address& addr, int64_t& gas_left, ExecutionState& state) noexcept
 {
-    if (state.rev < EVMC_PRAGUE)
+    if (state.rev < SIVMC_SILA_PRAGUE)
         return addr;
 
     const auto delegate_addr = get_delegate_address(state.host, addr);
@@ -31,19 +31,19 @@ inline std::variant<evmc::address, Result> get_target_address(
         return addr;
 
     const auto delegate_account_access_cost =
-        (state.host.access_account(*delegate_addr) == EVMC_ACCESS_COLD ?
+        (state.host.access_account(*delegate_addr) == SIVMC_ACCESS_COLD ?
                 cold_account_access(state.rev) :
                 WARM_ACCESS);
 
     if ((gas_left -= delegate_account_access_cost) < 0)
-        return Result{EVMC_OUT_OF_GAS, gas_left};
+        return Result{SIVMC_OUT_OF_GAS, gas_left};
 
     return *delegate_addr;
 }
 
 /// Absorbs a child's state-gas back to the parent (SIP-8037).
 inline void absorb_child_state_gas(
-    int64_t& gas_left, ExecutionState& state, const evmc::Result& result) noexcept
+    int64_t& gas_left, ExecutionState& state, const sivmc::Result& result) noexcept
 {
     assert(result.state_gas.left >= 0);
     assert(result.state_gas.spilled >= 0);
@@ -53,7 +53,7 @@ inline void absorb_child_state_gas(
     assert(result.state_gas.left == 0 || result.state_gas.spilled == 0);
 
     // In a non-successful result, all is returned back.
-    assert(result.status_code == EVMC_SUCCESS ||
+    assert(result.status_code == SIVMC_SUCCESS ||
            (result.state_gas.left == state.state_gas.left && result.state_gas.spilled == 0));
 
     // Accumulate the spilled state-gas.
@@ -66,23 +66,23 @@ inline void absorb_child_state_gas(
 }
 }  // namespace
 
-/// Converts an opcode to matching EVMC call kind.
+/// Converts an opcode to matching SIVMC call kind.
 /// NOLINTNEXTLINE(misc-use-internal-linkage) fixed in clang-tidy 20.
-consteval evmc_call_kind to_call_kind(Opcode op) noexcept
+consteval sivmc_call_kind to_call_kind(Opcode op) noexcept
 {
     switch (op)
     {
     case OP_CALL:
     case OP_STATICCALL:
-        return EVMC_CALL;
+        return SIVMC_CALL;
     case OP_CALLCODE:
-        return EVMC_CALLCODE;
+        return SIVMC_CALLCODE;
     case OP_DELEGATECALL:
-        return EVMC_DELEGATECALL;
+        return SIVMC_DELEGATECALL;
     case OP_CREATE:
-        return EVMC_CREATE;
+        return SIVMC_CREATE;
     case OP_CREATE2:
-        return EVMC_CREATE2;
+        return SIVMC_CREATE2;
     default:
         intx::unreachable();
     }
@@ -97,7 +97,7 @@ Result call_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noexce
     static constexpr bool HAS_VALUE_ARG = Op == OP_CALL || Op == OP_CALLCODE;
 
     const auto gas = stack.pop();
-    const auto dst = intx::be::trunc<evmc::address>(stack.pop());
+    const auto dst = intx::be::trunc<sivmc::address>(stack.pop());
     const auto value = HAS_VALUE_ARG ? stack.pop() : 0;
     const auto has_value = value != 0;
     const auto input_offset_u256 = stack.pop();
@@ -112,14 +112,14 @@ Result call_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noexce
     {
         // TODO: gas_left is used as no-op and ignored by caller. Refactor this.
         if (has_value && state.in_static_mode())
-            return {EVMC_STATIC_MODE_VIOLATION, gas_left};
+            return {SIVMC_STATIC_MODE_VIOLATION, gas_left};
     }
 
     if (!check_memory(gas_left, state.memory, input_offset_u256, input_size_u256))
-        return {EVMC_OUT_OF_GAS, gas_left};
+        return {SIVMC_OUT_OF_GAS, gas_left};
 
     if (!check_memory(gas_left, state.memory, output_offset_u256, output_size_u256))
-        return {EVMC_OUT_OF_GAS, gas_left};
+        return {SIVMC_OUT_OF_GAS, gas_left};
 
     const auto input_offset = static_cast<size_t>(input_offset_u256);
     const auto input_size = static_cast<size_t>(input_size_u256);
@@ -129,52 +129,52 @@ Result call_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noexce
     if constexpr (HAS_VALUE_ARG)
     {
         const auto call_value_cost =
-            state.rev >= EVMC_AMSTERDAM ? CALL_VALUE_COST_AMSTERDAM : CALL_VALUE_COST;
+            state.rev >= SIVMC_SILA_AMSTERDAM ? CALL_VALUE_COST_AMSTERDAM : CALL_VALUE_COST;
         if (has_value && (gas_left -= call_value_cost) < 0)
-            return {EVMC_OUT_OF_GAS, gas_left};
+            return {SIVMC_OUT_OF_GAS, gas_left};
     }
 
-    if (state.rev >= EVMC_BERLIN && state.host.access_account(dst) == EVMC_ACCESS_COLD)
+    if (state.rev >= SIVMC_SILA_BERLIN && state.host.access_account(dst) == SIVMC_ACCESS_COLD)
     {
         if ((gas_left -= additional_cold_account_access(state.rev)) < 0)
-            return {EVMC_OUT_OF_GAS, gas_left};
+            return {SIVMC_OUT_OF_GAS, gas_left};
     }
 
     const auto target_addr_or_result = get_target_address(dst, gas_left, state);
     if (const auto* result = std::get_if<Result>(&target_addr_or_result))
         return *result;
 
-    const auto& code_addr = std::get<evmc::address>(target_addr_or_result);
+    const auto& code_addr = std::get<sivmc::address>(target_addr_or_result);
 
     bool new_account_charged = false;  // NOLINT(*-const-correctness)
     if constexpr (Op == OP_CALL)
     {
-        if ((has_value || state.rev < EVMC_SPURIOUS_DRAGON) && !state.host.account_exists(dst))
+        if ((has_value || state.rev < SIVMC_SIP158) && !state.host.account_exists(dst))
         {
-            if (state.rev >= EVMC_AMSTERDAM)
+            if (state.rev >= SIVMC_SILA_AMSTERDAM)
             {
                 if (!state.state_gas.charge(gas_left, NEW_ACCOUNT_STATE_GAS))
-                    return {EVMC_OUT_OF_GAS, gas_left};
+                    return {SIVMC_OUT_OF_GAS, gas_left};
                 new_account_charged = true;
             }
             else if ((gas_left -= ACCOUNT_CREATION_COST) < 0)
-                return {EVMC_OUT_OF_GAS, gas_left};
+                return {SIVMC_OUT_OF_GAS, gas_left};
         }
     }
 
-    evmc_message msg{.kind = to_call_kind(Op)};
-    msg.flags = (Op == OP_STATICCALL) ? uint32_t{EVMC_STATIC} : state.msg->flags;
+    sivmc_message msg{.kind = to_call_kind(Op)};
+    msg.flags = (Op == OP_STATICCALL) ? uint32_t{SIVMC_STATIC} : state.msg->flags;
     if (dst != code_addr)
-        msg.flags |= EVMC_DELEGATED;
+        msg.flags |= SIVMC_DELEGATED;
     else
-        msg.flags &= ~std::underlying_type_t<evmc_flags>{EVMC_DELEGATED};
+        msg.flags &= ~std::underlying_type_t<sivmc_flags>{SIVMC_DELEGATED};
     msg.depth = state.msg->depth + 1;
     msg.state_gas = state.state_gas.left;
     msg.recipient = (Op == OP_CALL || Op == OP_STATICCALL) ? dst : state.msg->recipient;
     msg.code_address = code_addr;
     msg.sender = (Op == OP_DELEGATECALL) ? state.msg->sender : state.msg->recipient;
     msg.value =
-        (Op == OP_DELEGATECALL) ? state.msg->value : intx::be::store<evmc::uint256be>(value);
+        (Op == OP_DELEGATECALL) ? state.msg->value : intx::be::store<sivmc::uint256be>(value);
 
     if (input_size > 0)
     {
@@ -193,10 +193,10 @@ Result call_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noexce
     }
     else
     {
-        if (state.rev >= EVMC_TANGERINE_WHISTLE)  // Always true for STATICCALL.
+        if (state.rev >= SIVMC_SIP150)  // Always true for STATICCALL.
             msg.gas = std::min(msg.gas, gas_left - gas_left / 64);
         else if (msg.gas > gas_left)
-            return {EVMC_OUT_OF_GAS, gas_left};
+            return {SIVMC_OUT_OF_GAS, gas_left};
     }
 
     if constexpr (HAS_VALUE_ARG)
@@ -209,17 +209,17 @@ Result call_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noexce
             {
                 if (new_account_charged)
                     state.state_gas.refill(gas_left, NEW_ACCOUNT_STATE_GAS);
-                return {EVMC_SUCCESS, gas_left};  // "Light" failure.
+                return {SIVMC_SUCCESS, gas_left};  // "Light" failure.
             }
         }
     }
 
-    if (state.rev < EVMC_OSAKA && state.msg->depth >= 1024)
-        return {EVMC_SUCCESS, gas_left};  // "Light" failure.
+    if (state.rev < SIVMC_SILA_OSAKA && state.msg->depth >= 1024)
+        return {SIVMC_SUCCESS, gas_left};  // "Light" failure.
 
     const auto result = state.host.call(msg);
     state.return_data.assign(result.output_data, result.output_size);
-    stack.top() = result.status_code == EVMC_SUCCESS;
+    stack.top() = result.status_code == SIVMC_SUCCESS;
 
     if (const auto copy_size = std::min(output_size, result.output_size); copy_size > 0)
         std::memcpy(&state.memory[output_offset], result.output_data, copy_size);
@@ -231,11 +231,11 @@ Result call_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noexce
 
     if constexpr (Op == OP_CALL)
     {
-        if (new_account_charged && result.status_code != EVMC_SUCCESS)
+        if (new_account_charged && result.status_code != SIVMC_SUCCESS)
             state.state_gas.refill(gas_left, NEW_ACCOUNT_STATE_GAS);
     }
 
-    return {EVMC_SUCCESS, gas_left};
+    return {SIVMC_SUCCESS, gas_left};
 }
 
 template Result call_impl<OP_CALL>(
@@ -253,7 +253,7 @@ Result create_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noex
     static_assert(Op == OP_CREATE || Op == OP_CREATE2);
 
     if (state.in_static_mode())
-        return {EVMC_STATIC_MODE_VIOLATION, gas_left};
+        return {SIVMC_STATIC_MODE_VIOLATION, gas_left};
 
     const auto endowment = stack.pop();
     const auto init_code_offset_u256 = stack.pop();
@@ -264,56 +264,57 @@ Result create_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noex
     state.return_data.clear();
 
     if (!check_memory(gas_left, state.memory, init_code_offset_u256, init_code_size_u256))
-        return {EVMC_OUT_OF_GAS, gas_left};
+        return {SIVMC_OUT_OF_GAS, gas_left};
 
     const auto init_code_offset = static_cast<size_t>(init_code_offset_u256);
     const auto init_code_size = static_cast<size_t>(init_code_size_u256);
 
     const size_t max_init_code_size =
-        state.rev >= EVMC_AMSTERDAM ? MAX_INITCODE_SIZE_AMSTERDAM : MAX_INITCODE_SIZE;
-    if (state.rev >= EVMC_SHANGHAI && init_code_size > max_init_code_size)
-        return {EVMC_OUT_OF_GAS, gas_left};
+        state.rev >= SIVMC_SILA_AMSTERDAM ? MAX_INITCODE_SIZE_AMSTERDAM : MAX_INITCODE_SIZE;
+    if (state.rev >= SIVMC_SILA_SHANGHAI && init_code_size > max_init_code_size)
+        return {SIVMC_OUT_OF_GAS, gas_left};
 
-    const auto init_code_word_cost = 6 * (Op == OP_CREATE2) + 2 * (state.rev >= EVMC_SHANGHAI);
+    const auto init_code_word_cost =
+        6 * (Op == OP_CREATE2) + 2 * (state.rev >= SIVMC_SILA_SHANGHAI);
     const auto init_code_cost = num_words(init_code_size) * init_code_word_cost;
     if ((gas_left -= init_code_cost) < 0)
-        return {EVMC_OUT_OF_GAS, gas_left};
+        return {SIVMC_OUT_OF_GAS, gas_left};
 
-    if (state.rev < EVMC_OSAKA && state.msg->depth >= 1024)
-        return {EVMC_SUCCESS, gas_left};  // "Light" failure.
+    if (state.rev < SIVMC_SILA_OSAKA && state.msg->depth >= 1024)
+        return {SIVMC_SUCCESS, gas_left};  // "Light" failure.
 
     if (endowment != 0 &&
         intx::be::load<uint256>(state.host.get_balance(state.msg->recipient)) < endowment)
-        return {EVMC_SUCCESS, gas_left};  // "Light" failure.
+        return {SIVMC_SUCCESS, gas_left};  // "Light" failure.
 
     const auto& sender = state.msg->recipient;
     const auto sender_nonce = state.host.get_nonce(sender);  // Pre-bump sender nonce.
 
     // Creation fails when the sender's nonce is at maximum (SIP-2681).
     if (sender_nonce == MAX_NONCE)
-        return {EVMC_SUCCESS, gas_left};  // "Light" failure.
+        return {SIVMC_SUCCESS, gas_left};  // "Light" failure.
 
     const auto init_code =
         bytes_view{init_code_size > 0 ? &state.memory[init_code_offset] : nullptr, init_code_size};
 
-    evmc_message msg{.kind = to_call_kind(Op)};
+    sivmc_message msg{.kind = to_call_kind(Op)};
     msg.recipient = (Op == OP_CREATE) ? compute_create_address(sender, sender_nonce) :
                                         compute_create2_address(sender, salt, init_code);
 
     // Access to the new address is warmed and never reverted (SIP-2929).
-    if (state.rev >= EVMC_BERLIN)
+    if (state.rev >= SIVMC_SILA_BERLIN)
         state.host.access_account(msg.recipient);
 
     bool new_account_charged = false;
-    if (state.rev >= EVMC_AMSTERDAM && !state.host.account_exists(msg.recipient))
+    if (state.rev >= SIVMC_SILA_AMSTERDAM && !state.host.account_exists(msg.recipient))
     {
         if (!state.state_gas.charge(gas_left, NEW_ACCOUNT_STATE_GAS))
-            return {EVMC_OUT_OF_GAS, gas_left};
+            return {SIVMC_OUT_OF_GAS, gas_left};
         new_account_charged = true;
     }
 
     msg.gas = gas_left;
-    if (state.rev >= EVMC_TANGERINE_WHISTLE)
+    if (state.rev >= SIVMC_SIP150)
         msg.gas -= msg.gas / 64;
 
     msg.state_gas = state.state_gas.left;
@@ -321,20 +322,20 @@ Result create_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noex
     msg.input_size = init_code.size();
     msg.sender = sender;
     msg.depth = state.msg->depth + 1;
-    msg.value = intx::be::store<evmc::uint256be>(endowment);
+    msg.value = intx::be::store<sivmc::uint256be>(endowment);
 
     const auto result = state.host.call(msg);
     gas_left -= msg.gas - result.gas_left;
     state.gas_refund += result.gas_refund;
     absorb_child_state_gas(gas_left, state, result);
-    if (new_account_charged && result.status_code != EVMC_SUCCESS)
+    if (new_account_charged && result.status_code != SIVMC_SUCCESS)
         state.state_gas.refill(gas_left, NEW_ACCOUNT_STATE_GAS);
 
     state.return_data.assign(result.output_data, result.output_size);
-    if (result.status_code == EVMC_SUCCESS)
+    if (result.status_code == SIVMC_SUCCESS)
         stack.top() = intx::be::load<uint256>(msg.recipient);
 
-    return {EVMC_SUCCESS, gas_left};
+    return {SIVMC_SUCCESS, gas_left};
 }
 
 template Result create_impl<OP_CREATE>(

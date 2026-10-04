@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <test/state/errors.hpp>
-#include <test/state/silash_difficulty.hpp>
 #include <test/state/requests.hpp>
 #include <test/state/rlp_decode.hpp>
+#include <test/state/silash_difficulty.hpp>
 #include <test/utils/block_transition.hpp>
 #include <test/utils/blockchaintest.hpp>
 #include <test/utils/error_matching.hpp>
@@ -30,7 +30,7 @@ namespace
 /// Validates block-level validity unrelated to individual transactions.
 ///
 /// Returns an empty error_code if the block is valid, otherwise the specific validation error.
-std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
+std::error_code validate_block(sivmc_revision rev, state::BlobParams blob_params,
     const TestBlock& test_block, const BlockHeader* parent_header, bool parent_has_ommers) noexcept
 {
     using namespace state;
@@ -70,7 +70,7 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
             test_block.block_info.timestamp, test_block.block_info.number, rev))
         return make_error_code(INCORRECT_BLOCK_FORMAT);
 
-    if (rev >= EVMC_PARIS && !test_block.block_info.ommers.empty())
+    if (rev >= SIVMC_SILA_PARIS && !test_block.block_info.ommers.empty())
         return make_error_code(INCORRECT_BLOCK_FORMAT);
 
     for (const auto& ommer : test_block.block_info.ommers)
@@ -84,7 +84,7 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
     if (test_block.block_info.extra_data.size() > 32)
         return make_error_code(INCORRECT_BLOCK_FORMAT);
 
-    if (rev >= EVMC_LONDON)
+    if (rev >= SIVMC_SILA_LONDON)
     {
         const auto calculated_base_fee = calc_base_fee(
             parent_header->gas_limit, parent_header->gas_used, parent_header->base_fee_per_gas);
@@ -92,7 +92,7 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
             return make_error_code(INVALID_BASEFEE_PER_GAS);
     }
 
-    if (rev >= EVMC_CANCUN)
+    if (rev >= SIVMC_SILA_CANCUN)
     {
         // `excess_blob_gas` and `blob_gas_used` mandatory after Cancun and invalid before.
         if (!test_block.block_info.excess_blob_gas.has_value() ||
@@ -118,14 +118,14 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
     }
 
     // `slot_number` is mandatory from Amsterdam and invalid before (SIP-7843).
-    if (test_block.block_info.slot_number.has_value() != (rev >= EVMC_AMSTERDAM))
+    if (test_block.block_info.slot_number.has_value() != (rev >= SIVMC_SILA_AMSTERDAM))
         return make_error_code(INCORRECT_BLOCK_FORMAT);
 
     // Block is invalid if some of the withdrawal fields failed to be parsed.
     if (!test_block.withdrawals_parse_success)
         return make_error_code(INCORRECT_BLOCK_FORMAT);
 
-    if (rev >= EVMC_OSAKA && test_block.rlp.size() > MAX_RLP_BLOCK_SIZE)
+    if (rev >= SIVMC_SILA_OSAKA && test_block.rlp.size() > MAX_RLP_BLOCK_SIZE)
         return make_error_code(RLP_BLOCK_LIMIT_EXCEEDED);
 
     return {};
@@ -175,13 +175,13 @@ void check_transactions_round_trip(bytes_view block_rlp, TestReport& report)
     }
 }
 
-std::optional<uint64_t> mining_reward(evmc_revision rev) noexcept
+std::optional<uint64_t> mining_reward(sivmc_revision rev) noexcept
 {
-    if (rev < EVMC_BYZANTIUM)
+    if (rev < SIVMC_SILA_BYZANTIUM)
         return 5'000000000'000000000;
-    if (rev < EVMC_PETERSBURG)
+    if (rev < SIVMC_SILA_CONSTANTINOPLE_FIX)
         return 3'000000000'000000000;
-    if (rev < EVMC_PARIS)
+    if (rev < SIVMC_SILA_PARIS)
         return 2'000000000'000000000;
     return std::nullopt;
 }
@@ -212,7 +212,7 @@ std::string print_state(const TestState& s)
 }
 }  // namespace
 
-void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& report)
+void run_blockchain_test(const BlockchainTest& test, sivmc::VM& vm, TestReport& report)
 {
     const auto rev_schedule = to_rev_schedule(test.network);
     report.start_case(test.name);
@@ -229,7 +229,7 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
     report.check_eq(
         "genesis receipts root", test.genesis_block_header.receipts_root, state::EMPTY_MPT_HASH);
     report.check_eq("genesis withdrawals root", test.genesis_block_header.withdrawal_root,
-        rev_schedule.get_revision(test.genesis_block_header.timestamp) >= EVMC_SHANGHAI ?
+        rev_schedule.get_revision(test.genesis_block_header.timestamp) >= SIVMC_SILA_SHANGHAI ?
             state::EMPTY_MPT_HASH :
             bytes32{});
     report.check_eq("genesis logs bloom", bytes_view{test.genesis_block_header.logs_bloom},
@@ -331,7 +331,7 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
                 static_cast<int64_t>(bi.blob_gas_used.value_or(0)));
             report.check_eq("state root", state_root, test_block.expected_block_header.state_root);
 
-            if (rev >= EVMC_SHANGHAI)
+            if (rev >= SIVMC_SILA_SHANGHAI)
             {
                 report.check_eq("withdrawals root",
                     state::mpt_hash(test_block.block_info.withdrawals),
@@ -342,7 +342,7 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
                 test_block.expected_block_header.transactions_root);
             report.check_eq("receipts root", state::mpt_hash(res.receipts),
                 test_block.expected_block_header.receipts_root);
-            if (rev >= EVMC_PRAGUE)
+            if (rev >= SIVMC_SILA_PRAGUE)
             {
                 report.check_eq("requests hash", calculate_requests_hash(res.requests),
                     test_block.expected_block_header.requests_hash);
@@ -439,8 +439,8 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
                 continue;
             }
 
-            if (rev >= EVMC_SHANGHAI && state::mpt_hash(test_block.block_info.withdrawals) !=
-                                            test_block.expected_block_header.withdrawal_root)
+            if (rev >= SIVMC_SILA_SHANGHAI && state::mpt_hash(test_block.block_info.withdrawals) !=
+                                                  test_block.expected_block_header.withdrawal_root)
             {
                 expect_fixture_names("BlockException.INVALID_WITHDRAWALS_ROOT");
                 continue;
@@ -456,8 +456,8 @@ void run_blockchain_test(const BlockchainTest& test, evmc::VM& vm, TestReport& r
                 expect_fixture_names("BlockException.INVALID_RECEIPTS_ROOT");
                 continue;
             }
-            if (rev >= EVMC_PRAGUE && calculate_requests_hash(res.requests) !=
-                                          test_block.expected_block_header.requests_hash)
+            if (rev >= SIVMC_SILA_PRAGUE && calculate_requests_hash(res.requests) !=
+                                                test_block.expected_block_header.requests_hash)
             {
                 expect_fixture_names("BlockException.INVALID_REQUESTS");
                 continue;

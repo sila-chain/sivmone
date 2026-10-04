@@ -119,7 +119,7 @@ json::json load_fixture_file(const fs::path& path)
 
 /// Runs one fixture of a fixture file.
 void run_fixture(const std::string& name, const json::json& fixture, const RunOptions& options,
-    evmc::VM& vm, TestReport& report)
+    sivmc::VM& vm, TestReport& report)
 {
     // The runners rename theirs; this names a failure to load, or a fixture which is not one.
     report.start_case(name);
@@ -314,7 +314,7 @@ int run_tests(std::span<const TestCase> cases, std::ostream& out, const RunOptio
     return passed == 0 ? NOTHING_VERIFIED : SUCCESS;
 }
 
-std::vector<Result> run_fixture_file(const fs::path& path, const RunOptions& options, evmc::VM& vm)
+std::vector<Result> run_fixture_file(const fs::path& path, const RunOptions& options, sivmc::VM& vm)
 {
     json::json contents;
     if (auto loaded =

@@ -5,7 +5,7 @@
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"
 
-using namespace evmc::literals;
+using namespace sivmc::literals;
 using namespace sivmone::test;
 
 TEST_F(state_transition, create2_factory)
@@ -47,7 +47,7 @@ TEST_F(state_transition, create_tx_failure)
 
     tx.data = bytecode{} + OP_INVALID;
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[create_address].exists = false;
 }
 
@@ -61,7 +61,7 @@ TEST_F(state_transition, create2_max_nonce)
 
 TEST_F(state_transition, code_deployment_out_of_gas_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;  // 63/64 gas rule enabled
+    rev = SIVMC_SIP150;  // 63/64 gas rule enabled
     block.base_fee = 0;
     const auto initcode = ret(0, 5000);  // create contract with a lot of zeros, deploy cost 1M
 
@@ -76,7 +76,7 @@ TEST_F(state_transition, code_deployment_out_of_gas_tw)
 
 TEST_F(state_transition, code_deployment_out_of_gas_f)
 {
-    rev = EVMC_FRONTIER;
+    rev = SIVMC_FRONTIER;
     block.base_fee = 0;
     const auto initcode = ret(0, 1000);  // create contract with a lot of zeros
 
@@ -94,7 +94,7 @@ TEST_F(state_transition, code_deployment_out_of_gas_f)
 
 TEST_F(state_transition, code_deployment_out_of_gas_storage_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;  // 63/64 gas rule enabled
+    rev = SIVMC_SIP150;  // 63/64 gas rule enabled
     block.base_fee = 0;
     const auto initcode = sstore(0, 1)     // set storage
                           + ret(0, 5000);  // create contract with a lot of zeros
@@ -110,7 +110,7 @@ TEST_F(state_transition, code_deployment_out_of_gas_storage_tw)
 
 TEST_F(state_transition, code_deployment_out_of_gas_storage_f)
 {
-    rev = EVMC_FRONTIER;
+    rev = SIVMC_FRONTIER;
     block.base_fee = 0;
     const auto initcode = sstore(0, 1)     // set storage
                           + ret(0, 1000);  // create contract with a lot of zeros
@@ -132,7 +132,7 @@ TEST_F(state_transition, code_deployment_out_of_gas_storage_f)
 
 TEST_F(state_transition, code_deployment_out_of_gas_refund_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;  // 63/64 gas rule enabled
+    rev = SIVMC_SIP150;  // 63/64 gas rule enabled
     block.base_fee = 0;
     const auto initcode = sstore(0, 1)     // set storage
                           + sstore(0, 0)   // gas refund
@@ -150,7 +150,7 @@ TEST_F(state_transition, code_deployment_out_of_gas_refund_tw)
 
 TEST_F(state_transition, code_deployment_out_of_gas_refund_f)
 {
-    rev = EVMC_FRONTIER;
+    rev = SIVMC_FRONTIER;
     block.base_fee = 0;
     const auto initcode = sstore(0, 1)     // set storage
                           + sstore(0, 0)   // gas refund
@@ -177,19 +177,19 @@ TEST_F(state_transition, create_tx_collision)
 
     pre[CREATED] = {.nonce = 2};
 
-    expect.status = EVMC_FAILURE;
+    expect.status = SIVMC_FAILURE;
     expect.post[CREATED].nonce = 2;
 }
 
 TEST_F(state_transition, create_tx_collision_storage)
 {
-    rev = EVMC_LONDON;
+    rev = SIVMC_SILA_LONDON;
 
     // Test create address collision with an account only having storage (SIP-7610).
     const auto created = compute_create_address(Sender, pre[Sender].nonce);
     pre[created] = {.storage = {{0x00_bytes32, 0x01_bytes32}}};
 
-    expect.status = EVMC_FAILURE;
+    expect.status = SIVMC_FAILURE;
     expect.post[created].storage[0x00_bytes32] = 0x01_bytes32;
 }
 
@@ -207,7 +207,7 @@ TEST_F(state_transition, create_collision)
 
 TEST_F(state_transition, create_collision_storage)
 {
-    rev = EVMC_LONDON;
+    rev = SIVMC_SILA_LONDON;
 
     // Test create address collision with an account only having storage (SIP-7610).
     tx.to = To;
@@ -228,7 +228,7 @@ TEST_F(state_transition, create_collision_revert)
     pre[*tx.to] = {.code = create() + OP_INVALID};
     pre[CREATED] = {.nonce = 2};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].nonce = pre[CREATED].nonce;
 }
@@ -241,7 +241,7 @@ TEST_F(state_transition, create_prefunded_revert)
     pre[*tx.to] = {.code = create() + OP_INVALID};
     pre[CREATED] = {.balance = 2};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].nonce = pre[CREATED].nonce;
 }
@@ -253,7 +253,7 @@ TEST_F(state_transition, create_revert)
     tx.to = To;
     pre[*tx.to] = {.code = create() + OP_INVALID};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].exists = false;
 }
@@ -292,7 +292,7 @@ TEST_F(state_transition, create2_prefunded_revert_storage_no_leak)
 
 TEST_F(state_transition, create_revert_sd)
 {
-    rev = EVMC_SPURIOUS_DRAGON;
+    rev = SIVMC_SIP158;
     block.base_fee = 0;
     static constexpr auto CREATED = 0x8bbc3514477d75ec797bbe4e19d7961660bb849c_address;
 
@@ -300,14 +300,14 @@ TEST_F(state_transition, create_revert_sd)
     tx.to = To;
     pre[*tx.to] = {.code = create() + OP_INVALID};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].exists = false;
 }
 
 TEST_F(state_transition, create_revert_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = SIVMC_SIP150;
     block.base_fee = 0;
     static constexpr auto CREATED = 0x8bbc3514477d75ec797bbe4e19d7961660bb849c_address;
 
@@ -315,7 +315,7 @@ TEST_F(state_transition, create_revert_tw)
     tx.to = To;
     pre[*tx.to] = {.code = create() + OP_INVALID};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].exists = false;
 }
@@ -328,14 +328,14 @@ TEST_F(state_transition, create_collision_empty_revert)
     pre[*tx.to] = {.code = create() + OP_INVALID};
     pre[CREATED] = {};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].exists = true;
 }
 
 TEST_F(state_transition, create_collision_empty_revert_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = SIVMC_SIP150;
     block.base_fee = 0;
     static constexpr auto CREATED = 0x8bbc3514477d75ec797bbe4e19d7961660bb849c_address;
 
@@ -344,7 +344,7 @@ TEST_F(state_transition, create_collision_empty_revert_tw)
     pre[*tx.to] = {.code = create() + OP_INVALID};
     pre[CREATED] = {};
 
-    expect.status = EVMC_INVALID_INSTRUCTION;
+    expect.status = SIVMC_INVALID_INSTRUCTION;
     expect.post[*tx.to].nonce = pre[*tx.to].nonce;
     expect.post[CREATED].exists = true;
 }
@@ -365,7 +365,7 @@ TEST_F(state_transition, touch_create_collision_empty_revert)
 
 TEST_F(state_transition, touch_create_collision_empty_revert_tw)
 {
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = SIVMC_SIP150;
     block.base_fee = 0;
     static constexpr auto CREATED = 0x11f72042f0f1c9d8a1aeffc3680d0b41dd7769a7_address;
     static constexpr auto REVERT_PROXY = 0x94_address;
@@ -399,7 +399,7 @@ TEST_F(state_transition, create2_rollback_preserves_access_list_slot_warmth)
 {
     // Rolling back the first CREATE2 must not cool the slots its address had warmed via the tx
     // access list, so the SSTORE in the second attempt still pays the warm price.
-    rev = EVMC_CANCUN;
+    rev = SIVMC_SILA_CANCUN;
 
     // Initcode reverts on zero CALLVALUE, otherwise stores and deploys nothing.
     const auto revert_path = revert(0, 0);
@@ -429,7 +429,7 @@ TEST_F(state_transition, sip7954_create_tx_at_max_code_size)
 {
     // Amsterdam raises the deployed code size limit from 0x6000 to 0x10000 (SIP-7954).
     // A create transaction deploying code of exactly the new limit succeeds.
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     static constexpr auto code_size = 0x10000;  // MAX_CODE_SIZE_AMSTERDAM.
     tx.gas_limit = 110'000'000;  // Covers the ~100M code-deposit state gas (SIP-8037).
     block.gas_limit = tx.gas_limit;
@@ -443,7 +443,7 @@ TEST_F(state_transition, sip7954_create_tx_at_max_code_size)
 TEST_F(state_transition, sip7954_create_tx_above_max_code_size)
 {
     // Code one byte above the new 0x10000 limit is still rejected on Amsterdam (SIP-7954).
-    rev = EVMC_AMSTERDAM;
+    rev = SIVMC_SILA_AMSTERDAM;
     static constexpr auto code_size = 0x10000 + 1;
     tx.gas_limit = 110'000'000;  // Enough to deposit the code, so only the limit can reject it.
     block.gas_limit = tx.gas_limit;
@@ -451,6 +451,6 @@ TEST_F(state_transition, sip7954_create_tx_above_max_code_size)
     tx.data = ret(0, code_size);  // Init code returns code one byte over the limit.
 
     const auto create_address = compute_create_address(Sender, pre[Sender].nonce);
-    expect.status = EVMC_FAILURE;
+    expect.status = SIVMC_FAILURE;
     expect.post[create_address].exists = false;
 }
