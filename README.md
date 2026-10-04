@@ -1,19 +1,17 @@
 # sivmone
 
-[![ethereum badge]][ethereum]
+[![ci badge]][ci]
 [![readme style standard badge]][standard readme]
-[![codecov badge]][codecov]
 [![codspeed badge]][codspeed]
-[![circleci badge]][circleci]
-[![appveyor badge]][appveyor]
 [![license badge]][Apache License, Version 2.0]
 
-> Fast Ethereum Virtual Machine implementation
+> Fast Sila Virtual Machine implementation
 
-_sivmone_ is a C++ implementation of the Ethereum Virtual Machine (EVM). 
-Created by members of the [Ipsilon] (ex-[Ewasm]) team, the project aims for clean, standalone EVM implementation 
-that can be imported as an execution module by Ethereum Client projects. 
-The codebase of _sivmone_ is optimized to provide fast and efficient execution of EVM smart contracts.
+_sivmone_ is a C++ implementation of the Sila Virtual Machine (Sivm).
+The project aims for a clean, standalone Sivm implementation
+that can be imported as an execution module by Sila client projects.
+The codebase of _sivmone_ is optimized to provide fast and efficient execution of Sivm smart contracts.
+It derives from evmone, created by members of the [Ipsilon] (ex-[Ewasm]) team.
 
 ### Characteristic of sivmone
 
@@ -28,13 +26,13 @@ The codebase of _sivmone_ is optimized to provide fast and efficient execution o
 
 ### Baseline Interpreter
 
-1. Provides relatively straight-forward but efficient EVM implementation.
+1. Provides relatively straight-forward but efficient Sivm implementation.
 2. Performs only minimalistic `JUMPDEST` analysis.
 
 ### Advanced Interpreter
 
 1. The _indirect call threading_ is the dispatch method used -
-   a loaded EVM program is a table with pointers to functions implementing virtual instructions.
+   a loaded Sivm program is a table with pointers to functions implementing virtual instructions.
 2. The gas cost and stack requirements of block of instructions is precomputed 
    and applied once per block during execution.
 3. Performs extensive and expensive bytecode analysis before execution.
@@ -42,20 +40,12 @@ The codebase of _sivmone_ is optimized to provide fast and efficient execution o
 
 ## Usage
 
-### As geth plugin
+### As an EVMC module
 
-sivmone implements the [EVMC] API for Ethereum Virtual Machines.
-It can be used as a plugin replacing geth's internal EVM. But for that a modified
-version of geth is needed. The [Ewasm]'s fork
-of go-ethereum provides [binary releases of geth with EVMC support](https://github.com/ewasm/go-ethereum/releases).
+sivmone implements the [EVMC] API. The shared library `libsivmone.so` exports
+`evmc_create_sivmone()` and can be loaded by any client with an EVMC loader.
 
-Next, download sivmone from [Releases].
-
-Start the downloaded geth with `--vm.evm` option pointing to the sivmone shared library.
-
-```bash
-geth --vm.evm=./libsivmone.so
-```
+Prebuilt packages are published on [Releases].
 
 ### Building from source
 
@@ -63,7 +53,7 @@ To build the sivmone EVMC module (shared library), test, and benchmark:
 
 1. Fetch the source code:
    ```
-   git clone --recursive https://github.com/ethereum/evmone
+   git clone --recursive https://github.com/sila-chain/sivmone
    cd sivmone
    ```
 
@@ -92,31 +82,31 @@ To build the sivmone EVMC module (shared library), test, and benchmark:
 
 ### Precompiles
 
-Ethereum Precompiled Contracts (_precompiles_ for short) are supported by sivmone with some exceptions:
+Sila Precompiled Contracts (_precompiles_ for short) are supported by sivmone with some exceptions:
 
 1. The `ecrecover` is implemented directly by sivmone and has degraded performance.
 2. For `expmod` stubs are enabled by default — they will correctly respond to known inputs. The CMake option `SIVMONE_PRECOMPILES_GMP=1` enables full implementation but this requires [GMP] (e.g. libgmp-dev) library at build and execution time.
 
 ### Docker
 
-Docker images with sivmone are available on Docker Hub:
-https://hub.docker.com/r/ethereum/evmone.
+A Docker image with sivmone can be built from the [Dockerfile](Dockerfile).
 
 Having the sivmone shared library inside a docker is not very useful on its own,
 but the image can be used as the base of another one or you can run benchmarks 
 with it.
 
 ```bash
-docker run --entrypoint sivmone-bench ethereum/sivmone /src/test/benchmarks
+docker build -t sivmone .
+docker run --entrypoint sivmone-bench sivmone /src/test/sivm-benchmarks/benchmarks
 ```
 
 ## References
 
-1. [Efficient gas calculation algorithm for EVM](docs/efficient_gas_calculation_algorithm.md)
+1. [Efficient gas calculation algorithm for Sivm](docs/efficient_gas_calculation_algorithm.md)
 
 ## Maintainer
 
-Paweł Bylica [@chfast]
+[sila-chain]
 
 ## License
 
@@ -125,27 +115,21 @@ Paweł Bylica [@chfast]
 Licensed under the [Apache License, Version 2.0].
 
 
-[@chfast]: https://github.com/chfast
-[appveyor]: https://ci.appveyor.com/project/chfast/evmone/branch/master
-[circleci]: https://circleci.com/gh/ethereum/evmone/tree/master
-[codecov]: https://codecov.io/gh/ethereum/evmone/
-[codspeed]: https://app.codspeed.io/ipsilon/evmone
+[sila-chain]: https://github.com/sila-chain
+[ci]: https://github.com/sila-chain/sivmone/actions/workflows/ci.yml
+[codspeed]: https://app.codspeed.io/sila-chain/sivmone
 [Apache License, Version 2.0]: LICENSE
-[ethereum]: https://ethereum.org
 [EVMC]: https://github.com/ethereum/evmc
 [Ipsilon]: https://github.com/ipsilon
 [Ewasm]: https://github.com/ewasm
 [GMP]: https://gmplib.org
 [intx]: https://github.com/chfast/intx
 [ethash]: https://github.com/chfast/ethash
-[Releases]: https://github.com/ethereum/evmone/releases
+[Releases]: https://github.com/sila-chain/sivmone/releases
 [standard readme]: https://github.com/RichardLitt/standard-readme
 [silkpre]: https://github.com/torquem-ch/silkpre
 
-[appveyor badge]: https://img.shields.io/appveyor/ci/chfast/evmone/master.svg?logo=appveyor
-[circleci badge]: https://img.shields.io/circleci/project/github/ethereum/evmone/master.svg?logo=circleci
-[codecov badge]: https://img.shields.io/codecov/c/github/ethereum/evmone.svg?logo=codecov
+[ci badge]: https://github.com/sila-chain/sivmone/actions/workflows/ci.yml/badge.svg
 [codspeed badge]: https://img.shields.io/endpoint?url=https://codspeed.io/badge.json
-[ethereum badge]: https://img.shields.io/badge/ethereum-EVM-informational.svg?logo=ethereum
-[license badge]: https://img.shields.io/github/license/ethereum/evmone.svg?logo=apache
+[license badge]: https://img.shields.io/github/license/sila-chain/sivmone.svg?logo=apache
 [readme style standard badge]: https://img.shields.io/badge/readme%20style-standard-brightgreen.svg
