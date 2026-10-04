@@ -555,7 +555,7 @@ ExecutionResult ecpairing_execute(const uint8_t* input, size_t input_size, uint8
         if (!p.has_value()) [[unlikely]]
             return {EVMC_PRECOMPILE_FAILURE, 0};
 
-        // G2 EVM ABI feeds the imaginary coefficient before the real one for each Fq²,
+        // G2 Sivm ABI feeds the imaginary coefficient before the real one for each Fq²,
         // so swap the offsets when reading into (real, imaginary) order.
         const auto qx_real = bn::Fq::from_bytes(std::span<const uint8_t, 32>{input_ptr + 96, 32});
         const auto qx_imag = bn::Fq::from_bytes(std::span<const uint8_t, 32>{input_ptr + 64, 32});

@@ -13,7 +13,7 @@ namespace sivmone::test
 {
 namespace
 {
-/// Stack limit inside the EVM benchmark loop (one stack item is used for the loop counter).
+/// Stack limit inside the Sivm benchmark loop (one stack item is used for the loop counter).
 constexpr auto stack_limit = 1023;
 
 enum class Mode
@@ -22,7 +22,7 @@ enum class Mode
     full_stack = 1,  ///< The code fills the stack up to its limit.
 };
 
-/// The instruction grouping by EVM stack requirements.
+/// The instruction grouping by Sivm stack requirements.
 enum class InstructionCategory : char
 {
     nop = 'n',     ///< No-op instruction.
@@ -71,7 +71,7 @@ std::string to_string(const CodeParams& params)
            std::to_string(static_cast<int>(params.mode));
 }
 
-/// Generates the EVM benchmark loop inner code for the given opcode and "mode".
+/// Generates the Sivm benchmark loop inner code for the given opcode and "mode".
 bytecode generate_loop_inner_code(CodeParams params)
 {
     const auto [opcode, mode] = params;

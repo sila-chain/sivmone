@@ -2,7 +2,7 @@
 // Copyright 2019-2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <sivmone/sivmone.h>
 
 namespace sivmone::test
@@ -26,9 +26,9 @@ const char* print_vm_name(const testing::TestParamInfo<evmc::VM*>& info) noexcep
 }  // namespace
 
 INSTANTIATE_TEST_SUITE_P(
-    sivmone, evm, testing::Values(&advanced_vm, &baseline_vm, &bnocgoto_vm), print_vm_name);
+    sivmone, sivm, testing::Values(&advanced_vm, &baseline_vm, &bnocgoto_vm), print_vm_name);
 
-bool evm::is_advanced() noexcept
+bool sivm::is_advanced() noexcept
 {
     return GetParam() == &advanced_vm;
 }

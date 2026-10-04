@@ -8,7 +8,7 @@
 namespace sivmone
 {
 
-/// The list of EVM opcodes from every EVM revision.
+/// The list of Sivm opcodes from every Sivm revision.
 ///
 /// This is not enum class because we want implicit conversion to integers,
 /// e.g. for usage as an array index.

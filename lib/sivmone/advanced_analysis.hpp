@@ -53,13 +53,13 @@ struct AdvancedExecutionState : ExecutionState
       : ExecutionState{message, revision, host_interface, host_ctx, _code}, gas_left{message.gas}
     {}
 
-    /// Computes the current EVM stack height.
+    /// Computes the current Sivm stack height.
     [[nodiscard]] int stack_size() noexcept
     {
         return static_cast<int>(stack.end() - stack_space.bottom());
     }
 
-    /// Adjust the EVM stack height by given change.
+    /// Adjust the Sivm stack height by given change.
     void adjust_stack_size(int change) noexcept { stack = stack.end() + change; }
 
     /// Terminates the execution with the given status code.

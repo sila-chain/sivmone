@@ -220,7 +220,7 @@ int run_tests(std::span<const TestCase> cases, std::ostream& out, const RunOptio
         out << std::flush;
 
         auto results = test.run();
-        // A test writes its own output, an EVM trace above all, to another stream.
+        // A test writes its own output, an Sivm trace above all, to another stream.
         std::clog << std::flush;
 
         // The file counts once, for the worst its fixtures reached. It is skipped only when

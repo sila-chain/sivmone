@@ -20,7 +20,7 @@ struct StorageCostSpec
     int16_t cold;         ///< Additional cold access cost (EIP-2929).
 };
 
-/// Table of gas cost specification for storage instructions per EVM revision.
+/// Table of gas cost specification for storage instructions per Sivm revision.
 /// TODO: This can be moved to instruction traits and be used in other places: e.g.
 ///       SLOAD cost, replacement for WARM_ACCESS.
 constexpr auto STORAGE_COST_SPEC = []() noexcept {

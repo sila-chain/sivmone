@@ -2,16 +2,16 @@
 // Copyright 2019-2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains non-mainstream EVM unit tests not matching any concrete category:
+/// This file contains non-mainstream Sivm unit tests not matching any concrete category:
 /// - regression tests,
 /// - tests from fuzzers,
 /// - sivmone's internal tests.
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace sivmone::test;
 
-TEST_P(evm, sivmone_loaded_program_relocation)
+TEST_P(sivm, sivmone_loaded_program_relocation)
 {
     // The bytecode of size 2 will create sivmone's loaded program of size 4 and will cause
     // the relocation of the C++ vector containing the program instructions.
@@ -19,7 +19,7 @@ TEST_P(evm, sivmone_loaded_program_relocation)
     EXPECT_GAS_USED(EVMC_SUCCESS, 0);
 }
 
-TEST_P(evm, sivmone_block_stack_req_overflow)
+TEST_P(sivm, sivmone_block_stack_req_overflow)
 {
     // This tests constructs a code with single basic block which stack requirement is > int16 max.
     // Such basic block can cause int16_t overflow during analysis.
@@ -33,7 +33,7 @@ TEST_P(evm, sivmone_block_stack_req_overflow)
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
 }
 
-TEST_P(evm, sivmone_block_max_stack_growth_overflow)
+TEST_P(sivm, sivmone_block_max_stack_growth_overflow)
 {
     // This tests constructs a code with single basic block which stack max growth is > int16 max.
     // Such basic block can cause int16_t overflow during analysis.
@@ -59,7 +59,7 @@ TEST_P(evm, sivmone_block_max_stack_growth_overflow)
     }
 }
 
-TEST_P(evm, sivmone_block_gas_cost_overflow_create)
+TEST_P(sivm, sivmone_block_gas_cost_overflow_create)
 {
     // The goal is to build bytecode with as many CREATE instructions (the most expensive one)
     // as possible but with having balanced stack.
@@ -92,7 +92,7 @@ TEST_P(evm, sivmone_block_gas_cost_overflow_create)
     }
 }
 
-TEST_P(evm, sivmone_block_gas_cost_overflow_balance)
+TEST_P(sivm, sivmone_block_gas_cost_overflow_balance)
 {
     // Here we build single-block bytecode with as many BALANCE instructions as possible.
 
@@ -117,7 +117,7 @@ TEST_P(evm, sivmone_block_gas_cost_overflow_balance)
     }
 }
 
-TEST_P(evm, loop_full_of_jumpdests)
+TEST_P(sivm, loop_full_of_jumpdests)
 {
     // The code is a simple loop with a counter taken from the input or a constant (325) if the
     // input is zero. The loop body contains of only JUMPDESTs, as much as the code size limit
@@ -141,7 +141,7 @@ TEST_P(evm, loop_full_of_jumpdests)
     EXPECT_GAS_USED(EVMC_SUCCESS, 7987882);
 }
 
-TEST_P(evm, jumpdest_with_high_offset)
+TEST_P(sivm, jumpdest_with_high_offset)
 {
     for (auto offset : {3u, 16383u, 16384u, 32767u, 32768u, 65535u, 65536u})
     {

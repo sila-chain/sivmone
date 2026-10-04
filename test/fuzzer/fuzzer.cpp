@@ -1,4 +1,4 @@
-// sivmone-fuzzer: LibFuzzer based testing tool for EVMC-compatible EVM implementations.
+// sivmone-fuzzer: LibFuzzer based testing tool for EVMC-compatible Sivm implementations.
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -84,10 +84,10 @@ public:
     }
 };
 
-/// The newest "old" EVM revision. Lower priority.
+/// The newest "old" Sivm revision. Lower priority.
 static constexpr auto old_rev = EVMC_SPURIOUS_DRAGON;
 
-/// The additional gas limit cap for "old" EVM revisions.
+/// The additional gas limit cap for "old" Sivm revisions.
 static constexpr auto old_rev_max_gas = 500000;
 
 struct fuzz_input

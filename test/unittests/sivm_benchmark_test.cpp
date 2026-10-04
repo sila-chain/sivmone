@@ -2,17 +2,17 @@
 // Copyright 2021 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM code generators for micro benchmarks,
+/// This file contains Sivm code generators for micro benchmarks,
 /// organized as unit tests.
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <numeric>
 #include <random>
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_P(evm, grow_memory_with_mload)
+TEST_P(sivm, grow_memory_with_mload)
 {
     const auto code = calldataload(0) + push(0) +
                       4096 * (bytecode{OP_DUP1} + OP_MLOAD + OP_POP + OP_DUP2 + OP_ADD);
@@ -32,7 +32,7 @@ TEST_P(evm, grow_memory_with_mload)
     EXPECT_GAS_USED(EVMC_SUCCESS, 102409);
 }
 
-TEST_P(evm, grow_memory_with_mstore)
+TEST_P(sivm, grow_memory_with_mstore)
 {
     const auto code = calldataload(0) + push(0) +
                       4096 * (bytecode{OP_DUP1} + OP_DUP1 + OP_MSTORE + OP_DUP2 + OP_ADD);
@@ -52,7 +52,7 @@ TEST_P(evm, grow_memory_with_mstore)
     EXPECT_GAS_USED(EVMC_SUCCESS, 106505);
 }
 
-TEST_P(evm, jump_around)
+TEST_P(sivm, jump_around)
 {
     // Generates code built from a number of "jumppads" (JUMPDEST PUSH JUMP).
     // Each jumppad is visited exactly once in pseudo-random order.
@@ -86,7 +86,7 @@ TEST_P(evm, jump_around)
     EXPECT_GAS_USED(EVMC_SUCCESS, int64_t{(1 + 3 + 8) * num_jumps + 1});
 }
 
-TEST_P(evm, signextend_bench)
+TEST_P(sivm, signextend_bench)
 {
     constexpr auto num_instr = 12000;
 

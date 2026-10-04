@@ -2,7 +2,7 @@
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <sivmone/constants.hpp>
 #include <numeric>
 
@@ -10,7 +10,7 @@ using namespace evmc::literals;
 using namespace intx;
 using namespace sivmone::test;
 
-TEST_P(evm, empty)
+TEST_P(sivm, empty)
 {
     execute(0, {});
     EXPECT_GAS_USED(EVMC_SUCCESS, 0);
@@ -19,13 +19,13 @@ TEST_P(evm, empty)
     EXPECT_GAS_USED(EVMC_SUCCESS, 0);
 }
 
-TEST_P(evm, push_and_pop)
+TEST_P(sivm, push_and_pop)
 {
     execute(11, push("0102") + OP_POP + push("010203040506070809") + OP_POP);
     EXPECT_GAS_USED(EVMC_SUCCESS, 10);
 }
 
-TEST_P(evm, push_implicit_data)
+TEST_P(sivm, push_implicit_data)
 {
     // This test executes 1 byte code with a push instruction without the push data following.
     // Unfortunately, there is no result we could observe other than program crash.
@@ -42,7 +42,7 @@ TEST_P(evm, push_implicit_data)
     }
 }
 
-TEST_P(evm, stack_underflow)
+TEST_P(sivm, stack_underflow)
 {
     execute(13, push(1) + OP_POP + push(1) + OP_POP + OP_POP);
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
@@ -51,14 +51,14 @@ TEST_P(evm, stack_underflow)
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
 }
 
-TEST_P(evm, add)
+TEST_P(sivm, add)
 {
     execute(25, add(7, 13) + ret_top());
     EXPECT_GAS_USED(EVMC_SUCCESS, 24);
     EXPECT_OUTPUT_INT(20);
 }
 
-TEST_P(evm, dup)
+TEST_P(sivm, dup)
 {
     // 0 7 3 5
     // 0 7 3 5 3 5
@@ -71,7 +71,7 @@ TEST_P(evm, dup)
     EXPECT_OUTPUT_INT(20);
 }
 
-TEST_P(evm, dup_all_1)
+TEST_P(sivm, dup_all_1)
 {
     execute(push(1) + "808182838485868788898a8b8c8d8e8f" + "01010101010101010101010101010101" +
             ret_top());
@@ -79,7 +79,7 @@ TEST_P(evm, dup_all_1)
     EXPECT_OUTPUT_INT(17);
 }
 
-TEST_P(evm, dup_stack_overflow)
+TEST_P(sivm, dup_stack_overflow)
 {
     auto code = push(1) + "808182838485868788898a8b8c8d8e8f";
     for (int i = 0; i < (1024 - 17); ++i)
@@ -91,7 +91,7 @@ TEST_P(evm, dup_stack_overflow)
     EXPECT_STATUS(EVMC_STACK_OVERFLOW);
 }
 
-TEST_P(evm, push1_stack_overflow)
+TEST_P(sivm, push1_stack_overflow)
 {
     for (const auto r :
         {EVMC_FRONTIER, EVMC_BYZANTIUM, EVMC_OSAKA, EVMC_AMSTERDAM, EVMC_MAX_REVISION})
@@ -105,7 +105,7 @@ TEST_P(evm, push1_stack_overflow)
     }
 }
 
-TEST_P(evm, dup_stack_underflow)
+TEST_P(sivm, dup_stack_underflow)
 {
     for (int i = 0; i < 16; ++i)
     {
@@ -115,7 +115,7 @@ TEST_P(evm, dup_stack_underflow)
     }
 }
 
-TEST_P(evm, sub_and_swap)
+TEST_P(sivm, sub_and_swap)
 {
     execute(33, push(1) + OP_DUP1 + OP_DUP2 + OP_SUB + OP_DUP1 + OP_DUP3 + OP_SWAP1 + OP_MSTORE +
                     push(32) + OP_SWAP1 + OP_RETURN);
@@ -125,7 +125,7 @@ TEST_P(evm, sub_and_swap)
     EXPECT_EQ(result.output_data[31], 1);
 }
 
-TEST_P(evm, swapsn_jumpdest)
+TEST_P(sivm, swapsn_jumpdest)
 {
     // Test demonstrating possible problem with introducing multibyte SWAP/DUP instructions as per
     // EIP-663 variants B and C.
@@ -146,7 +146,7 @@ TEST_P(evm, swapsn_jumpdest)
     EXPECT_STATUS(EVMC_SUCCESS);
 }
 
-TEST_P(evm, swapsn_push)
+TEST_P(sivm, swapsn_push)
 {
     // Test demonstrating possible problem with introducing multibyte SWAP/DUP instructions as per
     // EIP-663 variants B and C.
@@ -167,7 +167,7 @@ TEST_P(evm, swapsn_push)
     EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
 }
 
-TEST_P(evm, gas)
+TEST_P(sivm, gas)
 {
     execute(40, "5a5a5a010160005360016000f3");
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
@@ -176,7 +176,7 @@ TEST_P(evm, gas)
     EXPECT_EQ(result.output_data[0], 38 + 36 + 34);
 }
 
-TEST_P(evm, arith)
+TEST_P(sivm, arith)
 {
     // x = (0 - 1) * 3
     // y = 17 s/ x
@@ -197,7 +197,7 @@ TEST_P(evm, arith)
     EXPECT_EQ(result.output_data[0], 1);
 }
 
-TEST_P(evm, comparison)
+TEST_P(sivm, comparison)
 {
     bytecode s;
     s += "60006001808203808001";  // 0 1 -1 -2
@@ -222,7 +222,7 @@ TEST_P(evm, comparison)
     EXPECT_EQ(result.output_data[6], 0);
 }
 
-TEST_P(evm, bitwise)
+TEST_P(sivm, bitwise)
 {
     std::string s;
     s += "60aa60ff";      // aa ff
@@ -239,7 +239,7 @@ TEST_P(evm, bitwise)
     EXPECT_EQ(result.output_data[2], 0xaa ^ 0xff);
 }
 
-TEST_P(evm, byte)
+TEST_P(sivm, byte)
 {
     std::string s;
     s += "63aabbccdd";  // aabbccdd
@@ -262,7 +262,7 @@ TEST_P(evm, byte)
     EXPECT_EQ(result.output_data[6], 0);
 }
 
-TEST_P(evm, byte_overflow)
+TEST_P(sivm, byte_overflow)
 {
     const auto code = not_(0) + push(32) + OP_BYTE + ret_top();
     execute(code);
@@ -273,7 +273,7 @@ TEST_P(evm, byte_overflow)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, addmod_mulmod)
+TEST_P(sivm, addmod_mulmod)
 {
     std::string s;
     s += "7fcdeb8272fc01d4d50a6ec165d2ea477af19b9b2c198459f59079583b97e88a66";
@@ -294,7 +294,7 @@ TEST_P(evm, addmod_mulmod)
         "34e04890131a297202753cae4c72efd508962c9129aed8b08c8e87ab425b7258"_hex);
 }
 
-TEST_P(evm, divmod)
+TEST_P(sivm, divmod)
 {
     // Div and mod the -1 by the input and return.
     execute(bytecode{"600035600160000381810460005281810660205260406000f3"}, "0d"_hex);
@@ -307,7 +307,7 @@ TEST_P(evm, divmod)
         "08ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"_hex);
 }
 
-TEST_P(evm, div_by_zero)
+TEST_P(sivm, div_by_zero)
 {
     execute(34, dup1(push(0)) + push(0xff) + OP_DIV + OP_SDIV + ret_top());
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
@@ -315,7 +315,7 @@ TEST_P(evm, div_by_zero)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, mod_by_zero)
+TEST_P(sivm, mod_by_zero)
 {
     execute(dup1(push(0)) + push(0xeffe) + OP_MOD + OP_SMOD + ret_top());
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
@@ -323,7 +323,7 @@ TEST_P(evm, mod_by_zero)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, addmod_mulmod_by_zero)
+TEST_P(sivm, addmod_mulmod_by_zero)
 {
     execute(bytecode{"6000358080808008091560005260206000f3"});
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
@@ -332,7 +332,7 @@ TEST_P(evm, addmod_mulmod_by_zero)
     EXPECT_EQ(result.output_data[31], 1);
 }
 
-TEST_P(evm, signextend)
+TEST_P(sivm, signextend)
 {
     std::string s;
     s += "62017ffe";    // 017ffe
@@ -350,7 +350,7 @@ TEST_P(evm, signextend)
         "0000000000000000000000000000000000000000000000000000000000007ffe");
 }
 
-TEST_P(evm, signextend_31)
+TEST_P(sivm, signextend_31)
 {
     rev = EVMC_PETERSBURG;
 
@@ -363,7 +363,7 @@ TEST_P(evm, signextend_31)
     EXPECT_OUTPUT_INT(0x00fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe_u256);
 }
 
-TEST_P(evm, signextend_fuzzing)
+TEST_P(sivm, signextend_fuzzing)
 {
     const auto signextend_reference = [](const intx::uint256& x, uint64_t ext) noexcept {
         if (ext < 31)
@@ -400,7 +400,7 @@ TEST_P(evm, signextend_fuzzing)
     }
 }
 
-TEST_P(evm, exp)
+TEST_P(sivm, exp)
 {
     const auto code = push(0x2019) + push(3) + OP_EXP + ret_top();
     execute(131, code);
@@ -409,7 +409,7 @@ TEST_P(evm, exp)
     EXPECT_OUTPUT_INT(0x263cf24662b24c371a647c1340022619306e431bf3a4298d4b5998a3f1c1aaa3_u256);
 }
 
-TEST_P(evm, exp_1_0)
+TEST_P(sivm, exp_1_0)
 {
     const auto code = push(0) + push(1) + OP_EXP + ret_top();
     execute(31, code);
@@ -417,7 +417,7 @@ TEST_P(evm, exp_1_0)
     EXPECT_OUTPUT_INT(1);
 }
 
-TEST_P(evm, exp_0_0)
+TEST_P(sivm, exp_0_0)
 {
     const auto code = push(0) + push(0) + OP_EXP + ret_top();
     execute(31, code);
@@ -425,7 +425,7 @@ TEST_P(evm, exp_0_0)
     EXPECT_OUTPUT_INT(1);
 }
 
-TEST_P(evm, exp_oog)
+TEST_P(sivm, exp_oog)
 {
     auto code = "6001600003800a";
     execute(1622, code);
@@ -437,7 +437,7 @@ TEST_P(evm, exp_oog)
     EXPECT_EQ(result.gas_left, 0);
 }
 
-TEST_P(evm, exp_pre_spurious_dragon)
+TEST_P(sivm, exp_pre_spurious_dragon)
 {
     rev = EVMC_TANGERINE_WHISTLE;
     const auto code = push(0x012019) + push(3) + OP_EXP + ret_top();
@@ -446,21 +446,21 @@ TEST_P(evm, exp_pre_spurious_dragon)
     EXPECT_OUTPUT_INT(0x422ea3761c4f6517df7f102bb18b96abf4735099209ca21256a6b8ac4d1daaa3_u256);
 }
 
-TEST_P(evm, calldataload)
+TEST_P(sivm, calldataload)
 {
     execute(mstore(0, calldataload(3)) + ret(0, 10), "0102030405"_hex);
     EXPECT_GAS_USED(EVMC_SUCCESS, 21);
     EXPECT_EQ(bytes(result.output_data, result.output_size), "04050000000000000000"_hex);
 }
 
-TEST_P(evm, calldataload_outofrange)
+TEST_P(sivm, calldataload_outofrange)
 {
     execute(calldataload(1) + ret_top());
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
     EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 32);
 }
 
-TEST_P(evm, address)
+TEST_P(sivm, address)
 {
     msg.recipient.bytes[0] = 0xcc;
     const auto code = mstore(0, OP_ADDRESS) + ret(10, 10);
@@ -470,7 +470,7 @@ TEST_P(evm, address)
     EXPECT_EQ(bytes_view(&result.output_data[0], 10), "0000cc00000000000000"_hex);
 }
 
-TEST_P(evm, caller_callvalue)
+TEST_P(sivm, caller_callvalue)
 {
     msg.sender.bytes[0] = 0xdd;
     msg.value.bytes[13] = 0xee;
@@ -481,49 +481,49 @@ TEST_P(evm, caller_callvalue)
     EXPECT_EQ(bytes_view(&result.output_data[0], 10), "0000ddee000000000000"_hex);
 }
 
-TEST_P(evm, undefined)
+TEST_P(sivm, undefined)
 {
     execute(1, "2a");
     EXPECT_EQ(result.status_code, EVMC_UNDEFINED_INSTRUCTION);
     EXPECT_EQ(result.gas_left, 0);
 }
 
-TEST_P(evm, invalid)
+TEST_P(sivm, invalid)
 {
     execute(1, "fe");
     EXPECT_EQ(result.status_code, EVMC_INVALID_INSTRUCTION);
     EXPECT_EQ(result.gas_left, 0);
 }
 
-TEST_P(evm, inner_stop)
+TEST_P(sivm, inner_stop)
 {
     const auto code = push(0) + OP_STOP + OP_POP;
     execute(3, code);
     EXPECT_GAS_USED(EVMC_SUCCESS, 3);
 }
 
-TEST_P(evm, inner_return)
+TEST_P(sivm, inner_return)
 {
     const auto code = ret(0, 0) + push(0);
     execute(6, code);
     EXPECT_GAS_USED(EVMC_SUCCESS, 6);
 }
 
-TEST_P(evm, inner_revert)
+TEST_P(sivm, inner_revert)
 {
     const auto code = revert(0, 0) + push(0);
     execute(6, code);
     EXPECT_GAS_USED(EVMC_REVERT, 6);
 }
 
-TEST_P(evm, inner_invalid)
+TEST_P(sivm, inner_invalid)
 {
     const auto code = push(0) + "fe" + OP_POP;
     execute(5, code);
     EXPECT_GAS_USED(EVMC_INVALID_INSTRUCTION, 5);
 }
 
-TEST_P(evm, inner_selfdestruct)
+TEST_P(sivm, inner_selfdestruct)
 {
     rev = EVMC_FRONTIER;
     const auto code = push(0) + OP_SELFDESTRUCT + push(0);
@@ -531,14 +531,14 @@ TEST_P(evm, inner_selfdestruct)
     EXPECT_GAS_USED(EVMC_SUCCESS, 3);
 }
 
-TEST_P(evm, keccak256)
+TEST_P(sivm, keccak256)
 {
     execute(push(0x0800) + push(0x03ff) + OP_KECCAK256 + ret_top());
     EXPECT_GAS_USED(EVMC_SUCCESS, 738);
     EXPECT_OUTPUT_INT(0xaeffb38c06e111d84216396baefeb7fed397f303d5cb84a33f1e8b485c4a22da_u256);
 }
 
-TEST_P(evm, keccak256_empty)
+TEST_P(sivm, keccak256_empty)
 {
     auto code = push(0) + OP_DUP1 + OP_KECCAK256 + ret_top();
     execute(code);
@@ -547,7 +547,7 @@ TEST_P(evm, keccak256_empty)
     EXPECT_EQ(hex({result.output_data, result.output_size}), keccak256_empty);
 }
 
-TEST_P(evm, revert)
+TEST_P(sivm, revert)
 {
     bytecode s;
     s += "60ee8053";    // m[ee] == e
@@ -560,13 +560,13 @@ TEST_P(evm, revert)
     EXPECT_EQ(result.output_data[1], 0xee);
 }
 
-TEST_P(evm, return_empty_buffer_at_offset_0)
+TEST_P(sivm, return_empty_buffer_at_offset_0)
 {
     execute(dup1(OP_MSIZE) + OP_RETURN);
     EXPECT_GAS_USED(EVMC_SUCCESS, 5);
 }
 
-TEST_P(evm, return_empty_buffer_at_high_offset)
+TEST_P(sivm, return_empty_buffer_at_high_offset)
 {
     host.tx_context.block_prev_randao =
         0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1_bytes32;
@@ -578,7 +578,7 @@ TEST_P(evm, return_empty_buffer_at_high_offset)
     EXPECT_STATUS(EVMC_REVERT);
 }
 
-TEST_P(evm, shl)
+TEST_P(sivm, shl)
 {
     const bytecode code = "600560011b6000526001601ff3";
     rev = EVMC_PETERSBURG;
@@ -589,7 +589,7 @@ TEST_P(evm, shl)
     EXPECT_EQ(result.output_data[0], 5 << 1);
 }
 
-TEST_P(evm, shr)
+TEST_P(sivm, shr)
 {
     const bytecode code = "600560011c6000526001601ff3";
     rev = EVMC_PETERSBURG;
@@ -600,7 +600,7 @@ TEST_P(evm, shr)
     EXPECT_EQ(result.output_data[0], 5 >> 1);
 }
 
-TEST_P(evm, sar)
+TEST_P(sivm, sar)
 {
     const bytecode code = "600160000360021d60005260016000f3";
     rev = EVMC_PETERSBURG;
@@ -611,7 +611,7 @@ TEST_P(evm, sar)
     EXPECT_EQ(result.output_data[0], 0xff);  // MSB of (-1 >> 2) == -1
 }
 
-TEST_P(evm, sar_01)
+TEST_P(sivm, sar_01)
 {
     const bytecode code = "600060011d60005260016000f3";
     rev = EVMC_PETERSBURG;
@@ -622,7 +622,7 @@ TEST_P(evm, sar_01)
     EXPECT_EQ(result.output_data[0], 0);
 }
 
-TEST_P(evm, shift_overflow)
+TEST_P(sivm, shift_overflow)
 {
     rev = EVMC_PETERSBURG;
     for (auto op : {OP_SHL, OP_SHR, OP_SAR})
@@ -635,7 +635,7 @@ TEST_P(evm, shift_overflow)
     }
 }
 
-TEST_P(evm, undefined_instructions)
+TEST_P(sivm, undefined_instructions)
 {
     for (auto i = 0; i <= EVMC_MAX_REVISION; ++i)
     {
@@ -652,7 +652,7 @@ TEST_P(evm, undefined_instructions)
     }
 }
 
-TEST_P(evm, undefined_instruction_analysis_overflow)
+TEST_P(sivm, undefined_instruction_analysis_overflow)
 {
     rev = EVMC_PETERSBURG;
 
@@ -660,7 +660,7 @@ TEST_P(evm, undefined_instruction_analysis_overflow)
     EXPECT_EQ(result.status_code, EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, undefined_instruction_block_cost_negative)
+TEST_P(sivm, undefined_instruction_block_cost_negative)
 {
     // For undefined instructions EVMC instruction tables have cost -1.
     // If naively counted block costs can become negative.
@@ -680,7 +680,7 @@ TEST_P(evm, undefined_instruction_block_cost_negative)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, abort)
+TEST_P(sivm, abort)
 {
     for (auto r = 0; r <= EVMC_MAX_REVISION; ++r)
     {
@@ -690,7 +690,7 @@ TEST_P(evm, abort)
     }
 }
 
-TEST_P(evm, staticmode)
+TEST_P(sivm, staticmode)
 {
     auto code_prefix = 1 + 6 * OP_DUP1;
 
@@ -705,7 +705,7 @@ TEST_P(evm, staticmode)
     }
 }
 
-TEST_P(evm, max_code_size_push1)
+TEST_P(sivm, max_code_size_push1)
 {
     const auto code = (sivmone::MAX_CODE_SIZE / 2) * push(1);
     ASSERT_EQ(code.size(), sivmone::MAX_CODE_SIZE);
@@ -717,7 +717,7 @@ TEST_P(evm, max_code_size_push1)
     EXPECT_STATUS(EVMC_STACK_OVERFLOW);
 }
 
-TEST_P(evm, reverse_16_stack_items)
+TEST_P(sivm, reverse_16_stack_items)
 {
     // This test puts values 1, 2, ... , 16 on the stack and then reverse them with SWAP opcodes.
     // This uses all variants of SWAP instruction.

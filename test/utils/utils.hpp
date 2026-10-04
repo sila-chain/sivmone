@@ -16,7 +16,7 @@ using evmc::from_hex;
 using evmc::from_spaced_hex;
 using evmc::hex;
 
-/// The EVM revision schedule based on timestamps.
+/// The Sivm revision schedule based on timestamps.
 struct RevisionSchedule
 {
     /// The revision of the first block.
@@ -35,13 +35,13 @@ struct RevisionSchedule
     }
 };
 
-/// Translates tests fork name to EVM revision
+/// Translates tests fork name to Sivm revision
 evmc_revision to_rev(std::string_view s);
 
-/// Translates tests fork name to the EVM revision schedule.
+/// Translates tests fork name to the Sivm revision schedule.
 RevisionSchedule to_rev_schedule(std::string_view s);
 
-/// Returns the Sila fork name of the EVM revision, as used in tests.
+/// Returns the Sila fork name of the Sivm revision, as used in tests.
 std::string_view sivm_revision_to_string(evmc_revision rev) noexcept;
 
 /// Converts an integer to hex string representation with 0x prefix.

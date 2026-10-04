@@ -73,7 +73,7 @@ struct T8nOptions
 const CLI::App& setup_t8n_cmd(CLI::App& app, T8nOptions& opts)
 {
     auto& cmd = *app.add_subcommand("t8n", "Run Ethereum state transition (EELS t8n protocol)");
-    cmd.add_option("--state.fork", opts.state_fork, "Active EVM revision")->required();
+    cmd.add_option("--state.fork", opts.state_fork, "Active Sivm revision")->required();
     cmd.add_option("--state.chainid", opts.state_chainid, "Chain ID (decimal or 0x-prefixed hex)");
     cmd.add_option(
            "--state.reward", opts.state_reward, "Block reward in wei (-1 to output pre-state only)")
@@ -215,14 +215,14 @@ int main(int argc, const char* const* argv) noexcept
 
         VM vm{evmc_create_sivmone()};
 
-        CLI::App app{"sivmone EVM tool"};
+        CLI::App app{"sivmone Sivm tool"};
         app.require_subcommand(0, 1);  // Forbid multiple subcommands: run would hijack the rest.
         app.set_version_flag(
             "--version", [&vm] { return std::string{vm.name()} + " " + vm.version(); });
         app.add_flag("--trace", trace, "Enable execution trace");
         app.add_flag("--histogram", histogram, "Enable opcode histogram");
 
-        auto& run_cmd = *app.add_subcommand("run", "Execute EVM bytecode")->fallthrough();
+        auto& run_cmd = *app.add_subcommand("run", "Execute Sivm bytecode")->fallthrough();
         run_cmd.add_option("code", code_arg, "Bytecode")->required()->check(HexOrFile);
         run_cmd.add_option("--gas", gas, "Execution gas limit")
             ->capture_default_str()
@@ -230,7 +230,7 @@ int main(int argc, const char* const* argv) noexcept
         run_cmd
             .add_option_function<std::string>(
                 "--rev", [&rev](const std::string& name) { rev = sivmone::test::to_rev(name); },
-                "EVM revision name")
+                "Sivm revision name")
             ->default_str(std::string{sivmone::test::sivm_revision_to_string(rev)});
         run_cmd.add_option("--input", input_arg, "Input bytes")->check(HexOrFile);
         run_cmd.add_flag("--create", create,

@@ -2,14 +2,14 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests for EIP-8024: SWAPN, DUPN, EXCHANGE.
+/// This file contains Sivm unit tests for EIP-8024: SWAPN, DUPN, EXCHANGE.
 /// https://eips.ethereum.org/EIPS/eip-8024
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace sivmone::test;
 
-TEST_P(evm, dupn_basic)
+TEST_P(sivm, dupn_basic)
 {
     if (is_advanced())
         return;
@@ -22,7 +22,7 @@ TEST_P(evm, dupn_basic)
     EXPECT_OUTPUT_INT(1);
 }
 
-TEST_P(evm, dupn_end_of_code)
+TEST_P(sivm, dupn_end_of_code)
 {
     if (is_advanced())
         return;
@@ -34,7 +34,7 @@ TEST_P(evm, dupn_end_of_code)
     EXPECT_STATUS(EVMC_SUCCESS);
 }
 
-TEST_P(evm, dupn_invalid_immediate)
+TEST_P(sivm, dupn_invalid_immediate)
 {
     if (is_advanced())
         return;
@@ -45,7 +45,7 @@ TEST_P(evm, dupn_invalid_immediate)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, dupn_stack_overflow)
+TEST_P(sivm, dupn_stack_overflow)
 {
     if (is_advanced())
         return;
@@ -57,7 +57,7 @@ TEST_P(evm, dupn_stack_overflow)
     EXPECT_STATUS(EVMC_STACK_OVERFLOW);
 }
 
-TEST_P(evm, dupn_stack_underflow)
+TEST_P(sivm, dupn_stack_underflow)
 {
     if (is_advanced())
         return;
@@ -68,7 +68,7 @@ TEST_P(evm, dupn_stack_underflow)
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
 }
 
-TEST_P(evm, dupn_out_of_gas)
+TEST_P(sivm, dupn_out_of_gas)
 {
     if (is_advanced())
         return;
@@ -82,7 +82,7 @@ TEST_P(evm, dupn_out_of_gas)
     EXPECT_STATUS(EVMC_SUCCESS);
 }
 
-TEST_P(evm, swapn_basic)
+TEST_P(sivm, swapn_basic)
 {
     if (is_advanced())
         return;
@@ -95,7 +95,7 @@ TEST_P(evm, swapn_basic)
     EXPECT_OUTPUT_INT(2);
 }
 
-TEST_P(evm, swapn_invalid_immediate)
+TEST_P(sivm, swapn_invalid_immediate)
 {
     if (is_advanced())
         return;
@@ -106,7 +106,7 @@ TEST_P(evm, swapn_invalid_immediate)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, swapn_invalid_immediate_boundaries)
+TEST_P(sivm, swapn_invalid_immediate_boundaries)
 {
     if (is_advanced())
         return;
@@ -125,7 +125,7 @@ TEST_P(evm, swapn_invalid_immediate_boundaries)
     EXPECT_STATUS(EVMC_SUCCESS);
 }
 
-TEST_P(evm, swapn_stack_underflow)
+TEST_P(sivm, swapn_stack_underflow)
 {
     if (is_advanced())
         return;
@@ -136,7 +136,7 @@ TEST_P(evm, swapn_stack_underflow)
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
 }
 
-TEST_P(evm, swapn_out_of_gas)
+TEST_P(sivm, swapn_out_of_gas)
 {
     if (is_advanced())
         return;
@@ -150,7 +150,7 @@ TEST_P(evm, swapn_out_of_gas)
     EXPECT_STATUS(EVMC_SUCCESS);
 }
 
-TEST_P(evm, exchange_basic)
+TEST_P(sivm, exchange_basic)
 {
     if (is_advanced())
         return;
@@ -163,7 +163,7 @@ TEST_P(evm, exchange_basic)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, exchange_max_m)
+TEST_P(sivm, exchange_max_m)
 {
     if (is_advanced())
         return;
@@ -177,7 +177,7 @@ TEST_P(evm, exchange_max_m)
     EXPECT_OUTPUT_INT(99);
 }
 
-TEST_P(evm, exchange_invalid_immediate)
+TEST_P(sivm, exchange_invalid_immediate)
 {
     if (is_advanced())
         return;
@@ -188,7 +188,7 @@ TEST_P(evm, exchange_invalid_immediate)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, exchange_stack_underflow)
+TEST_P(sivm, exchange_stack_underflow)
 {
     if (is_advanced())
         return;
@@ -199,7 +199,7 @@ TEST_P(evm, exchange_stack_underflow)
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
 }
 
-TEST_P(evm, exchange_out_of_gas)
+TEST_P(sivm, exchange_out_of_gas)
 {
     if (is_advanced())
         return;
@@ -213,7 +213,7 @@ TEST_P(evm, exchange_out_of_gas)
     EXPECT_STATUS(EVMC_SUCCESS);
 }
 
-TEST_P(evm, dupn_immediate_0x5b_is_jumpdest)
+TEST_P(sivm, dupn_immediate_0x5b_is_jumpdest)
 {
     if (is_advanced())
         return;

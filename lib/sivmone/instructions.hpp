@@ -98,7 +98,7 @@ constexpr std::optional<std::pair<int, int>> decode_exchange_imm(uint8_t imm) no
 
 constexpr auto max_buffer_size = std::numeric_limits<uint32_t>::max();
 
-/// The size of the EVM 256-bit word.
+/// The size of the Sivm 256-bit word.
 constexpr auto word_size = 32;
 
 /// Returns number of words what would fit to provided number of bytes,
@@ -108,14 +108,14 @@ constexpr int64_t num_words(uint64_t size_in_bytes) noexcept
     return static_cast<int64_t>((size_in_bytes + (word_size - 1)) / word_size);
 }
 
-/// Computes gas cost of copying the given amount of bytes to/from EVM memory.
+/// Computes gas cost of copying the given amount of bytes to/from Sivm memory.
 constexpr int64_t copy_cost(uint64_t size_in_bytes) noexcept
 {
     constexpr auto WordCopyCost = 3;
     return num_words(size_in_bytes) * WordCopyCost;
 }
 
-/// Grows EVM memory and checks its cost.
+/// Grows Sivm memory and checks its cost.
 ///
 /// This function should not be inlined because this may affect other inlining decisions:
 /// - making check_memory() too costly to inline,
@@ -182,10 +182,10 @@ namespace instr::core
 
 /// The "core" instruction implementations.
 ///
-/// These are minimal EVM instruction implementations which assume:
+/// These are minimal Sivm instruction implementations which assume:
 /// - the stack requirements (overflow, underflow) have already been checked,
 /// - the "base" gas const has already been charged,
-/// - the `stack` pointer points to the EVM stack top element.
+/// - the `stack` pointer points to the Sivm stack top element.
 /// Moreover, these implementations _do not_ inform about new stack height
 /// after execution. The adjustment must be performed by the caller.
 inline void noop(StackTop /*stack*/) noexcept {}

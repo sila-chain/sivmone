@@ -2,17 +2,17 @@
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests for EIP-3860 "Limit and meter initcode"
+/// This file contains Sivm unit tests for EIP-3860 "Limit and meter initcode"
 /// https://eips.ethereum.org/EIPS/eip-3860
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
 inline constexpr size_t initcode_size_limit = 0xc000;
 
-TEST_P(evm, create_initcode_limit)
+TEST_P(sivm, create_initcode_limit)
 {
     for (const auto& c : {create().input(0, calldataload(0)) + ret_top(),
              create2().input(0, calldataload(0)) + ret_top()})
@@ -38,7 +38,7 @@ TEST_P(evm, create_initcode_limit)
     }
 }
 
-TEST_P(evm, create_initcode_gas_cost)
+TEST_P(sivm, create_initcode_gas_cost)
 {
     rev = EVMC_SHANGHAI;
     const auto code = create().input(0, calldataload(0));
@@ -48,7 +48,7 @@ TEST_P(evm, create_initcode_gas_cost)
     EXPECT_STATUS(EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, create2_initcode_gas_cost)
+TEST_P(sivm, create2_initcode_gas_cost)
 {
     rev = EVMC_SHANGHAI;
     const auto code = create2().input(0, calldataload(0));

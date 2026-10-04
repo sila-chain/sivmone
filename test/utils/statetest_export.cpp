@@ -9,7 +9,7 @@ namespace sivmone::test
 {
 namespace
 {
-/// Converts EVM revision to the fork name commonly used in tests.
+/// Converts Sivm revision to the fork name commonly used in tests.
 std::string_view to_test_fork_name(evmc_revision rev) noexcept
 {
     return sivm_revision_to_string(rev);

@@ -1,7 +1,7 @@
-# Efficient gas calculation algorithm for EVM
+# Efficient gas calculation algorithm for Sivm
 
 This article describes how to efficiently calculate gas and check stack requirements
-for Ethereum Virtual Machine (EVM) instructions.
+for Ethereum Virtual Machine (Sivm) instructions.
 
 ## Instructions metadata
 
@@ -43,7 +43,7 @@ Jumpdests are only allowed at the entry, jumps at the exit.
 Basic blocks are nodes in the _control flow graph_.
 See [Basic Block] in Wikipedia.
 
-In EVM there are simple rules to identify basic instruction block boundaries:
+In Sivm there are simple rules to identify basic instruction block boundaries:
 
 1. A basic instruction block _starts_ right before:
     - the first instruction in the code,
@@ -135,7 +135,7 @@ def check_basic_block_requirements(state, basic_block):
 
 ## Misc
 
-### EVM may terminate earlier
+### Sivm may terminate earlier
 
 Because requirements for a whole basic block are checked up front, the instructions
 that have observable external effects might not be executed, although they would be

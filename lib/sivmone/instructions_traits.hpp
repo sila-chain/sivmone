@@ -10,7 +10,7 @@
 
 namespace sivmone::instr
 {
-/// The special gas cost value marking an EVM instruction as "undefined".
+/// The special gas cost value marking an Sivm instruction as "undefined".
 constexpr int16_t undefined = -1;
 
 /// State-access cost constants (EIP-2929, EIP-8038).
@@ -43,11 +43,11 @@ inline constexpr auto ADDITIONAL_COLD_STORAGE_ACCESS = COLD_STORAGE_ACCESS - WAR
 /// @}
 
 
-/// The table of instruction gas costs per EVM revision.
+/// The table of instruction gas costs per Sivm revision.
 using GasCostTable = std::array<std::array<int16_t, 256>, EVMC_MAX_REVISION + 1>;
 
-/// The EVM revision specific table of EVM instructions gas costs. For instructions undefined
-/// in given EVM revision, the value is instr::undefined.
+/// The Sivm revision specific table of Sivm instructions gas costs. For instructions undefined
+/// in given Sivm revision, the value is instr::undefined.
 constexpr inline GasCostTable gas_costs = []() noexcept {
     GasCostTable table{};
 
@@ -207,7 +207,7 @@ constexpr inline GasCostTable gas_costs = []() noexcept {
 static_assert(gas_costs[EVMC_MAX_REVISION][OP_ADD] > 0, "gas costs missing for a revision");
 
 
-/// The EVM instruction traits.
+/// The Sivm instruction traits.
 struct Traits
 {
     /// The instruction name;
@@ -226,8 +226,8 @@ struct Traits
     /// The stack height change caused by the instruction execution. Can be negative.
     int8_t stack_height_change = 0;
 
-    /// The EVM revision in which the instruction has been defined. For instructions available in
-    /// every EVM revision the value is ::EVMC_FRONTIER. For undefined instructions the value is not
+    /// The Sivm revision in which the instruction has been defined. For instructions available in
+    /// every Sivm revision the value is ::EVMC_FRONTIER. For undefined instructions the value is not
     /// available.
     std::optional<evmc_revision> since;
 };
@@ -247,7 +247,7 @@ consteval bool has_const_gas_cost(Opcode op) noexcept
 }
 
 
-/// The global, EVM revision independent, table of traits of all known EVM instructions.
+/// The global, Sivm revision independent, table of traits of all known Sivm instructions.
 constexpr inline std::array<Traits, 256> traits = []() noexcept {
     std::array<Traits, 256> table{};
 

@@ -441,7 +441,7 @@ constexpr ProjPoint<Curve> dbl(const ProjPoint<Curve>& p) noexcept
 
 /// Computes scalar multiplication [c]P.
 /// Not constant-time: execution time depends on the scalar value.
-/// Safe for EVM precompiles (public calldata), not for secret key operations.
+/// Safe for Sivm precompiles (public calldata), not for secret key operations.
 template <typename Curve>
 ProjPoint<Curve> mul(const AffinePoint<Curve>& p, typename Curve::uint_type c) noexcept
 {

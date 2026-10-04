@@ -2,16 +2,16 @@
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests that access or modify the contract storage.
+/// This file contains Sivm unit tests that access or modify the contract storage.
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <sivmone/constants.hpp>
 #include <array>
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_P(evm, storage)
+TEST_P(sivm, storage)
 {
     const auto code = sstore(0xee, 0xff) + sload(0xee) + mstore8(0) + ret(0, 1);
     execute(100000, code);
@@ -19,7 +19,7 @@ TEST_P(evm, storage)
     EXPECT_EQ(bytes_view(result.output_data, result.output_size), bytes{0xff});
 }
 
-TEST_P(evm, sstore_pop_stack)
+TEST_P(sivm, sstore_pop_stack)
 {
     execute(100000, sstore(1, dup1(0)) + mstore8(0) + ret(0, 1));
     EXPECT_GAS_USED(EVMC_SUCCESS, 5024);
@@ -28,7 +28,7 @@ TEST_P(evm, sstore_pop_stack)
         host.accounts[msg.recipient].storage.find(0x01_bytes32)->second.current, 0x00_bytes32);
 }
 
-TEST_P(evm, sload_cost_pre_tangerine_whistle)
+TEST_P(sivm, sload_cost_pre_tangerine_whistle)
 {
     rev = EVMC_HOMESTEAD;
     execute(56, sload(dup1(0)));
@@ -36,7 +36,7 @@ TEST_P(evm, sload_cost_pre_tangerine_whistle)
     EXPECT_EQ(host.accounts[msg.recipient].storage.size(), 0);
 }
 
-TEST_P(evm, sstore_out_of_block_gas)
+TEST_P(sivm, sstore_out_of_block_gas)
 {
     const auto code = push(0) + sstore(0, 1) + OP_POP;
 
@@ -61,7 +61,7 @@ TEST_P(evm, sstore_out_of_block_gas)
     EXPECT_STATUS(EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, sstore_cost)
+TEST_P(sivm, sstore_cost)
 {
     auto& storage = host.accounts[msg.recipient].storage;
 
@@ -159,7 +159,7 @@ TEST_P(evm, sstore_cost)
     }
 }
 
-TEST_P(evm, sstore_cost_legacy)
+TEST_P(sivm, sstore_cost_legacy)
 {
     static constexpr auto O = 0x000000000000000000_bytes32;
     static constexpr auto X = 0xfeffffffffffffffff_bytes32;
@@ -210,7 +210,7 @@ TEST_P(evm, sstore_cost_legacy)
     }
 }
 
-TEST_P(evm, sstore_cost_net_gas_metering)
+TEST_P(sivm, sstore_cost_net_gas_metering)
 {
     // Follow the table on https://evmc.ethereum.org/storagestatus.html
 
@@ -274,7 +274,7 @@ TEST_P(evm, sstore_cost_net_gas_metering)
     }
 }
 
-TEST_P(evm, sstore_below_stipend)
+TEST_P(sivm, sstore_below_stipend)
 {
     const auto code = sstore(0, 0);
 

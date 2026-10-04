@@ -2,15 +2,15 @@
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests for EIP-7939 "Count leading zeros (CLZ) opcode"
+/// This file contains Sivm unit tests for EIP-7939 "Count leading zeros (CLZ) opcode"
 /// https://eips.ethereum.org/EIPS/eip-7939
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_P(evm, clz_pre_osaka)
+TEST_P(sivm, clz_pre_osaka)
 {
     rev = EVMC_PRAGUE;
     const auto code = bytecode{OP_CLZ};
@@ -19,14 +19,14 @@ TEST_P(evm, clz_pre_osaka)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, clz_gas)
+TEST_P(sivm, clz_gas)
 {
     rev = EVMC_OSAKA;
     execute(bytecode{} + OP_PUSH0 + OP_CLZ);
     EXPECT_GAS_USED(EVMC_SUCCESS, 2 + 5);
 }
 
-TEST_P(evm, clz_osaka)
+TEST_P(sivm, clz_osaka)
 {
     rev = EVMC_OSAKA;
     const std::vector<std::pair<bytecode, intx::uint256>> cases{
@@ -48,7 +48,7 @@ TEST_P(evm, clz_osaka)
     }
 }
 
-TEST_P(evm, clz_stack_underflow)
+TEST_P(sivm, clz_stack_underflow)
 {
     rev = EVMC_OSAKA;
     execute(OP_CLZ);

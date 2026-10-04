@@ -29,7 +29,7 @@ TEST_F(state_transition, eip8037_create_tx_collision_excess_reservoir_refunded)
     // The colliding account is alive, so the preparation charge does not apply.
     expect.status = EVMC_FAILURE;
     expect.gas_used = MAX_TX_GAS_LIMIT;
-    expect.block_gas_used = expect.gas_used;  // No EVM gas refund.
+    expect.block_gas_used = expect.gas_used;  // No Sivm gas refund.
     expect.state_gas = 0;
     expect.post[create_address] = {.nonce = 1, .code = bytecode{OP_STOP}};
 }

@@ -2,14 +2,14 @@
 // Copyright 2021 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests for EIP-3198 "BASEFEE opcode"
+/// This file contains Sivm unit tests for EIP-3198 "BASEFEE opcode"
 /// https://eips.ethereum.org/EIPS/eip-3198
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace sivmone::test;
 
-TEST_P(evm, basefee_pre_london)
+TEST_P(sivm, basefee_pre_london)
 {
     rev = EVMC_BERLIN;
     const auto code = bytecode{OP_BASEFEE};
@@ -18,7 +18,7 @@ TEST_P(evm, basefee_pre_london)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, basefee_nominal_case)
+TEST_P(sivm, basefee_nominal_case)
 {
     // https://eips.ethereum.org/EIPS/eip-3198#nominal-case
     rev = EVMC_LONDON;

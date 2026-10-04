@@ -207,7 +207,7 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
 
     auto& sender_acc = m_state.get(msg.sender);  // TODO: Duplicated account lookup.
     const auto value = intx::be::load<intx::uint256>(msg.value);
-    assert(sender_acc.balance >= value && "EVM must guarantee balance");
+    assert(sender_acc.balance >= value && "Sivm must guarantee balance");
     m_state.journal_balance_change(msg.sender, sender_acc.balance);
     m_state.journal_balance_change(msg.recipient, new_acc->balance);
     sender_acc.balance -= value;

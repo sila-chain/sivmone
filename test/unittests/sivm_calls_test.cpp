@@ -2,9 +2,9 @@
 // Copyright 2019-2020 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests that perform any kind of calls.
+/// This file contains Sivm unit tests that perform any kind of calls.
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <sivmone/create_address.hpp>
 
 using namespace evmc::literals;
@@ -13,7 +13,7 @@ using namespace sivmone::test;
 inline constexpr auto max_uint256 =
     0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff_bytes32;
 
-TEST_P(evm, delegatecall)
+TEST_P(sivm, delegatecall)
 {
     auto code = bytecode{};
     code += "6001600003600052";              // m[0] = 0xffffff...
@@ -43,7 +43,7 @@ TEST_P(evm, delegatecall)
     EXPECT_EQ(output, (bytes{0xff, 0xff, 0xff, 0xff, 0xa, 0xb, 0xc, 0xff}));
 }
 
-TEST_P(evm, delegatecall_static)
+TEST_P(sivm, delegatecall_static)
 {
     // Checks if DELEGATECALL forwards the "static" flag.
     msg.flags = EVMC_STATIC;
@@ -55,7 +55,7 @@ TEST_P(evm, delegatecall_static)
     EXPECT_GAS_USED(EVMC_SUCCESS, 719);
 }
 
-TEST_P(evm, delegatecall_oog_depth_limit)
+TEST_P(sivm, delegatecall_oog_depth_limit)
 {
     rev = EVMC_HOMESTEAD;
     msg.depth = 1024;
@@ -69,7 +69,7 @@ TEST_P(evm, delegatecall_oog_depth_limit)
     EXPECT_STATUS(EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, create)
+TEST_P(sivm, create)
 {
     auto& account = host.accounts[msg.recipient];
     account.set_balance(1);
@@ -93,7 +93,7 @@ TEST_P(evm, create)
     EXPECT_EQ(call_msg.input_size, 0x20);
 }
 
-TEST_P(evm, create_gas)
+TEST_P(sivm, create_gas)
 {
     size_t c = 0;
     for (auto r : {EVMC_HOMESTEAD, EVMC_TANGERINE_WHISTLE})
@@ -108,7 +108,7 @@ TEST_P(evm, create_gas)
     }
 }
 
-TEST_P(evm, create2)
+TEST_P(sivm, create2)
 {
     rev = EVMC_PETERSBURG;
     auto& account = host.accounts[msg.recipient];
@@ -136,7 +136,7 @@ TEST_P(evm, create2)
     EXPECT_EQ(account.storage[0x01_bytes32].current, to_bytes32(expected_addr));
 }
 
-TEST_P(evm, create2_salt_cost)
+TEST_P(sivm, create2_salt_cost)
 {
     rev = EVMC_PETERSBURG;
     const auto code = create2().input(0, 0x20);
@@ -154,7 +154,7 @@ TEST_P(evm, create2_salt_cost)
     EXPECT_EQ(host.recorded_calls.size(), 1);  // No more CREATE2 recorded.
 }
 
-TEST_P(evm, create_balance_too_low)
+TEST_P(sivm, create_balance_too_low)
 {
     rev = EVMC_PETERSBURG;
     host.accounts[msg.recipient].set_balance(1);
@@ -167,7 +167,7 @@ TEST_P(evm, create_balance_too_low)
     }
 }
 
-TEST_P(evm, create_failure)
+TEST_P(sivm, create_failure)
 {
     rev = EVMC_PETERSBURG;
     for (auto op : {OP_CREATE, OP_CREATE2})
@@ -205,7 +205,7 @@ TEST_P(evm, create_failure)
     }
 }
 
-TEST_P(evm, call_failing_with_value)
+TEST_P(sivm, call_failing_with_value)
 {
     host.accounts[0x00000000000000000000000000000000000000aa_address] = {};
     for (auto op : {OP_CALL, OP_CALLCODE})
@@ -230,7 +230,7 @@ TEST_P(evm, call_failing_with_value)
     }
 }
 
-TEST_P(evm, call_with_value)
+TEST_P(sivm, call_with_value)
 {
     constexpr auto code = "60ff600060ff6000600160aa618000f150";
 
@@ -254,7 +254,7 @@ TEST_P(evm, call_with_value)
     EXPECT_EQ(call_msg.sender, call_sender);
 }
 
-TEST_P(evm, call_with_value_depth_limit)
+TEST_P(sivm, call_with_value_depth_limit)
 {
     auto call_dst = evmc_address{};
     call_dst.bytes[19] = 0xaa;
@@ -267,7 +267,7 @@ TEST_P(evm, call_with_value_depth_limit)
     EXPECT_EQ(host.recorded_calls.size(), 0);
 }
 
-TEST_P(evm, call_depth_limit)
+TEST_P(sivm, call_depth_limit)
 {
     rev = EVMC_PETERSBURG;
     msg.depth = 1024;
@@ -282,7 +282,7 @@ TEST_P(evm, call_depth_limit)
     }
 }
 
-TEST_P(evm, call_output)
+TEST_P(sivm, call_output)
 {
     static bool result_is_correct = false;
     static uint8_t call_output[] = {0xa, 0xb};
@@ -321,7 +321,7 @@ TEST_P(evm, call_output)
     }
 }
 
-TEST_P(evm, call_high_gas)
+TEST_P(sivm, call_high_gas)
 {
     rev = EVMC_HOMESTEAD;
     host.accounts[0xaa_address] = {};
@@ -333,7 +333,7 @@ TEST_P(evm, call_high_gas)
     }
 }
 
-TEST_P(evm, call_value_zero_to_nonexistent_account)
+TEST_P(sivm, call_value_zero_to_nonexistent_account)
 {
     constexpr auto call_gas = 6000;
     host.call_result.gas_left = 1000;
@@ -354,7 +354,7 @@ TEST_P(evm, call_value_zero_to_nonexistent_account)
     EXPECT_EQ(call_msg.value.bytes[31], 0);
 }
 
-TEST_P(evm, call_new_account_creation_cost)
+TEST_P(sivm, call_new_account_creation_cost)
 {
     constexpr auto call_dst = 0x00000000000000000000000000000000000000ad_address;
     constexpr auto msg_dst = 0x0000000000000000000000000000000000000003_address;
@@ -430,7 +430,7 @@ TEST_P(evm, call_new_account_creation_cost)
     host.recorded_calls.clear();
 }
 
-TEST_P(evm, callcode_new_account_create)
+TEST_P(sivm, callcode_new_account_create)
 {
     constexpr auto code = "60008080806001600061c350f250";
     constexpr auto call_sender = 0x5e4d00000000000000000000000000000000d4e5_address;
@@ -450,7 +450,7 @@ TEST_P(evm, callcode_new_account_create)
     EXPECT_EQ(call_msg.value.bytes[31], 1);
 }
 
-TEST_P(evm, call_then_oog)
+TEST_P(sivm, call_then_oog)
 {
     // Performs a CALL then OOG in the same code block.
     auto call_dst = evmc_address{};
@@ -471,7 +471,7 @@ TEST_P(evm, call_then_oog)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, callcode_then_oog)
+TEST_P(sivm, callcode_then_oog)
 {
     // Performs a CALLCODE then OOG in the same code block.
     host.call_result.status_code = EVMC_FAILURE;
@@ -487,7 +487,7 @@ TEST_P(evm, callcode_then_oog)
     EXPECT_EQ(call_msg.gas, 100);
 }
 
-TEST_P(evm, delegatecall_then_oog)
+TEST_P(sivm, delegatecall_then_oog)
 {
     // Performs a CALL then OOG in the same code block.
     auto call_dst = evmc_address{};
@@ -508,7 +508,7 @@ TEST_P(evm, delegatecall_then_oog)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, staticcall_then_oog)
+TEST_P(sivm, staticcall_then_oog)
 {
     // Performs a STATICCALL then OOG in the same code block.
     auto call_dst = evmc_address{};
@@ -529,7 +529,7 @@ TEST_P(evm, staticcall_then_oog)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, staticcall_input)
+TEST_P(sivm, staticcall_input)
 {
     const auto code = mstore(3, 0x010203) + staticcall(0).gas(0xee).input(32, 3);
     execute(code);
@@ -540,7 +540,7 @@ TEST_P(evm, staticcall_input)
     EXPECT_EQ(hex(bytes_view(call_msg.input_data, call_msg.input_size)), "010203");
 }
 
-TEST_P(evm, call_with_value_low_gas)
+TEST_P(sivm, call_with_value_low_gas)
 {
     // Create the call destination account.
     host.accounts[0x0000000000000000000000000000000000000000_address] = {};
@@ -553,7 +553,7 @@ TEST_P(evm, call_with_value_low_gas)
     }
 }
 
-TEST_P(evm, call_oog_after_balance_check)
+TEST_P(sivm, call_oog_after_balance_check)
 {
     // Create the call destination account.
     host.accounts[0x0000000000000000000000000000000000000000_address] = {};
@@ -565,7 +565,7 @@ TEST_P(evm, call_oog_after_balance_check)
     }
 }
 
-TEST_P(evm, call_oog_after_depth_check)
+TEST_P(sivm, call_oog_after_depth_check)
 {
     // Create the call recipient account.
     host.accounts[0x0000000000000000000000000000000000000000_address] = {};
@@ -587,7 +587,7 @@ TEST_P(evm, call_oog_after_depth_check)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, call_recipient_and_code_address)
+TEST_P(sivm, call_recipient_and_code_address)
 {
     constexpr auto origin = 0x9900000000000000000000000000000000000099_address;
     constexpr auto executor = 0xee000000000000000000000000000000000000ee_address;
@@ -610,7 +610,7 @@ TEST_P(evm, call_recipient_and_code_address)
     }
 }
 
-TEST_P(evm, call_value)
+TEST_P(sivm, call_value)
 {
     constexpr auto origin = 0x9900000000000000000000000000000000000099_address;
     constexpr auto executor = 0xee000000000000000000000000000000000000ee_address;
@@ -649,7 +649,7 @@ TEST_P(evm, call_value)
     }
 }
 
-TEST_P(evm, create_oog_after)
+TEST_P(sivm, create_oog_after)
 {
     rev = EVMC_PETERSBURG;
     for (auto op : {OP_CREATE, OP_CREATE2})
@@ -660,14 +660,14 @@ TEST_P(evm, create_oog_after)
     }
 }
 
-TEST_P(evm, returndatasize_before_call)
+TEST_P(sivm, returndatasize_before_call)
 {
     execute(returndatasize() + ret_top());
     EXPECT_GAS_USED(EVMC_SUCCESS, 17);
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, returndatasize)
+TEST_P(sivm, returndatasize)
 {
     const uint8_t call_output[13]{};
     host.call_result.output_data = std::data(call_output);
@@ -693,7 +693,7 @@ TEST_P(evm, returndatasize)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, returndatacopy)
+TEST_P(sivm, returndatacopy)
 {
     const auto call_output =
         0x497f3c9f61479c1cfa53f0373d39d2bf4e5f73f71411da62f1d6b85c03a60735_bytes32;
@@ -706,14 +706,14 @@ TEST_P(evm, returndatacopy)
     EXPECT_EQ(bytes_view(result.output_data, result.output_size), call_output);
 }
 
-TEST_P(evm, returndatacopy_empty)
+TEST_P(sivm, returndatacopy_empty)
 {
     execute(delegatecall(0) + returndatacopy(0, 0, 0) + ret(0, 32));
     EXPECT_GAS_USED(EVMC_SUCCESS, 739);
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, returndatacopy_cost)
+TEST_P(sivm, returndatacopy_cost)
 {
     const uint8_t call_output[1]{};
     host.call_result.output_data = std::data(call_output);
@@ -726,7 +726,7 @@ TEST_P(evm, returndatacopy_cost)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, returndatacopy_outofrange)
+TEST_P(sivm, returndatacopy_outofrange)
 {
     const uint8_t call_output[2]{};
     host.call_result.output_data = std::data(call_output);
@@ -751,7 +751,7 @@ TEST_P(evm, returndatacopy_outofrange)
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
 }
 
-TEST_P(evm, returndatacopy_outofrange_highbits)
+TEST_P(sivm, returndatacopy_outofrange_highbits)
 {
     const uint8_t call_output[2]{};
     host.call_result.output_data = std::data(call_output);
@@ -764,7 +764,7 @@ TEST_P(evm, returndatacopy_outofrange_highbits)
     EXPECT_EQ(result.status_code, EVMC_INVALID_MEMORY_ACCESS);
 }
 
-TEST_P(evm, call_gas_refund_propagation)
+TEST_P(sivm, call_gas_refund_propagation)
 {
     rev = EVMC_LONDON;
     host.accounts[msg.recipient].set_balance(1);
@@ -781,7 +781,7 @@ TEST_P(evm, call_gas_refund_propagation)
     }
 }
 
-TEST_P(evm, call_gas_refund_aggregation_different_calls)
+TEST_P(sivm, call_gas_refund_aggregation_different_calls)
 {
     rev = EVMC_LONDON;
     host.accounts[msg.recipient].set_balance(1);
@@ -796,7 +796,7 @@ TEST_P(evm, call_gas_refund_aggregation_different_calls)
     EXPECT_EQ(result.gas_refund, 6);
 }
 
-TEST_P(evm, call_gas_refund_aggregation_same_calls)
+TEST_P(sivm, call_gas_refund_aggregation_same_calls)
 {
     rev = EVMC_LONDON;
     // The first CREATE pushes its address, which the second CREATE then pops as its value argument,

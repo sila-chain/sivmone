@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /// @file
-/// Contains tests for the EVM code snippets: pieces of EVM bytecode used in other places.
+/// Contains tests for the Sivm code snippets: pieces of Sivm bytecode used in other places.
 
 #include "../utils/bytecode.hpp"
 #include "state_transition.hpp"

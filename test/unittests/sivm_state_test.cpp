@@ -2,16 +2,16 @@
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests that access or modify information
+/// This file contains Sivm unit tests that access or modify information
 /// about accounts, without storage.
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <sivmone/instructions_traits.hpp>
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_P(evm, code)
+TEST_P(sivm, code)
 {
     // CODESIZE 2 0 CODECOPY RETURN(0,9)
     const auto s = bytecode{"38600260003960096000f3"};
@@ -21,7 +21,7 @@ TEST_P(evm, code)
     EXPECT_EQ(bytes_view(&result.output_data[0], 9), bytes_view(&s[2], 9));
 }
 
-TEST_P(evm, codecopy_combinations)
+TEST_P(sivm, codecopy_combinations)
 {
     // The CODECOPY arguments are provided in calldata: first byte is index, second byte is size.
     // The whole copied code is returned.
@@ -57,7 +57,7 @@ TEST_P(evm, codecopy_combinations)
     EXPECT_EQ(output, code.substr(0x12, 1));
 }
 
-TEST_P(evm, tx_context)
+TEST_P(sivm, tx_context)
 {
     rev = EVMC_ISTANBUL;
 
@@ -87,7 +87,7 @@ TEST_P(evm, tx_context)
     EXPECT_EQ(result.output_data[1], 0xdd);
 }
 
-TEST_P(evm, balance)
+TEST_P(sivm, balance)
 {
     host.accounts[msg.recipient].set_balance(0x0504030201);
     auto code = bytecode{} + OP_ADDRESS + OP_BALANCE + mstore(0) + ret(32 - 6, 6);
@@ -102,7 +102,7 @@ TEST_P(evm, balance)
     EXPECT_EQ(result.output_data[5], 0x01);
 }
 
-TEST_P(evm, account_info_homestead)
+TEST_P(sivm, account_info_homestead)
 {
     rev = EVMC_HOMESTEAD;
     host.accounts[msg.recipient].set_balance(1);
@@ -122,7 +122,7 @@ TEST_P(evm, account_info_homestead)
     EXPECT_EQ(result.output_data[0], 1);
 }
 
-TEST_P(evm, selfbalance)
+TEST_P(sivm, selfbalance)
 {
     host.accounts[msg.recipient].set_balance(0x0504030201);
     // NOTE: adding push here to balance out the stack pre-Istanbul (needed to get undefined
@@ -145,7 +145,7 @@ TEST_P(evm, selfbalance)
     EXPECT_EQ(result.output_data[5], 0x01);
 }
 
-TEST_P(evm, log)
+TEST_P(sivm, log)
 {
     for (auto op : {OP_LOG0, OP_LOG1, OP_LOG2, OP_LOG3, OP_LOG4})
     {
@@ -168,7 +168,7 @@ TEST_P(evm, log)
     }
 }
 
-TEST_P(evm, log0_empty)
+TEST_P(sivm, log0_empty)
 {
     auto code = push(0) + OP_DUP1 + OP_LOG0;
     execute(code);
@@ -178,7 +178,7 @@ TEST_P(evm, log0_empty)
     EXPECT_EQ(last_log.data.size(), 0);
 }
 
-TEST_P(evm, log_data_cost)
+TEST_P(sivm, log_data_cost)
 {
     for (auto op : {OP_LOG0, OP_LOG1, OP_LOG2, OP_LOG3, OP_LOG4})
     {
@@ -199,7 +199,7 @@ TEST_P(evm, log_data_cost)
     }
 }
 
-TEST_P(evm, selfdestruct)
+TEST_P(sivm, selfdestruct)
 {
     msg.recipient = 0x01_address;
     const auto& selfdestructs = host.recorded_selfdestructs[msg.recipient];
@@ -226,7 +226,7 @@ TEST_P(evm, selfdestruct)
     EXPECT_EQ(selfdestructs.back(), 0x08_address);
 }
 
-TEST_P(evm, selfdestruct_with_balance)
+TEST_P(sivm, selfdestruct_with_balance)
 {
     constexpr auto beneficiary = 0xbe_address;
     const auto code = selfdestruct(beneficiary);
@@ -398,7 +398,7 @@ TEST_P(evm, selfdestruct_with_balance)
     host.recorded_account_accesses.clear();
 }
 
-TEST_P(evm, selfdestruct_gas_refund)
+TEST_P(sivm, selfdestruct_gas_refund)
 {
     rev = EVMC_BERLIN;  // The last revision with gas refund.
     const auto code = selfdestruct(0xbe);
@@ -418,7 +418,7 @@ TEST_P(evm, selfdestruct_gas_refund)
     EXPECT_EQ(result.gas_refund, 24000);
 }
 
-TEST_P(evm, selfdestruct_no_gas_refund)
+TEST_P(sivm, selfdestruct_no_gas_refund)
 {
     rev = EVMC_LONDON;  // Since London there is no gas refund.
     execute(selfdestruct(0xbe));
@@ -427,7 +427,7 @@ TEST_P(evm, selfdestruct_no_gas_refund)
 }
 
 
-TEST_P(evm, blockhash)
+TEST_P(sivm, blockhash)
 {
     host.block_hash.bytes[13] = 0x13;
 
@@ -458,7 +458,7 @@ TEST_P(evm, blockhash)
     EXPECT_EQ(host.recorded_blockhashes.back(), 0);
 }
 
-TEST_P(evm, extcode)
+TEST_P(sivm, extcode)
 {
     constexpr auto addr = 0xfffffffffffffffffffffffffffffffffffffffe_address;
     host.accounts[addr].code = {'a', 'b', 'c', 'd'};
@@ -478,7 +478,7 @@ TEST_P(evm, extcode)
     EXPECT_EQ(host.recorded_account_accesses[1], addr);
 }
 
-TEST_P(evm, extcodesize)
+TEST_P(sivm, extcodesize)
 {
     constexpr auto addr = 0x0000000000000000000000000000000000000002_address;
     host.accounts[addr].code = {'\0'};
@@ -486,7 +486,7 @@ TEST_P(evm, extcodesize)
     EXPECT_OUTPUT_INT(1);
 }
 
-TEST_P(evm, extcodecopy_big_index)
+TEST_P(sivm, extcodecopy_big_index)
 {
     constexpr auto index = uint64_t{std::numeric_limits<uint32_t>::max()} + 1;
     const auto code = dup1(1) + push(index) + dup1(0) + OP_EXTCODECOPY + ret(0, {});
@@ -494,7 +494,7 @@ TEST_P(evm, extcodecopy_big_index)
     EXPECT_EQ(output, "00"_hex);
 }
 
-TEST_P(evm, extcodehash)
+TEST_P(sivm, extcodehash)
 {
     static constexpr auto HASH =
         0xe10000a00000000b0000000000c00000000d00000e0000f0000000000000001e_bytes32;
@@ -513,21 +513,21 @@ TEST_P(evm, extcodehash)
     EXPECT_EQ(bytes_view(result.output_data, result.output_size), HASH);
 }
 
-TEST_P(evm, codecopy_empty)
+TEST_P(sivm, codecopy_empty)
 {
     execute(push(0) + 2 * OP_DUP1 + OP_CODECOPY + OP_MSIZE + ret_top());
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
     EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 32);
 }
 
-TEST_P(evm, extcodecopy_empty)
+TEST_P(sivm, extcodecopy_empty)
 {
     execute(push(0) + 3 * OP_DUP1 + OP_EXTCODECOPY + OP_MSIZE + ret_top());
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
     EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 32);
 }
 
-TEST_P(evm, codecopy_memory_cost)
+TEST_P(sivm, codecopy_memory_cost)
 {
     auto code = push(1) + push(0) + push(0) + OP_CODECOPY;
     execute(18, code);
@@ -536,7 +536,7 @@ TEST_P(evm, codecopy_memory_cost)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, extcodecopy_memory_cost)
+TEST_P(sivm, extcodecopy_memory_cost)
 {
     auto code = push(1) + push(0) + 2 * OP_DUP1 + OP_EXTCODECOPY;
     execute(718, code);
@@ -545,7 +545,7 @@ TEST_P(evm, extcodecopy_memory_cost)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, extcodecopy_nonzero_index)
+TEST_P(sivm, extcodecopy_nonzero_index)
 {
     constexpr auto addr = 0x000000000000000000000000000000000000000a_address;
     constexpr auto index = 15;
@@ -564,7 +564,7 @@ TEST_P(evm, extcodecopy_nonzero_index)
     EXPECT_EQ(host.recorded_account_accesses.back().bytes[19], 0xa);
 }
 
-TEST_P(evm, extcodecopy_fill_tail)
+TEST_P(sivm, extcodecopy_fill_tail)
 {
     auto addr = evmc_address{};
     addr.bytes[19] = 0xa;
@@ -582,7 +582,7 @@ TEST_P(evm, extcodecopy_fill_tail)
     EXPECT_EQ(result.output_data[1], 0);
 }
 
-TEST_P(evm, extcodecopy_buffer_overflow)
+TEST_P(sivm, extcodecopy_buffer_overflow)
 {
     const auto code = bytecode{} + OP_NUMBER + OP_TIMESTAMP + calldatasize() + OP_ADDRESS +
                       OP_EXTCODECOPY + ret(calldatasize(), OP_NUMBER);

@@ -2,7 +2,7 @@
 # Copyright 2018 The evmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
-# The internal sivmone unit tests. The generic EVM ones are also built in.
+# The internal sivmone unit tests. The generic Sivm ones are also built in.
 add_executable(sivmone-unittests)
 target_sources(
     sivmone-unittests PRIVATE
@@ -12,26 +12,26 @@ target_sources(
     blockchaintest_runner_test.cpp
     bytecode_test.cpp
     create_address_test.cpp
-    evm_fixture.cpp
-    evm_fixture.hpp
-    evm_test.cpp
-    evm_calls_test.cpp
-    evm_control_flow_test.cpp
-    evm_eip2929_test.cpp
-    evm_eip3198_basefee_test.cpp
-    evm_eip3855_push0_test.cpp
-    evm_eip3860_initcode_test.cpp
-    evm_eip4844_blobhash_test.cpp
-    evm_eip7516_blobbasefee_test.cpp
-    evm_eip7843_slotnum_test.cpp
-    evm_eip7939_clz_test.cpp
-    evm_eip8024_swapn_dupn_exchange_test.cpp
-    evm_memory_test.cpp
-    evm_state_test.cpp
-    evm_storage_test.cpp
-    evm_other_test.cpp
-    evm_benchmark_test.cpp
-    evm_undefined_instructions_test.cpp
+    sivm_fixture.cpp
+    sivm_fixture.hpp
+    sivm_test.cpp
+    sivm_calls_test.cpp
+    sivm_control_flow_test.cpp
+    sivm_eip2929_test.cpp
+    sivm_eip3198_basefee_test.cpp
+    sivm_eip3855_push0_test.cpp
+    sivm_eip3860_initcode_test.cpp
+    sivm_eip4844_blobhash_test.cpp
+    sivm_eip7516_blobbasefee_test.cpp
+    sivm_eip7843_slotnum_test.cpp
+    sivm_eip7939_clz_test.cpp
+    sivm_eip8024_swapn_dupn_exchange_test.cpp
+    sivm_memory_test.cpp
+    sivm_state_test.cpp
+    sivm_storage_test.cpp
+    sivm_other_test.cpp
+    sivm_benchmark_test.cpp
+    sivm_undefined_instructions_test.cpp
     bn254_add_test.cpp
     bn254_from_bytes.cpp
     bn254_mul_test.cpp

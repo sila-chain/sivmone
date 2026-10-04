@@ -2,7 +2,7 @@
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 #include <sivmone/instructions_traits.hpp>
 #include <algorithm>
 
@@ -11,7 +11,7 @@ using namespace evmc::literals;
 using namespace intx;
 using namespace sivmone::test;
 
-TEST_P(evm, memory_and_not)
+TEST_P(sivm, memory_and_not)
 {
     execute(42, push(0) + push(1) + OP_DUP1 + OP_NOT + OP_DUP2 + OP_MSTORE8 + OP_DUP2 + OP_MLOAD +
                     OP_DUP3 + OP_MSTORE + OP_DUP1 + OP_ADD + OP_SWAP1 + OP_RETURN);
@@ -21,7 +21,7 @@ TEST_P(evm, memory_and_not)
     EXPECT_EQ(result.output_data[0], 0);
 }
 
-TEST_P(evm, msize)
+TEST_P(sivm, msize)
 {
     execute(29, "60aa6022535960005360016000f3");
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
@@ -30,7 +30,7 @@ TEST_P(evm, msize)
     EXPECT_EQ(result.output_data[0], 0x40);
 }
 
-TEST_P(evm, calldatacopy)
+TEST_P(sivm, calldatacopy)
 {
     bytecode s;
     s += "366001600037";  // CALLDATASIZE 1 0 CALLDATACOPY
@@ -51,7 +51,7 @@ TEST_P(evm, calldatacopy)
     EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 0xff);
 }
 
-TEST_P(evm, memory_big_allocation)
+TEST_P(sivm, memory_big_allocation)
 {
     constexpr auto size = 256 * 1024 + 1;
     const auto code = ret(0, size);
@@ -62,7 +62,7 @@ TEST_P(evm, memory_big_allocation)
         EXPECT_EQ(b, 0);
 }
 
-TEST_P(evm, memory_grow_mstore8)
+TEST_P(sivm, memory_grow_mstore8)
 {
     const auto code = calldataload(0) + push(0) + OP_JUMPDEST + mstore8(OP_DUP1, OP_DUP1) + add(1) +
                       jumpi(5, iszero(eq(OP_DUP3, OP_DUP1))) + ret(0, OP_MSIZE);
@@ -80,7 +80,7 @@ TEST_P(evm, memory_grow_mstore8)
         EXPECT_EQ(result.output_data[i], 0);
 }
 
-TEST_P(evm, mstore8_memory_cost)
+TEST_P(sivm, mstore8_memory_cost)
 {
     auto code = push(0) + mstore8(0);
     execute(12, code);
@@ -89,7 +89,7 @@ TEST_P(evm, mstore8_memory_cost)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, keccak256_memory_cost)
+TEST_P(sivm, keccak256_memory_cost)
 {
     execute(45, keccak256(0, 1));
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
@@ -97,7 +97,7 @@ TEST_P(evm, keccak256_memory_cost)
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
 }
 
-TEST_P(evm, calldatacopy_memory_cost)
+TEST_P(sivm, calldatacopy_memory_cost)
 {
     const auto code = calldatacopy(0, 0, 1);
     execute(18, code);
@@ -173,7 +173,7 @@ struct
         0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff_u256},
 };
 
-TEST_P(evm, memory_access)
+TEST_P(sivm, memory_access)
 {
     rev = EVMC_EXPERIMENTAL;
     // This test checks if instructions accessing memory properly respond with out-of-gas
@@ -240,7 +240,7 @@ TEST_P(evm, memory_access)
     }
 }
 
-TEST_P(evm, mcopy)
+TEST_P(sivm, mcopy)
 {
     rev = EVMC_CANCUN;
     bytecode s;
@@ -291,7 +291,7 @@ TEST_P(evm, mcopy)
     EXPECT_EQ(bytes_view(&result.output_data[0], 16), "00112233445566778899aabbccddeeff"_hex);
 }
 
-TEST_P(evm, mcopy_memory_cost)
+TEST_P(sivm, mcopy_memory_cost)
 {
     rev = EVMC_CANCUN;
     const auto code = mcopy(0, 0, 1);

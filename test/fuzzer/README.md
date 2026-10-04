@@ -1,6 +1,6 @@
 # sivmone-fuzzer
 
-> [LibFuzzer] powered testing tool for [EVMC]-compatible EVM implementations.
+> [LibFuzzer] powered testing tool for [EVMC]-compatible Sivm implementations.
 
 ## License
 

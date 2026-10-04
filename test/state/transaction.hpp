@@ -101,10 +101,10 @@ struct Transaction
 /// Transaction properties computed during the validation needed for the execution.
 struct TransactionProperties
 {
-    /// The amount of gas provided to the EVM for the transaction execution.
+    /// The amount of gas provided to the Sivm for the transaction execution.
     int64_t execution_gas_limit = 0;
 
-    /// The amount of state-gas spendable by EVM on state increase (since EIP-8037).
+    /// The amount of state-gas spendable by Sivm on state increase (since EIP-8037).
     int64_t state_gas_limit = 0;
 
     /// The minimal amount of gas the transaction must use.

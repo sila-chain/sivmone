@@ -1,4 +1,4 @@
-# sivmone-fuzzer: LibFuzzer based testing tool for EVMC-compatible EVM implementations.
+# sivmone-fuzzer: LibFuzzer based testing tool for EVMC-compatible Sivm implementations.
 # Copyright 2019 The evmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 include(ExternalProject)

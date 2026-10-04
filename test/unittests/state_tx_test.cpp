@@ -165,7 +165,7 @@ TEST(state_tx, validate_eof_create_transaction)
 
 TEST(state_tx, validate_tx_data_cost)
 {
-    // This test checks the transactions data cost calculation for different EVM revisions.
+    // This test checks the transactions data cost calculation for different Sivm revisions.
 
     const BlockInfo block{
         .gas_limit = 1'000'000,

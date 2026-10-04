@@ -9,12 +9,12 @@ namespace sivmone::test
 {
 using BlobSchedule = std::unordered_map<std::string, state::BlobParams>;
 
-/// Returns the hardcoded blob params for the given EVM revision.
+/// Returns the hardcoded blob params for the given Sivm revision.
 /// After Prague, the blob params should be taken from a BPO config. However, for unit tests this
 /// function still can be used to get a reasonable default.
 state::BlobParams get_blob_params(evmc_revision rev) noexcept;
 
-/// Returns the blob params for the given EVM revision and a blob schedule.
+/// Returns the blob params for the given Sivm revision and a blob schedule.
 state::BlobParams get_blob_params(evmc_revision rev, const BlobSchedule& blob_schedule);
 
 /// Returns the blob params for given a description of a test network (e.g. transitioning

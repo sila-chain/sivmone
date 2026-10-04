@@ -173,14 +173,14 @@ commands:
           fixtures_suffix: <<parameters.fixtures_suffix>>
       - run:
           name: "Execution spec tests (<<parameters.release>>, state_tests)"
-          # Tests for in-development EVM revision currently passing.
+          # Tests for in-development Sivm revision currently passing.
           working_directory: ~/build
           command: >
             LLVM_PROFILE_FILE=state_tests.profraw
             bin/sivmone test <<parameters.ignore>> ~/spec-tests/fixtures/state_tests
       - run:
           name: "Execution spec tests (<<parameters.release>>, blockchain_tests)"
-          # Tests for in-development EVM revision currently passing.
+          # Tests for in-development Sivm revision currently passing.
           working_directory: ~/build
           command: >
             LLVM_PROFILE_FILE=blockchain_tests.profraw

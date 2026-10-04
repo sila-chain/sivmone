@@ -2,16 +2,16 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests for EIP-7516: "BLOBBASEFEE opcode"
+/// This file contains Sivm unit tests for EIP-7516: "BLOBBASEFEE opcode"
 /// https://eips.ethereum.org/EIPS/eip-7516
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace evmc::literals;
 using namespace intx::literals;
 using namespace sivmone::test;
 
-TEST_P(evm, blobbasefee_pre_cancun)
+TEST_P(sivm, blobbasefee_pre_cancun)
 {
     rev = EVMC_SHANGHAI;
     const auto code = bytecode{OP_BLOBBASEFEE};
@@ -20,7 +20,7 @@ TEST_P(evm, blobbasefee_pre_cancun)
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, blobbasefee_1)
+TEST_P(sivm, blobbasefee_1)
 {
     rev = EVMC_CANCUN;
     host.tx_context.blob_base_fee = 0x01_bytes32;
@@ -33,7 +33,7 @@ TEST_P(evm, blobbasefee_1)
     EXPECT_OUTPUT_INT(1);
 }
 
-TEST_P(evm, blobbasefee_dede)
+TEST_P(sivm, blobbasefee_dede)
 {
     rev = EVMC_CANCUN;
     host.tx_context.blob_base_fee =

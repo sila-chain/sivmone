@@ -17,7 +17,7 @@ size_t get_push_data_size(uint8_t op) noexcept
 }
 }  // namespace
 
-/// The reference implementation of the EVM jumpdest analysis.
+/// The reference implementation of the Sivm jumpdest analysis.
 JumpdestBitset reference(bytes_view code)
 {
     JumpdestBitset m(code.size());

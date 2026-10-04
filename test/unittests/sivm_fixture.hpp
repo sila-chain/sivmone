@@ -28,8 +28,8 @@
 
 namespace sivmone::test
 {
-/// The "evm" test fixture with generic unit tests for EVMC-compatible VM implementations.
-class evm : public testing::TestWithParam<evmc::VM*>
+/// The "sivm" test fixture with generic unit tests for EVMC-compatible VM implementations.
+class sivm : public testing::TestWithParam<evmc::VM*>
 {
 protected:
     /// Reports if execution is done by sivmone/Advanced.
@@ -38,7 +38,7 @@ protected:
     /// The VM handle.
     evmc::VM& vm;
 
-    /// The EVM revision for unit test execution. Byzantium by default.
+    /// The Sivm revision for unit test execution. Byzantium by default.
     /// TODO: Add alias evmc::revision.
     evmc_revision rev = EVMC_BYZANTIUM;
 
@@ -57,14 +57,14 @@ protected:
 
     evmc::MockedHost host;
 
-    evm() noexcept : vm{*GetParam()} {}
+    sivm() noexcept : vm{*GetParam()} {}
 
 
     /// Executes the supplied code.
     ///
     /// @param gas    The gas limit for execution.
-    /// @param code   The EVM bytecode.
-    /// @param input  The EVM "calldata" input.
+    /// @param code   The Sivm bytecode.
+    /// @param input  The Sivm "calldata" input.
     /// The execution result will be available in the `result` field.
     /// The `gas_used` field  will be updated accordingly.
     void execute(int64_t gas, const bytecode& code, bytes_view input = {}) noexcept
@@ -86,8 +86,8 @@ protected:
 
     /// Executes the supplied code.
     ///
-    /// @param code   The EVM bytecode.
-    /// @param input  The EVM "calldata" input.
+    /// @param code   The Sivm bytecode.
+    /// @param input  The Sivm "calldata" input.
     /// The execution result will be available in the `result` field.
     /// The `gas_used` field  will be updated accordingly.
     void execute(const bytecode& code, bytes_view input = {}) noexcept

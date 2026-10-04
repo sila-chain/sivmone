@@ -2,11 +2,11 @@
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace sivmone::test;
 
-TEST_P(evm, jump)
+TEST_P(sivm, jump)
 {
     std::string s;
     s += "60be600053";  // m[0] = be
@@ -25,7 +25,7 @@ TEST_P(evm, jump)
     EXPECT_EQ(result.output_data[1], 0xfa);
 }
 
-TEST_P(evm, jumpi)
+TEST_P(sivm, jumpi)
 {
     std::string s;
     s += "5a600557";      // GAS 5 JUMPI
@@ -38,21 +38,21 @@ TEST_P(evm, jumpi)
     EXPECT_EQ(result.output_data[0], 0);
 }
 
-TEST_P(evm, jumpi_else)
+TEST_P(sivm, jumpi_else)
 {
     execute(16, dup1(OP_COINBASE) + OP_JUMPI);
     EXPECT_GAS_USED(EVMC_SUCCESS, 15);
     EXPECT_EQ(result.output_size, 0);
 }
 
-TEST_P(evm, jumpi_at_the_end)
+TEST_P(sivm, jumpi_at_the_end)
 {
     execute(1000, "5b6001600057");
     EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
     EXPECT_EQ(gas_used, 1000);
 }
 
-TEST_P(evm, bad_jumpdest)
+TEST_P(sivm, bad_jumpdest)
 {
     host.tx_context.block_number = 1;
     host.tx_context.block_gas_limit = 0;
@@ -69,14 +69,14 @@ TEST_P(evm, bad_jumpdest)
     }
 }
 
-TEST_P(evm, jump_to_block_beginning)
+TEST_P(sivm, jump_to_block_beginning)
 {
     const auto code = jumpi(0, OP_MSIZE) + jump(4);
     execute(code);
     EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
 }
 
-TEST_P(evm, jumpi_stack)
+TEST_P(sivm, jumpi_stack)
 {
     const auto code = push(0xde) + jumpi(6, calldatasize()) + OP_JUMPDEST + ret_top();
     execute(code);
@@ -85,7 +85,7 @@ TEST_P(evm, jumpi_stack)
     EXPECT_OUTPUT_INT(0xde);
 }
 
-TEST_P(evm, jump_over_jumpdest)
+TEST_P(sivm, jump_over_jumpdest)
 {
     // The code contains 2 consecutive JUMPDESTs. The JUMP at the beginning lands on the second one.
     const auto code = push(4) + OP_JUMP + 2 * OP_JUMPDEST;
@@ -93,37 +93,37 @@ TEST_P(evm, jump_over_jumpdest)
     EXPECT_GAS_USED(EVMC_SUCCESS, 3 + 8 + 1);
 }
 
-TEST_P(evm, jump_to_missing_push_data)
+TEST_P(sivm, jump_to_missing_push_data)
 {
     execute(push(5) + OP_JUMP + OP_PUSH1);
     EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
 }
 
-TEST_P(evm, jump_to_missing_push_data2)
+TEST_P(sivm, jump_to_missing_push_data2)
 {
     execute(push(6) + OP_JUMP + OP_PUSH2 + "ef");
     EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
 }
 
-TEST_P(evm, jump_dead_code)
+TEST_P(sivm, jump_dead_code)
 {
     execute(push(6) + OP_JUMP + 3 * OP_INVALID + OP_JUMPDEST);
     EXPECT_GAS_USED(EVMC_SUCCESS, 12);
 }
 
-TEST_P(evm, stop_dead_code)
+TEST_P(sivm, stop_dead_code)
 {
     execute(OP_STOP + 3 * OP_INVALID + OP_JUMPDEST);
     EXPECT_GAS_USED(EVMC_SUCCESS, 0);
 }
 
-TEST_P(evm, dead_code_at_the_end)
+TEST_P(sivm, dead_code_at_the_end)
 {
     execute(OP_STOP + 3 * OP_INVALID);
     EXPECT_GAS_USED(EVMC_SUCCESS, 0);
 }
 
-TEST_P(evm, jumpi_jumpdest)
+TEST_P(sivm, jumpi_jumpdest)
 {
     const auto code = calldataload(0) + push(6) + OP_JUMPI + OP_JUMPDEST;
 
@@ -134,13 +134,13 @@ TEST_P(evm, jumpi_jumpdest)
     EXPECT_GAS_USED(EVMC_SUCCESS, 20);
 }
 
-TEST_P(evm, jumpi_followed_by_stack_underflow)
+TEST_P(sivm, jumpi_followed_by_stack_underflow)
 {
     execute(push(0) + OP_DUP1 + OP_JUMPI + OP_POP);
     EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
 }
 
-TEST_P(evm, pc_sum)
+TEST_P(sivm, pc_sum)
 {
     const auto code = 4 * OP_PC + 3 * OP_ADD + ret_top();
     execute(code);
@@ -148,7 +148,7 @@ TEST_P(evm, pc_sum)
     EXPECT_OUTPUT_INT(6);
 }
 
-TEST_P(evm, pc_after_jump_1)
+TEST_P(sivm, pc_after_jump_1)
 {
     const auto code = push(3) + OP_JUMP + OP_JUMPDEST + OP_PC + ret_top();
     execute(code);
@@ -156,7 +156,7 @@ TEST_P(evm, pc_after_jump_1)
     EXPECT_OUTPUT_INT(4);
 }
 
-TEST_P(evm, pc_after_jump_2)
+TEST_P(sivm, pc_after_jump_2)
 {
     const auto code = calldatasize() + push(9) + OP_JUMPI + push(12) + OP_PC + OP_SWAP1 + OP_JUMP +
                       OP_JUMPDEST + OP_GAS + OP_PC + OP_JUMPDEST + ret_top();

@@ -27,7 +27,7 @@ struct StorageSystemContract
 {
     using GetInputFn = bytes32(const BlockInfo&, const BlockHashes&) noexcept;
 
-    evmc_revision since = EVMC_MAX_REVISION;  ///< EVM revision in which added.
+    evmc_revision since = EVMC_MAX_REVISION;  ///< Sivm revision in which added.
     address addr;                             ///< Address of the system contract.
     GetInputFn* get_input = nullptr;          ///< How to get the input for the system call.
 };
@@ -36,7 +36,7 @@ struct StorageSystemContract
 /// and produce requests: typed sequence of bytes.
 struct RequestsSystemContract
 {
-    evmc_revision since = EVMC_MAX_REVISION;                ///< EVM revision in which added.
+    evmc_revision since = EVMC_MAX_REVISION;                ///< Sivm revision in which added.
     address addr;                                           ///< Address of the system contract.
     Requests::Type request_type = Requests::Type::deposit;  ///< Type of requests produced.
 };

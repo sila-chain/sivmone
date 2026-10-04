@@ -13,7 +13,7 @@ constexpr auto GAS_PER_BLOB = 0x20000;  // 2**17
 /// The maximum number of blobs that can be included in a transaction (EIP-7594).
 constexpr auto MAX_TX_BLOB_COUNT = 6;
 
-/// The blob schedule entry for an EVM revision (EIP-7840).
+/// The blob schedule entry for an Sivm revision (EIP-7840).
 struct BlobParams
 {
     uint16_t target = 0;

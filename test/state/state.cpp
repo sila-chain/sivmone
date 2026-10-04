@@ -485,7 +485,7 @@ void State::rollback(size_t checkpoint)
     }
 }
 
-/// Validates transaction and computes the gas limits it provides to the EVM.
+/// Validates transaction and computes the gas limits it provides to the Sivm.
 /// @return  The transaction's computed gas properties or a validation error.
 std::variant<TransactionProperties, std::error_code> validate_transaction(
     const StateView& state_view, const BlockInfo& block, const Transaction& tx, evmc_revision rev,

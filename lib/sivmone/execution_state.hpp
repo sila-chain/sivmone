@@ -28,12 +28,12 @@ using evmc::bytes_view;
 using intx::uint256;
 
 
-/// Provides memory for EVM stack.
+/// Provides memory for Sivm stack.
 class StackSpace
 {
     struct Storage
     {
-        /// The maximum number of EVM stack items.
+        /// The maximum number of Sivm stack items.
         static constexpr auto limit = 1024;
 
         /// Stack space items are aligned to 256 bits for better packing in cache lines.
@@ -53,7 +53,7 @@ public:
 };
 
 
-/// The EVM memory.
+/// The Sivm memory.
 ///
 /// The implementations uses initial allocation of 4k and then grows capacity with 2x factor.
 /// Some benchmarks have been done to confirm 4k is ok-ish value.
@@ -98,7 +98,7 @@ public:
     /// @param new_size  New memory size. Must be larger than the current size and multiple of 32.
     void grow(size_t new_size) noexcept
     {
-        // Restriction for future changes. EVM always has memory size as multiple of 32 bytes.
+        // Restriction for future changes. Sivm always has memory size as multiple of 32 bytes.
         INTX_REQUIRE(new_size % 32 == 0);
 
         // Allow only growing memory. Include hint for optimizing compiler.
@@ -136,7 +136,7 @@ public:
     evmc_revision rev = {};
     bytes return_data;
 
-    /// Reference to original EVM code.
+    /// Reference to original Sivm code.
     bytes_view original_code;
 
     evmc_status_code status = EVMC_SUCCESS;

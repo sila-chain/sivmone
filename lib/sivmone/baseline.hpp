@@ -84,11 +84,11 @@ public:
     }
 };
 
-/// Analyze the EVM code in preparation for execution.
+/// Analyze the Sivm code in preparation for execution.
 ///
 /// This builds the map of valid JUMPDESTs.
 ///
-/// @param code         The reference to the EVM code to be analyzed.
+/// @param code         The reference to the Sivm code to be analyzed.
 EVMC_EXPORT CodeAnalysis analyze(bytes_view code);
 
 /// Executes in Baseline interpreter using EVMC-compatible parameters.

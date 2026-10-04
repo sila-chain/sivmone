@@ -61,7 +61,7 @@ protected:
         /// The rest of Expectation is ignored if the error is expected.
         ErrorCode tx_error = SUCCESS;
 
-        /// The expected EVM status code of the transaction execution.
+        /// The expected Sivm status code of the transaction execution.
         evmc_status_code status = EVMC_SUCCESS;
 
         /// The expected amount of gas used by the transaction.
@@ -82,7 +82,7 @@ protected:
 
         std::optional<hash256> state_hash;
 
-        /// The expected EVM execution trace. If not empty transaction execution will be performed
+        /// The expected Sivm execution trace. If not empty transaction execution will be performed
         /// with tracing enabled and the output compared.
         std::string_view trace;
     };
@@ -91,7 +91,7 @@ protected:
     evmc_revision rev = EVMC_SHANGHAI;
     uint64_t block_reward = 0;
     BlockInfo block{
-        .number = 1,  // Some EVMs don't like blocks with number 0.
+        .number = 1,  // Some Sivms don't like blocks with number 0.
         .gas_limit = 1'000'000,
         .coinbase = Coinbase,
         .base_fee = 999,

@@ -8,7 +8,7 @@ component_management:
   individual_components:
     - component_id: core
       name: core
-      # Consensus critical EVM implementation.
+      # Consensus critical Sivm implementation.
       paths:
         - include/**
         - lib/**

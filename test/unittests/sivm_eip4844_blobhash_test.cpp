@@ -2,22 +2,22 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains EVM unit tests for the BLOBHASH instruction from EIP-4844
+/// This file contains Sivm unit tests for the BLOBHASH instruction from EIP-4844
 /// https://eips.ethereum.org/EIPS/eip-4844
 
-#include "evm_fixture.hpp"
+#include "sivm_fixture.hpp"
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_P(evm, blobhash_undefined)
+TEST_P(sivm, blobhash_undefined)
 {
     rev = EVMC_SHANGHAI;
     execute(blobhash(0));
     EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
 }
 
-TEST_P(evm, blobhash_empty)
+TEST_P(sivm, blobhash_empty)
 {
     rev = EVMC_CANCUN;
     execute(blobhash(0) + ret_top());
@@ -31,7 +31,7 @@ TEST_P(evm, blobhash_empty)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, blobhash_one)
+TEST_P(sivm, blobhash_one)
 {
     rev = EVMC_CANCUN;
 
@@ -53,7 +53,7 @@ TEST_P(evm, blobhash_one)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, blobhash_two)
+TEST_P(sivm, blobhash_two)
 {
     rev = EVMC_CANCUN;
 
@@ -79,7 +79,7 @@ TEST_P(evm, blobhash_two)
     EXPECT_OUTPUT_INT(0);
 }
 
-TEST_P(evm, blobhash_invalid_hash_version)
+TEST_P(sivm, blobhash_invalid_hash_version)
 {
     rev = EVMC_CANCUN;
 
