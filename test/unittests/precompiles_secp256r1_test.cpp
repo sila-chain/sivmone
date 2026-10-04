@@ -55,7 +55,7 @@ TEST(secp256r1, valid)
     for (size_t i = 0; i < std::size(VALID_INPUTS); ++i)
     {
         const auto& [h_int, r, s, x, y] = VALID_INPUTS[i];
-        ethash::hash256 h{};
+        silash::hash256 h{};
         be::store(h.bytes, h_int);
         const auto result = verify(h, r, s, x, y);
         EXPECT_TRUE(result) << i;
@@ -67,7 +67,7 @@ TEST(secp256r1, invalid)
     for (size_t i = 0; i < std::size(INVALID_INPUTS); ++i)
     {
         const auto& [h_int, r, s, x, y] = INVALID_INPUTS[i];
-        ethash::hash256 h{};
+        silash::hash256 h{};
         be::store(h.bytes, h_int);
         const auto result = verify(h, r, s, x, y);
         EXPECT_FALSE(result) << i;

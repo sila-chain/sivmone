@@ -15,7 +15,7 @@ bool is_on_curve(const AffinePoint& p) noexcept
 }
 }  // namespace
 
-bool verify(const ethash::hash256& h, const uint256& r, const uint256& s, const uint256& qx,
+bool verify(const silash::hash256& h, const uint256& r, const uint256& s, const uint256& qx,
     const uint256& qy) noexcept
 {
     // The implementation follows "Elliptic Curve Digital Signature Algorithm"

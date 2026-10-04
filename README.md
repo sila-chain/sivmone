@@ -18,8 +18,8 @@ It derives from evmone, created by members of the [Ipsilon] (ex-[Ewasm]) team.
 1. Exposes the [EVMC] API.
 2. Requires C++20 standard.
 3. The [intx] library is used to provide 256-bit integer precision.
-4. The [ethash] library is used to provide Keccak hash function implementation
-   needed for the special `KECCAK256` instruction.
+4. The silash Keccak hash function implementation (in `lib/sivmone_precompiles`) is used
+   for the special `KECCAK256` instruction.
 5. Contains two interpreters: 
    - **Baseline** (default)
    - **Advanced** (select with the `advanced` option)
@@ -124,7 +124,6 @@ Licensed under the [Apache License, Version 2.0].
 [Ewasm]: https://github.com/ewasm
 [GMP]: https://gmplib.org
 [intx]: https://github.com/chfast/intx
-[ethash]: https://github.com/chfast/ethash
 [Releases]: https://github.com/sila-chain/sivmone/releases
 [standard readme]: https://github.com/RichardLitt/standard-readme
 [silkpre]: https://github.com/torquem-ch/silkpre

@@ -31,7 +31,7 @@ std::optional<Curve::Fp> calculate_y(const Curve::Fp& x, bool y_parity) noexcept
 
 evmc::address to_address(std::span<const uint8_t, 64> pubkey) noexcept
 {
-    const auto hashed = ethash::keccak256(pubkey.data(), pubkey.size());
+    const auto hashed = silash::keccak256(pubkey.data(), pubkey.size());
     evmc::address ret;
     std::copy_n(&hashed.bytes[12], sizeof(ret), ret.bytes);
     return ret;

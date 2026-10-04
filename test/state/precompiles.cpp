@@ -762,7 +762,7 @@ ExecutionResult p256verify_execute(const uint8_t* input, size_t input_size, uint
     if (input_size != 160)
         return {EVMC_SUCCESS, 0};
 
-    ethash::hash256 h{};
+    silash::hash256 h{};
     std::copy_n(input, sizeof(h), h.bytes);
     const auto r = intx::be::unsafe::load<intx::uint256>(input + 32);
     const auto s = intx::be::unsafe::load<intx::uint256>(input + 64);

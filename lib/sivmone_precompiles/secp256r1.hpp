@@ -39,7 +39,7 @@ using AffinePoint = ecc::AffinePoint<Curve>;
 constexpr AffinePoint G{0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296_u256,
     0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5_u256};
 
-bool verify(const ethash::hash256& h, const uint256& r, const uint256& s, const uint256& qx,
+bool verify(const silash::hash256& h, const uint256& r, const uint256& s, const uint256& qx,
     const uint256& qy) noexcept;
 
 }  // namespace sivmone::crypto::secp256r1

@@ -19,16 +19,16 @@ using namespace evmc::literals;
 
 /// Default type for 256-bit hash.
 ///
-/// Better than ethash::hash256 because has some additional handy constructors.
+/// Better than silash::hash256 because has some additional handy constructors.
 using hash256 = bytes32;
 
 /// The hash of the empty RLP list, i.e. keccak256({0xc0}).
 static constexpr auto EmptyListHash =
     0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347_bytes32;
 
-/// Computes Keccak hash out of input bytes (wrapper of ethash::keccak256).
+/// Computes Keccak hash out of input bytes (wrapper of silash::keccak256).
 inline hash256 keccak256(bytes_view data) noexcept
 {
-    return std::bit_cast<hash256>(ethash::keccak256(data.data(), data.size()));
+    return std::bit_cast<hash256>(silash::keccak256(data.data(), data.size()));
 }
 }  // namespace sivmone

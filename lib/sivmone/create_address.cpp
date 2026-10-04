@@ -40,7 +40,7 @@ address compute_create_address(const address& sender, uint64_t sender_nonce) noe
     const auto total_size = static_cast<size_t>(p - buffer);
     buffer[0] = static_cast<uint8_t>(RLP_LIST_BASE + (total_size - 1));  // Set the RLP list prefix.
 
-    const auto base_hash = ethash::keccak256(buffer, total_size);
+    const auto base_hash = silash::keccak256(buffer, total_size);
     address addr;
     std::copy_n(&base_hash.bytes[sizeof(base_hash) - ADDRESS_SIZE], ADDRESS_SIZE, addr.bytes);
     return addr;
@@ -49,7 +49,7 @@ address compute_create_address(const address& sender, uint64_t sender_nonce) noe
 address compute_create2_address(
     const address& sender, const bytes32& salt, bytes_view init_code) noexcept
 {
-    const auto init_code_hash = ethash::keccak256(init_code.data(), init_code.size());
+    const auto init_code_hash = silash::keccak256(init_code.data(), init_code.size());
     uint8_t buffer[1 + sizeof(sender) + sizeof(salt) + sizeof(init_code_hash)];
     static_assert(std::size(buffer) == 85);
     auto it = std::begin(buffer);
@@ -57,7 +57,7 @@ address compute_create2_address(
     it = std::copy_n(sender.bytes, sizeof(sender), it);
     it = std::copy_n(salt.bytes, sizeof(salt), it);
     std::copy_n(init_code_hash.bytes, sizeof(init_code_hash), it);
-    const auto base_hash = ethash::keccak256(buffer, std::size(buffer));
+    const auto base_hash = silash::keccak256(buffer, std::size(buffer));
     address addr;
     std::copy_n(&base_hash.bytes[sizeof(base_hash) - sizeof(addr)], sizeof(addr), addr.bytes);
     return addr;

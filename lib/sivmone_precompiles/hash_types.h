@@ -1,4 +1,4 @@
-/* ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+/* silash: C/C++ implementation of Silash, the Sila Proof of Work algorithm.
  * Copyright 2018-2019 Pawel Bylica.
  * Licensed under the Apache License, Version 2.0.
  */
@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-union ethash_hash256
+union silash_hash256
 {
     uint64_t word64s[4];
     uint32_t word32s[8];
@@ -22,9 +22,9 @@ union ethash_hash256
 #ifdef __cplusplus
 }
 
-namespace ethash
+namespace silash
 {
-using hash256 = ethash_hash256;
+using hash256 = silash_hash256;
 }
 
 #endif

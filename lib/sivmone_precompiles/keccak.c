@@ -1,4 +1,4 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// silash: C/C++ implementation of Silash, the Sila Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -362,9 +362,9 @@ static inline ALWAYS_INLINE void keccak(
         out[i] = to_le64(state[i]);
 }
 
-union ethash_hash256 ethash_keccak256(const uint8_t* data, size_t size)
+union silash_hash256 silash_keccak256(const uint8_t* data, size_t size)
 {
-    union ethash_hash256 hash;
+    union silash_hash256 hash;
     keccak(hash.word64s, 256, data, size);
     return hash;
 }

@@ -155,7 +155,7 @@ inline const std::error_category& sivmone_category() noexcept
 /// Creates error_code object out of an sivmone error code value.
 /// This is used by std::error_code to implement implicit conversion
 /// sivmone::ErrorCode -> std::error_code, therefore the definition is
-/// in the global namespace to match the definition of ethash_errc.
+/// in the namespace of ErrorCode, where argument-dependent lookup finds it.
 inline std::error_code make_error_code(ErrorCode errc) noexcept
 {
     return {errc, sivmone_category()};
