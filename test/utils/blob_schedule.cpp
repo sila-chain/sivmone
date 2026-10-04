@@ -17,7 +17,7 @@ state::BlobParams get_blob_params(evmc_revision rev) noexcept
 
 state::BlobParams get_blob_params(evmc_revision rev, const BlobSchedule& blob_schedule)
 {
-    return get_blob_params(evmc::to_string(rev), blob_schedule, 0);
+    return get_blob_params(sivm_revision_to_string(rev), blob_schedule, 0);
 }
 
 state::BlobParams get_blob_params(

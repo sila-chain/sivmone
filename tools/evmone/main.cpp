@@ -231,7 +231,7 @@ int main(int argc, const char* const* argv) noexcept
             .add_option_function<std::string>(
                 "--rev", [&rev](const std::string& name) { rev = evmone::test::to_rev(name); },
                 "EVM revision name")
-            ->default_str(evmc::to_string(rev));
+            ->default_str(std::string{evmone::test::sivm_revision_to_string(rev)});
         run_cmd.add_option("--input", input_arg, "Input bytes")->check(HexOrFile);
         run_cmd.add_flag("--create", create,
             "Create new contract out of the code and then execute this contract with the input");

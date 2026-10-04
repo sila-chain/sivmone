@@ -21,7 +21,7 @@ void run_state_test(const StateTransitionTest& test, evmc::VM& vm, const StateTe
         validate_state(test.pre_state, rev);
         for (size_t case_index = 0; case_index != cases.size(); ++case_index)
         {
-            const auto in_case = report.at(evmc::to_string(rev), '/', case_index);
+            const auto in_case = report.at(sivm_revision_to_string(rev), '/', case_index);
             // if (rev != EVMC_FRONTIER)
             //     continue;
             // if (case_index != 3)

@@ -54,6 +54,46 @@ evmc_revision to_rev(std::string_view s)
     throw std::invalid_argument{"unknown revision: " + std::string{s}};
 }
 
+std::string_view sivm_revision_to_string(evmc_revision rev) noexcept
+{
+    switch (rev)
+    {
+    case EVMC_FRONTIER:
+        return "Frontier";
+    case EVMC_HOMESTEAD:
+        return "SilaHomestead";
+    case EVMC_TANGERINE_WHISTLE:
+        return "SIP150";
+    case EVMC_SPURIOUS_DRAGON:
+        return "SIP158";
+    case EVMC_BYZANTIUM:
+        return "SilaByzantium";
+    case EVMC_PETERSBURG:
+        return "SilaConstantinopleFix";
+    case EVMC_ISTANBUL:
+        return "SilaIstanbul";
+    case EVMC_BERLIN:
+        return "SilaBerlin";
+    case EVMC_LONDON:
+        return "SilaLondon";
+    case EVMC_PARIS:
+        return "SilaParis";
+    case EVMC_SHANGHAI:
+        return "SilaShanghai";
+    case EVMC_CANCUN:
+        return "SilaCancun";
+    case EVMC_PRAGUE:
+        return "SilaPrague";
+    case EVMC_OSAKA:
+        return "SilaOsaka";
+    case EVMC_AMSTERDAM:
+        return "SilaAmsterdam";
+    case EVMC_EXPERIMENTAL:
+        return "Experimental";
+    }
+    return "<unknown>";
+}
+
 RevisionSchedule to_rev_schedule(std::string_view s)
 {
     if (s == "SilaBerlinToSilaLondonAt5")

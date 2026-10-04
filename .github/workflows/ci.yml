@@ -3,6 +3,7 @@
 
 # Mirrors the release-linux job of circle.yml: the chfast/cpp-build-env:25-gcc-15
 # image, a Release build with warnings as errors and testing enabled, then ctest.
+# The checkout runs on the runner; configure, build and test run in the image.
 name: CI
 
 on:
@@ -10,29 +11,25 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  IMAGE: chfast/cpp-build-env:25-gcc-15
+
 jobs:
   release-linux:
     runs-on: ubuntu-24.04
-    container:
-      image: chfast/cpp-build-env:25-gcc-15
-      # The image runs as an unprivileged user; the Actions runner needs root to
-      # write its workspace and state files.
-      options: --user root
-    env:
-      BUILD_TYPE: Release
-      CMAKE_BUILD_PARALLEL_LEVEL: 4
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Environment
+      - name: Build and test in ${{ env.IMAGE }}
         run: |
-          cmake --version
-          ${CXX:-c++} --version
-      - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_COMPILE_WARNING_AS_ERROR=TRUE -DEVMONE_TESTING=ON
-      - name: Build
-        run: cmake --build build
-      - name: Test
-        working-directory: build
-        run: ctest --schedule-random --output-on-failure --parallel $CMAKE_BUILD_PARALLEL_LEVEL
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -e BUILD_TYPE=Release -e CMAKE_BUILD_PARALLEL_LEVEL=4 -e HOME=/tmp \
+            -v "$GITHUB_WORKSPACE:/project" -w /project "$IMAGE" bash -ec '
+              cmake --version
+              ${CXX:-c++} --version
+              cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_COMPILE_WARNING_AS_ERROR=TRUE -DEVMONE_TESTING=ON
+              cmake --build build
+              cd build
+              ctest --schedule-random --output-on-failure --parallel $CMAKE_BUILD_PARALLEL_LEVEL
+            '

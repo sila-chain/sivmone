@@ -12,15 +12,7 @@ namespace
 /// Converts EVM revision to the fork name commonly used in tests.
 std::string_view to_test_fork_name(evmc_revision rev) noexcept
 {
-    switch (rev)
-    {
-    case EVMC_TANGERINE_WHISTLE:
-        return "SIP150";
-    case EVMC_SPURIOUS_DRAGON:
-        return "SIP158";
-    default:
-        return evmc::to_string(rev);
-    }
+    return sivm_revision_to_string(rev);
 }
 }  // namespace
 
