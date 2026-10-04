@@ -13,13 +13,13 @@ evmc_revision to_rev(std::string_view s)
         return EVMC_FRONTIER;
     if (s == "SilaHomestead")
         return EVMC_HOMESTEAD;
-    if (s == "TangerineWhistle" || s == "SIP150")
+    if (s == "SIP150")
         return EVMC_TANGERINE_WHISTLE;
-    if (s == "SpuriousDragon" || s == "SIP158")
+    if (s == "SIP158")
         return EVMC_SPURIOUS_DRAGON;
     if (s == "SilaByzantium")
         return EVMC_BYZANTIUM;
-    if (s == "Petersburg" || s == "SilaConstantinopleFix")
+    if (s == "SilaConstantinopleFix")
         return EVMC_PETERSBURG;
     if (s == "SilaIstanbul")
         return EVMC_ISTANBUL;
