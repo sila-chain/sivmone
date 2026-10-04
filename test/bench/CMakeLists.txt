@@ -15,7 +15,7 @@ target_sources(
 # Tests
 
 set(PREFIX evmone/bench)
-set(BENCHMARK_SUITE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../evm-benchmarks/benchmarks)
+set(BENCHMARK_SUITE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../sivm-benchmarks/benchmarks)
 
 # Check if DIR argument works.
 add_test(NAME ${PREFIX}/dir COMMAND evmone-bench ${BENCHMARK_SUITE_DIR} --benchmark_list_tests)

@@ -47,7 +47,7 @@ jobs:
             # the mainnet moduli are all odd and 256-bit, so they cover one code path and hide the
             # work on the others.
             run: >-
-              $BUILD_DIR/bin/evmone-bench test/evm-benchmarks/benchmarks --benchmark_filter='baseline/(analyse|execute)' &&
+              $BUILD_DIR/bin/evmone-bench test/sivm-benchmarks/benchmarks --benchmark_filter='baseline/(analyse|execute)' &&
               $BUILD_DIR/bin/evmone-precompiles-bench
           # The worst-case blocks of the execution spec tests, run as the tests they are: each
           # checks its post state and is measured on the way. Every one is filled for seven block
