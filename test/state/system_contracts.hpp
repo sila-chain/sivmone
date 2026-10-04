@@ -13,19 +13,19 @@ namespace sivmone::state
 {
 using namespace evmc::literals;
 
-/// The address of the sender of the system calls (EIP-4788).
+/// The address of the sender of the system calls (SIP-4788).
 constexpr auto SYSTEM_ADDRESS = 0xfffffffffffffffffffffffffffffffffffffffe_address;
 
-/// The address of the system contract storing the root hashes of beacon chain blocks (EIP-4788).
+/// The address of the system contract storing the root hashes of beacon chain blocks (SIP-4788).
 constexpr auto BEACON_ROOTS_ADDRESS = 0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02_address;
 
-/// The address of the system contract storing historical block hashes (EIP-2935).
+/// The address of the system contract storing historical block hashes (SIP-2935).
 constexpr auto HISTORY_STORAGE_ADDRESS = 0x0000F90827F1C53A10CB7A02335B175320002935_address;
 
-/// The address of the system contract processing EL-triggerable withdrawals (EIP-7002).
+/// The address of the system contract processing EL-triggerable withdrawals (SIP-7002).
 constexpr auto WITHDRAWAL_REQUEST_ADDRESS = 0x00000961EF480EB55E80D19AD83579A64C007002_address;
 
-/// The address of the system contract processing consolidations (EIP-7251).
+/// The address of the system contract processing consolidations (SIP-7251).
 constexpr auto CONSOLIDATION_REQUEST_ADDRESS = 0x0000BBDDC7CE488642FB579F8B00F3A590007251_address;
 
 struct BlockInfo;
@@ -58,7 +58,7 @@ struct RequestsResult
     const StateView& state_view, const BlockInfo& block, const BlockHashes& block_hashes,
     evmc_revision rev, evmc::VM& vm);
 
-/// Emit an ETH transfer log (LOG3) from SYSTEM_ADDRESS for a value transfer (EIP-7708).
+/// Emit an ETH transfer log (LOG3) from SYSTEM_ADDRESS for a value transfer (SIP-7708).
 void emit_transfer_log(
     std::vector<Log>& logs, const address& sender, const address& recipient, const uint256& amount);
 }  // namespace sivmone::state

@@ -39,7 +39,7 @@ namespace
 {
 constexpr auto GasCostMax = std::numeric_limits<int64_t>::max();
 
-constexpr auto MODEXP_LEN_LIMIT_EIP7823 = 1024;
+constexpr auto MODEXP_LEN_LIMIT_SIP7823 = 1024;
 
 constexpr auto BLS12_SCALAR_SIZE = 32;
 constexpr auto BLS12_FIELD_ELEMENT_SIZE = 64;
@@ -128,18 +128,18 @@ PrecompileAnalysis expmod_analyze(bytes_view input, evmc_revision rev) noexcept
         return std::max(factor * uint64_t{tail_len} + uint64_t{head_bits}, uint64_t{1});
     };
 
-    static constexpr auto calc_mult_complexity_eip7883 = [](uint32_t max_len) noexcept {
-        // With EIP-7823 the computation never overflows.
-        assert(max_len <= MODEXP_LEN_LIMIT_EIP7823);
+    static constexpr auto calc_mult_complexity_sip7883 = [](uint32_t max_len) noexcept {
+        // With SIP-7823 the computation never overflows.
+        assert(max_len <= MODEXP_LEN_LIMIT_SIP7823);
         const auto num_words = (max_len + 7) / 8;
         const auto mult_complexity = max_len <= 32 ? 16 : num_words * num_words * 2;
         return uint64_t{mult_complexity};
     };
-    static constexpr auto calc_mult_complexity_eip2565 = [](uint32_t max_len) noexcept {
+    static constexpr auto calc_mult_complexity_sip2565 = [](uint32_t max_len) noexcept {
         const auto num_words = (uint64_t{max_len} + 7) / 8;
         return num_words * num_words;  // max value: 0x04000000'00000000
     };
-    static constexpr auto calc_mult_complexity_eip198 = [](uint32_t max_len) noexcept {
+    static constexpr auto calc_mult_complexity_sip198 = [](uint32_t max_len) noexcept {
         const auto max_len_squared = uint64_t{max_len} * max_len;
         if (max_len <= 64)
             return max_len_squared;
@@ -157,11 +157,11 @@ PrecompileAnalysis expmod_analyze(bytes_view input, evmc_revision rev) noexcept
     };
     const auto& [min_gas, final_divisor, calc_mult_complexity] = [rev]() noexcept -> Params {
         if (rev >= EVMC_OSAKA)
-            return {500, 1, calc_mult_complexity_eip7883};
+            return {500, 1, calc_mult_complexity_sip7883};
         else if (rev >= EVMC_BERLIN)
-            return {200, 3, calc_mult_complexity_eip2565};
+            return {200, 3, calc_mult_complexity_sip2565};
         else  // Byzantium
-            return {0, 20, calc_mult_complexity_eip198};
+            return {0, 20, calc_mult_complexity_sip198};
     }();
 
     static constexpr size_t INPUT_HEADER_REQUIRED_SIZE = 3 * sizeof(uint256);
@@ -174,15 +174,15 @@ PrecompileAnalysis expmod_analyze(bytes_view input, evmc_revision rev) noexcept
     const auto mod_len256 = be::unsafe::load<uint256>(&input_header[64]);
 
     // Check the declared input lengths against the practical (2**32)
-    // or specified (EIP-7823: 2**10) limits.
+    // or specified (SIP-7823: 2**10) limits.
     const auto len_limit =
-        rev < EVMC_OSAKA ? std::numeric_limits<uint32_t>::max() : MODEXP_LEN_LIMIT_EIP7823;
+        rev < EVMC_OSAKA ? std::numeric_limits<uint32_t>::max() : MODEXP_LEN_LIMIT_SIP7823;
     if (base_len256 > len_limit || mod_len256 > len_limit)
         return {GasCostMax, 0};
 
     if (exp_len256 > len_limit)
     {
-        // Before EIP-7823, the big exponent may be canceled with zero multiplication complexity.
+        // Before SIP-7823, the big exponent may be canceled with zero multiplication complexity.
         if (rev < EVMC_OSAKA && base_len256 == 0 && mod_len256 == 0)
             return {min_gas, 0};
         return {GasCostMax, 0};
@@ -633,7 +633,7 @@ ExecutionResult point_evaluation_execute(const uint8_t* input, size_t input_size
         return {EVMC_PRECOMPILE_FAILURE, 0};
 
     // Return FIELD_ELEMENTS_PER_BLOB and BLS_MODULUS as padded 32 byte big endian values
-    // as required by the EIP-4844.
+    // as required by the SIP-4844.
     intx::be::unsafe::store(output, crypto::FIELD_ELEMENTS_PER_BLOB);
     intx::be::unsafe::store(output + 32, crypto::BLS_MODULUS);
     return {EVMC_SUCCESS, 64};

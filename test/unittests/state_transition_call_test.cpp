@@ -54,7 +54,7 @@ TEST_F(state_transition, delegatecall_static_legacy)
 
 TEST_F(state_transition, osaka_call_depth_limit_unreachable)
 {
-    // EIP-7825 caps the transaction gas and the 63/64 rule leaves each frame a 64th less, so the
+    // SIP-7825 caps the transaction gas and the 63/64 rule leaves each frame a 64th less, so the
     // cheapest possible self-recursion runs out of gas at depth 494 and the 1024 limit is
     // unreachable. gas_used pins it: a frame stopped by the limit would keep the gas it forwarded.
     rev = EVMC_OSAKA;

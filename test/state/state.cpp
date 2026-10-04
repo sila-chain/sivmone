@@ -20,9 +20,9 @@ namespace sivmone::state
 {
 namespace
 {
-/// EIP-7702: The cost of authorization that sets delegation to an account that didn't exist before.
+/// SIP-7702: The cost of authorization that sets delegation to an account that didn't exist before.
 constexpr auto AUTHORIZATION_EMPTY_ACCOUNT_COST = 25000;
-/// EIP-7702: The cost of authorization that sets delegation to an account that already exists.
+/// SIP-7702: The cost of authorization that sets delegation to an account that already exists.
 constexpr auto AUTHORIZATION_BASE_COST = 12500;
 
 constexpr int64_t num_words(size_t size_in_bytes) noexcept
@@ -101,7 +101,7 @@ TransactionCost compute_tx_intrinsic_cost(evmc_revision rev, const Transaction& 
     const auto initcode_cost =
         (is_create && rev >= EVMC_SHANGHAI) ? INITCODE_WORD_COST * num_words(tx.data.size()) : 0;
 
-    // Charge a flat cost per access-list byte (EIP-7981).
+    // Charge a flat cost per access-list byte (SIP-7981).
     const auto access_list_data_cost =
         (rev >= EVMC_AMSTERDAM) ? access_list_num_bytes * TOTAL_COST_FLOOR_PER_BYTE : 0;
 
@@ -109,12 +109,12 @@ TransactionCost compute_tx_intrinsic_cost(evmc_revision rev, const Transaction& 
                                 access_list_cost + auth_list_cost + initcode_cost;
 
     int64_t data_min_cost = 0;
-    if (rev >= EVMC_AMSTERDAM)  // Unified cost per byte (EIP-7976).
+    if (rev >= EVMC_AMSTERDAM)  // Unified cost per byte (SIP-7976).
         data_min_cost = TOTAL_COST_FLOOR_PER_BYTE * static_cast<int64_t>(tx.data.size());
-    else if (rev >= EVMC_PRAGUE)  // Cost per token capturing num of zero-nonzero bytes (EIP-7623).
+    else if (rev >= EVMC_PRAGUE)  // Cost per token capturing num of zero-nonzero bytes (SIP-7623).
         data_min_cost = TOTAL_COST_FLOOR_PER_TOKEN * num_tokens;
 
-    // Compute "floor" cost (EIP-7623).
+    // Compute "floor" cost (SIP-7623).
     const auto min_cost =
         (rev >= EVMC_PRAGUE) ? TX_BASE_COST + data_min_cost + access_list_data_cost : 0;
 
@@ -144,7 +144,7 @@ int64_t process_authorization_list(State& state, const Transaction& tx)
         // It is still empty at this point until nonce bump following successful authorization.
         auto& authority = state.get_or_insert(*authority_addr, {.erase_if_empty = true});
 
-        // 4. Add authority to accessed_addresses (as defined in EIP-2929.)
+        // 4. Add authority to accessed_addresses (as defined in SIP-2929.)
         authority.access_status = EVMC_ACCESS_WARM;
 
         // 5. Verify the code of authority is either empty or already delegated.
@@ -161,8 +161,8 @@ int64_t process_authorization_list(State& state, const Transaction& tx)
         // if authority exists in the trie.
         // Successful authorization validation makes an account non-empty.
         // We apply the refund only if the account has existed before.
-        // We detect "exists in the trie" by inspecting _empty_ property (EIP-161) because _empty_
-        // implies an account doesn't exist in the state (EIP-7523).
+        // We detect "exists in the trie" by inspecting _empty_ property (SIP-161) because _empty_
+        // implies an account doesn't exist in the state (SIP-7523).
         if (!authority.is_empty())
         {
             static constexpr auto EXISTING_AUTHORITY_REFUND =
@@ -224,13 +224,13 @@ evmc_message build_message(const Transaction& tx, const TransactionProperties& t
     };
 }
 
-/// Applies the authorizations (EIP-7702), resolves the delegation and calls the top-level message.
+/// Applies the authorizations (SIP-7702), resolves the delegation and calls the top-level message.
 [[nodiscard]] evmc::Result process_top_level(
     State& state, Host& host, evmc_revision rev, const Transaction& tx, evmc_message msg)
 {
     const auto delegation_refund = process_authorization_list(state, tx);
 
-    // Creating the recipient account costs state-gas, refilled if the call fails (EIP-8037).
+    // Creating the recipient account costs state-gas, refilled if the call fails (SIP-8037).
     const auto state_gas_init = msg.state_gas;
     StateGas state_gas{{.left = state_gas_init}};
     if (rev >= EVMC_AMSTERDAM && (!tx.to.has_value() || tx.value != 0) &&
@@ -263,7 +263,7 @@ evmc_message build_message(const Transaction& tx, const TransactionProperties& t
             result.gas_left += state_gas.spilled;
         result.state_gas.left = state_gas_init;
     }
-    result.gas_refund += delegation_refund;  // Kept even if the call fails (EIP-7702).
+    result.gas_refund += delegation_refund;  // Kept even if the call fails (SIP-7702).
     return result;
 }
 }  // namespace
@@ -280,7 +280,7 @@ StateDiff State::build_diff(evmc_revision rev) const
         {
             if (rev >= EVMC_AMSTERDAM && m.balance != 0)
             {
-                // Preserve the balance of the self-destructed account, no burn (EIP-8246).
+                // Preserve the balance of the self-destructed account, no burn (SIP-8246).
                 diff.modified_accounts.emplace_back(StateDiff::Entry{addr, 0, m.balance});
             }
             else
@@ -532,7 +532,7 @@ std::variant<TransactionProperties, std::error_code> validate_transaction(
     {
     case Transaction::Type::set_code:
     case Transaction::Type::blob:
-    case Transaction::Type::eip1559:
+    case Transaction::Type::sip1559:
         if (rev < EVMC_LONDON)
             return make_error_code(TYPE_NOT_SUPPORTED);
 
@@ -577,9 +577,9 @@ std::variant<TransactionProperties, std::error_code> validate_transaction(
 
     if (sender_acc.code_hash != Account::EMPTY_CODE_HASH &&
         !is_code_delegated(state_view.get_account_code(tx.sender)))
-        return make_error_code(SENDER_NOT_EOA);  // Origin must not be a contract (EIP-3607).
+        return make_error_code(SENDER_NOT_EOA);  // Origin must not be a contract (SIP-3607).
 
-    if (sender_acc.nonce == MAX_NONCE)  // Nonce value limit (EIP-2681).
+    if (sender_acc.nonce == MAX_NONCE)  // Nonce value limit (SIP-2681).
         return make_error_code(NONCE_IS_MAX);
 
     if (sender_acc.nonce < tx.nonce)
@@ -588,7 +588,7 @@ std::variant<TransactionProperties, std::error_code> validate_transaction(
     if (sender_acc.nonce > tx.nonce)
         return make_error_code(NONCE_TOO_LOW);
 
-    // Initcode size is limited by EIP-3860, raised for Amsterdam by EIP-7954.
+    // Initcode size is limited by SIP-3860, raised for Amsterdam by SIP-7954.
     const size_t max_initcode_size =
         rev >= EVMC_AMSTERDAM ? MAX_INITCODE_SIZE_AMSTERDAM : MAX_INITCODE_SIZE;
     if (rev >= EVMC_SHANGHAI && !tx.to.has_value() && tx.data.size() > max_initcode_size)
@@ -607,7 +607,7 @@ std::variant<TransactionProperties, std::error_code> validate_transaction(
 
     const auto [intrinsic_cost, min_cost] = compute_tx_intrinsic_cost(rev, tx);
 
-    // The transaction state-gas limit is all above the cap constant (EIP-8037).
+    // The transaction state-gas limit is all above the cap constant (SIP-8037).
     const auto state_gas_limit =
         rev >= EVMC_AMSTERDAM ? std::max(tx.gas_limit - MAX_TX_GAS_LIMIT, int64_t{0}) : 0;
 
@@ -693,7 +693,7 @@ TransactionReceipt transition(const StateView& state_view, const BlockInfo& bloc
         for (const auto& key : storage_keys)
             state.get_storage(a, key).access_status = EVMC_ACCESS_WARM;
     }
-    // EIP-3651: Warm COINBASE.
+    // SIP-3651: Warm COINBASE.
     // This may create an empty coinbase account. The account cannot be created unconditionally
     // because this breaks old revisions.
     if (rev >= EVMC_SHANGHAI)
@@ -708,7 +708,7 @@ TransactionReceipt transition(const StateView& state_view, const BlockInfo& bloc
     auto gas_used = gas_used_b4_refund - refund;
     assert(gas_used > 0);
 
-    // The gas used by the transaction must be at least the min_gas_cost (EIP-7623).
+    // The gas used by the transaction must be at least the min_gas_cost (SIP-7623).
     gas_used = std::max(gas_used, tx_props.min_gas_cost);
 
     const auto state_gas_used =
@@ -716,7 +716,7 @@ TransactionReceipt transition(const StateView& state_view, const BlockInfo& bloc
     assert(state_gas_used >= 0);
 
     // For block gas accounting, exclude refunds and enforce the min gas cost, raised by the
-    // state gas so state-gas spending cannot discount it (EIP-7778, EIP-8037).
+    // state gas so state-gas spending cannot discount it (SIP-7778, SIP-8037).
     const auto block_gas_used =
         (rev >= EVMC_AMSTERDAM) ?
             std::max(gas_used_b4_refund, tx_props.min_gas_cost + state_gas_used) :

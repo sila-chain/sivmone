@@ -9,7 +9,7 @@ namespace sivmone::crypto::bls
 namespace
 {
 /// Offset of the beginning of field element. First 16 bytes must be zero according to spec
-/// https://eips.ethereum.org/EIPS/eip-2537#field-elements-encoding
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2537.md#field-elements-encoding
 constexpr auto FP_BYTES_OFFSET = 64 - 48;
 
 /// Validates that integer encoded in big endian is valid element of BLS12-381 Fp field
@@ -24,7 +24,7 @@ constexpr auto FP_BYTES_OFFSET = 64 - 48;
 }
 
 /// Validates p1 affine point. Checks that point coordinates are from the BLS12-381 field and
-/// that the point is on curve. https://eips.ethereum.org/EIPS/eip-2537#abi-for-g1-addition
+/// that the point is on curve. https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2537.md#abi-for-g1-addition
 [[nodiscard]] std::optional<blst_p1_affine> validate_p1(
     const uint8_t _x[64], const uint8_t _y[64]) noexcept
 {
@@ -56,7 +56,7 @@ constexpr auto FP_BYTES_OFFSET = 64 - 48;
 }
 
 /// Validates p2 affine point. Checks that point coordinates are from the BLS12-381 field and
-/// that the point is on curve. https://eips.ethereum.org/EIPS/eip-2537#abi-for-g2-addition
+/// that the point is on curve. https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2537.md#abi-for-g2-addition
 [[nodiscard]] std::optional<blst_p2_affine> validate_p2(
     const uint8_t _x[128], const uint8_t _y[128]) noexcept
 {

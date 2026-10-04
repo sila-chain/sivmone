@@ -73,7 +73,7 @@ protected:
         msg.input_size = input.size();
         msg.gas = gas;
 
-        if (rev >= EVMC_BERLIN)  // Add EIP-2929 tweak.
+        if (rev >= EVMC_BERLIN)  // Add SIP-2929 tweak.
         {
             host.access_account(msg.sender);
             host.access_account(msg.recipient);

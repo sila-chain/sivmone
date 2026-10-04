@@ -27,7 +27,7 @@ using evmc::bytes_view;
 /// Computes the address of the to-be-created contract with the CREATE2 scheme.
 ///
 /// Computes the new account address for the contract creation context of the CREATE2 instruction,
-/// as keccak256(0xff ++ sender ++ salt ++ keccak256(init_code))[12:] per EIP-1014.
+/// as keccak256(0xff ++ sender ++ salt ++ keccak256(init_code))[12:] per SIP-1014.
 ///
 /// @param sender        The address of the message sender.
 /// @param salt          The salt.

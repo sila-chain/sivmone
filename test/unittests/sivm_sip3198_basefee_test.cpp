@@ -2,8 +2,8 @@
 // Copyright 2021 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-3198 "BASEFEE opcode"
-/// https://eips.ethereum.org/EIPS/eip-3198
+/// This file contains Sivm unit tests for SIP-3198 "BASEFEE opcode"
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-3198.md
 
 #include "sivm_fixture.hpp"
 
@@ -20,7 +20,7 @@ TEST_P(sivm, basefee_pre_london)
 
 TEST_P(sivm, basefee_nominal_case)
 {
-    // https://eips.ethereum.org/EIPS/eip-3198#nominal-case
+    // https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-3198.md#nominal-case
     rev = EVMC_LONDON;
     host.tx_context.block_base_fee = evmc::bytes32{7};
 

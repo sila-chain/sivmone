@@ -401,12 +401,12 @@ TEST_P(expmod, large_inputs)
 {
     // Tests with base/mod of 1024 and 1025 bytes, covering all modulus types.
 
-    // 1024-byte inputs (EIP-7823 limit).
+    // 1024-byte inputs (SIP-7823 limit).
     expect_last_byte(run({0x02}, {0x01}, make_val(1024, 0x80, 1)), 2);  // odd
     expect_last_byte(run({0x02}, {0x01}, make_val(1024, 0x01)), 2);     // power-of-two
     expect_last_byte(run({0x02}, {0x01}, make_val(1024, 0x80, 2)), 2);  // even (1-bit tz)
 
-    // 1025-byte inputs (exceeds EIP-7823, exercises heap fallback for native impl).
+    // 1025-byte inputs (exceeds SIP-7823, exercises heap fallback for native impl).
     expect_last_byte(run({0x02}, {0x01}, make_val(1025, 0x80, 1)), 2);  // odd
     expect_last_byte(run({0x02}, {0x01}, make_val(1025, 0x01)), 2);     // power-of-two
     expect_last_byte(run({0x02}, {0x01}, make_val(1025, 0x80, 2)), 2);  // even (1-bit tz)
@@ -520,7 +520,7 @@ TEST(expmod, huge_inputs_analysis)
     // implementation's size limit. These are near the gas limit boundary:
     // the max mod_len for a given exp magnitude that still fits within GAS_LIMIT.
     //
-    // Must be pre-Osaka: EIP-7823 (Osaka) caps mod_len at 1024 bytes, so inputs with
+    // Must be pre-Osaka: SIP-7823 (Osaka) caps mod_len at 1024 bytes, so inputs with
     // larger moduli would return GasCostMax instead of the expected gas below GAS_LIMIT.
     static constexpr auto REV = EVMC_PRAGUE;
     static constexpr auto GAS_LIMIT = 100'000'000;

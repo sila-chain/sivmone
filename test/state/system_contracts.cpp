@@ -81,7 +81,7 @@ evmc::Result execute_system_call(State& state, const BlockInfo& block,
     const evmc_message msg{
         .kind = EVMC_CALL,
         .gas = 30'000'000,
-        .state_gas = 16 * STORAGE_SET_STATE_GAS,  // Additional state-gas (EIP-8037).
+        .state_gas = 16 * STORAGE_SET_STATE_GAS,  // Additional state-gas (SIP-8037).
         .recipient = addr,
         .sender = SYSTEM_ADDRESS,
         .input_data = input.data(),
@@ -103,7 +103,7 @@ StateDiff system_call_block_start(const StateView& state_view, const BlockInfo& 
         if (rev < since)
             break;  // Because entries are ordered, there are no other contracts for this revision.
 
-        // Skip the call if the target account doesn't exist. This is by EIP-4788 spec.
+        // Skip the call if the target account doesn't exist. This is by SIP-4788 spec.
         // > if no code exists at [address], the call must fail silently.
         const auto code = state_view.get_account_code(addr);
         if (code.empty())
@@ -128,7 +128,7 @@ std::variant<RequestsResult, std::error_code> system_call_block_end(const StateV
         if (rev < since)
             break;  // Because entries are ordered, there are no other contracts for this revision.
 
-        // Fail if the target account doesn't exist. This is by EIP-7002 and EIP-7251 spec.
+        // Fail if the target account doesn't exist. This is by SIP-7002 and SIP-7251 spec.
         const auto code = state_view.get_account_code(addr);
         if (code.empty())
             return make_error_code(SYSTEM_CONTRACT_EMPTY);
@@ -144,7 +144,7 @@ std::variant<RequestsResult, std::error_code> system_call_block_end(const StateV
 void emit_transfer_log(
     std::vector<Log>& logs, const address& sender, const address& recipient, const uint256& amount)
 {
-    /// The ETH transfer log topic (EIP-7708): keccak256("Transfer(address,address,uint256)")
+    /// The ETH transfer log topic (SIP-7708): keccak256("Transfer(address,address,uint256)")
     constexpr auto TRANSFER_EVENT_TOPIC =
         0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef_bytes32;
 

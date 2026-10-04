@@ -185,7 +185,7 @@ TEST(statetest_loader, validate_state_invalid_delegation_size)
     TestState state{{0xadd4_address, {.code = "EF010000"_hex}}};
     EXPECT_THAT([&] { validate_state(state, EVMC_PRAGUE); },
         ThrowsMessage<std::invalid_argument>(
-            "EIP-7702 delegation designator at 0x000000000000000000000000000000000000add4 has "
+            "SIP-7702 delegation designator at 0x000000000000000000000000000000000000add4 has "
             "invalid size"));
 }
 

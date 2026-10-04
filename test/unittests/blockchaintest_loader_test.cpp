@@ -386,7 +386,7 @@ TEST(json_loader, blockchain_test_pre_paris)
         0x0000000000000000000000000000000000000000000000000000000000020000_bytes32);
 }
 
-/// EIP-7843: `slotNumber` absent and `slotNumber` present-and-zero are different encodings.
+/// SIP-7843: `slotNumber` absent and `slotNumber` present-and-zero are different encodings.
 /// The block header validation requires the field exactly from Amsterdam, so the loader must
 /// keep them distinguishable; loading it as a plain integer collapsed both to 0.
 TEST(json_loader, blockchain_test_slot_number_absent_differs_from_zero)

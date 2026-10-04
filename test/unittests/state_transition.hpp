@@ -33,7 +33,7 @@ protected:
     static constexpr auto To = 0xc0de_address;
 
     /// A second signing account, for tests needing a signature that is not the Sender's
-    /// (e.g. an EIP-7702 authority).
+    /// (e.g. an SIP-7702 authority).
     /// Private key: 0xa5.
     static constexpr auto AUTHORITY = 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550_address;
 
@@ -67,14 +67,14 @@ protected:
         /// The expected amount of gas used by the transaction.
         std::optional<int64_t> gas_used;
 
-        /// The expected amount of gas counted against the block gas limit (EIP-7778).
+        /// The expected amount of gas counted against the block gas limit (SIP-7778).
         std::optional<int64_t> block_gas_used;
 
         /// The expected logs emitted by the transaction. When set, the receipt's logs must match
         /// exactly: count, address, data, topics, and order.
         std::optional<std::vector<Log>> logs;
 
-        /// The expected state-gas component of the receipt (EIP-8037).
+        /// The expected state-gas component of the receipt (SIP-8037).
         std::optional<int64_t> state_gas;
 
         /// The expected post-execution state.
@@ -99,7 +99,7 @@ protected:
     TestBlockHashes block_hashes;
     Transaction tx{
         // The default type corresponds to the default `rev` and majority of tests.
-        .type = Transaction::Type::eip1559,
+        .type = Transaction::Type::sip1559,
         .gas_limit = block.gas_limit,
         .max_gas_price = block.base_fee + 1,
         .max_priority_gas_price = block.base_fee + 1,
@@ -115,7 +115,7 @@ protected:
     /// The test runner.
     void TearDown() override;
 
-    /// Build the expected EIP-7708 Transfer log: {SYSTEM_ADDRESS, amount (32-byte big-endian),
+    /// Build the expected SIP-7708 Transfer log: {SYSTEM_ADDRESS, amount (32-byte big-endian),
     /// topics = [Transfer event topic, sender, recipient]}.
     static Log transfer_log(
         const address& sender, const address& recipient, const intx::uint256& amount);

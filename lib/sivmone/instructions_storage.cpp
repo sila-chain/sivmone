@@ -17,7 +17,7 @@ struct StorageCostSpec
     int16_t set;          ///< Storage addition cost, YP: G_{sset}
     int16_t reset;        ///< Storage modification cost, YP: G_{sreset}
     int16_t clear;        ///< Storage deletion refund, YP: R_{sclear}
-    int16_t cold;         ///< Additional cold access cost (EIP-2929).
+    int16_t cold;         ///< Additional cold access cost (SIP-2929).
 };
 
 /// Table of gas cost specification for storage instructions per Sivm revision.

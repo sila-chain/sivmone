@@ -2,8 +2,8 @@
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-3860 "Limit and meter initcode"
-/// https://eips.ethereum.org/EIPS/eip-3860
+/// This file contains Sivm unit tests for SIP-3860 "Limit and meter initcode"
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-3860.md
 
 #include "sivm_fixture.hpp"
 

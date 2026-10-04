@@ -2,8 +2,8 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for the BLOBHASH instruction from EIP-4844
-/// https://eips.ethereum.org/EIPS/eip-4844
+/// This file contains Sivm unit tests for the BLOBHASH instruction from SIP-4844
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-4844.md
 
 #include "sivm_fixture.hpp"
 

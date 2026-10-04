@@ -2,8 +2,8 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-8024: SWAPN, DUPN, EXCHANGE.
-/// https://eips.ethereum.org/EIPS/eip-8024
+/// This file contains Sivm unit tests for SIP-8024: SWAPN, DUPN, EXCHANGE.
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-8024.md
 
 #include "sivm_fixture.hpp"
 

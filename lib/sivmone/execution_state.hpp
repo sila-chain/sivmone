@@ -155,7 +155,7 @@ public:
         const advanced::AdvancedCodeAnalysis* advanced;
     } analysis{};
 
-    /// The frame's state-gas counters (EIP-8037).
+    /// The frame's state-gas counters (SIP-8037).
     StateGas state_gas;
 
     /// Stack space allocation.

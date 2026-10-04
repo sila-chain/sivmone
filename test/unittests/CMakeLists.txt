@@ -17,15 +17,15 @@ target_sources(
     sivm_test.cpp
     sivm_calls_test.cpp
     sivm_control_flow_test.cpp
-    sivm_eip2929_test.cpp
-    sivm_eip3198_basefee_test.cpp
-    sivm_eip3855_push0_test.cpp
-    sivm_eip3860_initcode_test.cpp
-    sivm_eip4844_blobhash_test.cpp
-    sivm_eip7516_blobbasefee_test.cpp
-    sivm_eip7843_slotnum_test.cpp
-    sivm_eip7939_clz_test.cpp
-    sivm_eip8024_swapn_dupn_exchange_test.cpp
+    sivm_sip2929_test.cpp
+    sivm_sip3198_basefee_test.cpp
+    sivm_sip3855_push0_test.cpp
+    sivm_sip3860_initcode_test.cpp
+    sivm_sip4844_blobhash_test.cpp
+    sivm_sip7516_blobbasefee_test.cpp
+    sivm_sip7843_slotnum_test.cpp
+    sivm_sip7939_clz_test.cpp
+    sivm_sip8024_swapn_dupn_exchange_test.cpp
     sivm_memory_test.cpp
     sivm_state_test.cpp
     sivm_storage_test.cpp
@@ -69,9 +69,9 @@ target_sources(
     state_transition_block_test.cpp
     state_transition_call_test.cpp
     state_transition_create_test.cpp
-    state_transition_eip7702_test.cpp
-    state_transition_eip7778_block_gas_test.cpp
-    state_transition_eip8037_state_gas_test.cpp
+    state_transition_sip7702_test.cpp
+    state_transition_sip7778_block_gas_test.cpp
+    state_transition_sip8037_state_gas_test.cpp
     state_transition_extcode_test.cpp
     state_transition_selfdestruct_test.cpp
     state_transition_snippets_test.cpp

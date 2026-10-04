@@ -297,7 +297,7 @@ const TestCase TEST_CASES[]{
     // R == 2G, high s
     {"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff 000000000000000000000000000000000000000000000000000000000000001c c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5 fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd036413b",
         "000000000000000000000000bbb10a3b5835400b63ca00372c16db781220fb0b"},
-    // R == 2G, s == ORDER/2: the highest s a strict (EIP-2) recovery accepts.
+    // R == 2G, s == ORDER/2: the highest s a strict (SIP-2) recovery accepts.
     {"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff 000000000000000000000000000000000000000000000000000000000000001c c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5 7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0",
         "00000000000000000000000090dd1d3d5a9814647c17016ce932360f61639baa"},
     // R == 2G, s == ORDER/2 + 1: the lowest s a strict recovery rejects.

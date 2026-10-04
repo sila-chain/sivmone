@@ -13,7 +13,7 @@ namespace sivmone::instr
 /// The special gas cost value marking an Sivm instruction as "undefined".
 constexpr int16_t undefined = -1;
 
-/// State-access cost constants (EIP-2929, EIP-8038).
+/// State-access cost constants (SIP-2929, SIP-8038).
 /// @{
 inline constexpr auto WARM_ACCESS = 100;
 inline constexpr auto COLD_STORAGE_ACCESS = 2100;

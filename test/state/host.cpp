@@ -25,7 +25,7 @@ evmc_storage_status Host::set_storage(
     const address& addr, const bytes32& key, const bytes32& value) noexcept
 {
     // Follow EVMC documentation https://evmc.ethereum.org/storagestatus.html#autotoc_md3
-    // and EIP-2200 specification https://eips.ethereum.org/EIPS/eip-2200.
+    // and SIP-2200 specification https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2200.md.
 
     auto& storage_slot = m_state.get_storage(addr, key);
     const auto& [current, original, _] = storage_slot;
@@ -83,7 +83,7 @@ uint64_t Host::get_nonce(const address& addr) const noexcept
 namespace
 {
 /// Check if an existing account is the "create collision"
-/// as defined in the [EIP-7610](https://eips.ethereum.org/EIPS/eip-7610).
+/// as defined in the [SIP-7610](https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7610.md).
 [[nodiscard]] bool is_create_collision(const Account& acc) noexcept
 {
     // TODO: This requires much more testing:
@@ -142,7 +142,7 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
 
     if (m_rev >= EVMC_CANCUN && !acc.just_created)
     {
-        // EIP-6780:
+        // SIP-6780:
         // "SELFDESTRUCT is executed in a transaction that is not the same
         // as the contract invoking SELFDESTRUCT was created"
         acc.balance = 0;
@@ -161,7 +161,7 @@ bool Host::selfdestruct(const address& addr, const address& beneficiary) noexcep
         // Transfer may happen multiple times per single account as account's balance
         // can be increased with a call following previous selfdestruct.
         beneficiary_acc.balance += balance;
-        acc.balance = 0;  // Zero balance if acc is the beneficiary (before EIP-8246)
+        acc.balance = 0;  // Zero balance if acc is the beneficiary (before SIP-8246)
     }
 
     if (m_rev >= EVMC_AMSTERDAM)
@@ -233,14 +233,14 @@ evmc::Result Host::create(const evmc_message& msg) noexcept
     if (m_rev >= EVMC_SPURIOUS_DRAGON && code.size() > max_code_size)
         return evmc::Result{EVMC_FAILURE, {.left = msg.state_gas}};
 
-    // Reject new contract code starting with the 0xEF byte (EIP-3541).
+    // Reject new contract code starting with the 0xEF byte (SIP-3541).
     if (m_rev >= EVMC_LONDON && code.starts_with(0xEF))
         return evmc::Result{EVMC_CONTRACT_VALIDATION_FAILURE, {.left = msg.state_gas}};
 
     StateGas state_gas{result.state_gas};  // The initcode's state-gas for code deposit.
     if (m_rev >= EVMC_AMSTERDAM)
     {
-        // The code deposit splits into an execution-gas and a state-gas component (EIP-8037).
+        // The code deposit splits into an execution-gas and a state-gas component (SIP-8037).
         const auto execution_cost = 6 * ((std::ssize(code) + 31) / 32);
         const auto state_cost = std::ssize(code) * COST_PER_STATE_BYTE;
         gas_left -= execution_cost;
@@ -309,7 +309,7 @@ evmc::Result Host::execute_message(const evmc_message& msg) noexcept
         }
     }
 
-    // Calls to precompile address via EIP-7702 delegation execute empty code instead of precompile.
+    // Calls to precompile address via SIP-7702 delegation execute empty code instead of precompile.
     if ((msg.flags & EVMC_DELEGATED) == 0 && is_precompile(m_rev, msg.code_address))
         return call_precompile(m_rev, msg);
 
@@ -372,7 +372,7 @@ evmc_tx_context Host::get_tx_context() const noexcept
     const auto effective_gas_price = m_block.base_fee + priority_gas_price;
 
     return evmc_tx_context{
-        intx::be::store<uint256be>(effective_gas_price),  // By EIP-1559.
+        intx::be::store<uint256be>(effective_gas_price),  // By SIP-1559.
         m_tx.sender,
         m_block.coinbase,
         m_block.number,

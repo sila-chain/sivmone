@@ -18,7 +18,7 @@ constexpr auto ACCOUNT_CREATION_COST = 25000;
 
 /// Get target address of a code executing instruction.
 ///
-/// Returns EIP-7702 delegate address if addr is delegated, or addr itself otherwise.
+/// Returns SIP-7702 delegate address if addr is delegated, or addr itself otherwise.
 /// Applies gas charge for accessing delegate account and may fail with out of gas.
 inline std::variant<evmc::address, Result> get_target_address(
     const evmc::address& addr, int64_t& gas_left, ExecutionState& state) noexcept
@@ -41,7 +41,7 @@ inline std::variant<evmc::address, Result> get_target_address(
     return *delegate_addr;
 }
 
-/// Absorbs a child's state-gas back to the parent (EIP-8037).
+/// Absorbs a child's state-gas back to the parent (SIP-8037).
 inline void absorb_child_state_gas(
     int64_t& gas_left, ExecutionState& state, const evmc::Result& result) noexcept
 {
@@ -289,7 +289,7 @@ Result create_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noex
     const auto& sender = state.msg->recipient;
     const auto sender_nonce = state.host.get_nonce(sender);  // Pre-bump sender nonce.
 
-    // Creation fails when the sender's nonce is at maximum (EIP-2681).
+    // Creation fails when the sender's nonce is at maximum (SIP-2681).
     if (sender_nonce == MAX_NONCE)
         return {EVMC_SUCCESS, gas_left};  // "Light" failure.
 
@@ -300,7 +300,7 @@ Result create_impl(StackTop stack, int64_t gas_left, ExecutionState& state) noex
     msg.recipient = (Op == OP_CREATE) ? compute_create_address(sender, sender_nonce) :
                                         compute_create2_address(sender, salt, init_code);
 
-    // Access to the new address is warmed and never reverted (EIP-2929).
+    // Access to the new address is warmed and never reverted (SIP-2929).
     if (state.rev >= EVMC_BERLIN)
         state.host.access_account(msg.recipient);
 

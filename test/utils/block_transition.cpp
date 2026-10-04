@@ -78,8 +78,8 @@ TransitionResult apply_block(const TestState& state, evmc::VM& vm, const state::
             if (rev < EVMC_BYZANTIUM)
                 receipt.post_state = state::mpt_hash(block_state);
 
-            // Block gas accounting, with EIP-7778 applied in transition(). The execution
-            // dimension is the block gas less the state one (EIP-8037).
+            // Block gas accounting, with SIP-7778 applied in transition(). The execution
+            // dimension is the block gas less the state one (SIP-8037).
             block_gas_left -= receipt.block_gas_used - receipt.state_gas_used;
             block_state_gas_left -= receipt.state_gas_used;
             blob_gas_left -= static_cast<int64_t>(tx.blob_gas_used());
@@ -112,7 +112,7 @@ TransitionResult apply_block(const TestState& state, evmc::VM& vm, const state::
     finalize(block_state, rev, block.coinbase, opts.block_reward, block.ommers, block.withdrawals);
 
     // Both counters start at block.gas_limit, so this is max(execution used, state used):
-    // the block's gas used is its bottleneck dimension (EIP-8037).
+    // the block's gas used is its bottleneck dimension (SIP-8037).
     const auto block_gas_used = block.gas_limit - std::min(block_gas_left, block_state_gas_left);
     const auto bloom = compute_bloom_filter(receipts);
 

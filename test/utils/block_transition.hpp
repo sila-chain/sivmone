@@ -50,9 +50,9 @@ struct TransitionResult
 {
     std::vector<state::TransactionReceipt> receipts;  ///< Accepted transactions, in block order.
     std::vector<RejectedTransaction> rejected;        ///< Rejected transactions, in input order.
-    std::vector<state::Requests> requests;            ///< Collected requests (EIP-7685).
+    std::vector<state::Requests> requests;            ///< Collected requests (SIP-7685).
     std::error_code requests_error;  ///< Set if requests collection failed (block is invalid).
-    int64_t gas_used = 0;       ///< Block gas used; includes refunds for Amsterdam+ (EIP-7778).
+    int64_t gas_used = 0;       ///< Block gas used; includes refunds for Amsterdam+ (SIP-7778).
     state::BloomFilter bloom;   ///< Logs bloom over all accepted transactions.
     int64_t blob_gas_left = 0;  ///< Blob gas remaining out of the budget passed in.
     TestState block_state;      ///< State after applying the block.

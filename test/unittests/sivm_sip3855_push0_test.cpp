@@ -2,8 +2,8 @@
 // Copyright 2022 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-3855 "PUSH0 instruction"
-/// https://eips.ethereum.org/EIPS/eip-3855
+/// This file contains Sivm unit tests for SIP-3855 "PUSH0 instruction"
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-3855.md
 
 #include "sivm_fixture.hpp"
 

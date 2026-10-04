@@ -31,7 +31,7 @@ int64_t get_bomb_delay(evmc_revision rev) noexcept
 int64_t calculate_difficulty_pre_byzantium(int64_t parent_difficulty, int64_t parent_timestamp,
     int64_t current_timestamp, int64_t block_number, evmc_revision rev)
 {
-    // According to https://eips.ethereum.org/EIPS/eip-2
+    // According to https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2.md
     const auto period_count = block_number / 100'000;
     const auto offset = parent_difficulty / 2048;
 

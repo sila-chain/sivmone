@@ -54,7 +54,7 @@ inline constexpr int8_t ATE_LOOP_COUNT_DIGITS[] = {
 Fq12 multi_miller_loop(std::span<const std::pair<AffinePoint, ExtPoint>> pairs) noexcept
 {
     // The running point of every pair; starting at Q applies the omitted leading digit 1.
-    // TODO: Avoid the allocation: at most 492 pairs fit the transaction gas limit (EIP-7825).
+    // TODO: Avoid the allocation: at most 492 pairs fit the transaction gas limit (SIP-7825).
     // TODO: Caching -Q and -P.y next to the running points may be beneficial.
     std::vector<ecc::ProjPoint<E2>> Ts;
     Ts.reserve(pairs.size());

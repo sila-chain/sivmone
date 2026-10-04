@@ -22,23 +22,23 @@ constexpr auto DEPOSIT_EVENT_SIGNATURE_HASH =
 
 /// `requests` object.
 ///
-/// Defined by EIP-7685: General purpose execution layer requests.
-/// https://eips.ethereum.org/EIPS/eip-7685.
+/// Defined by SIP-7685: General purpose execution layer requests.
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7685.md.
 struct Requests
 {
     /// The type of the requests.
     enum class Type : uint8_t
     {
         /// Deposit requests.
-        /// Introduced by EIP-6110 https://eips.ethereum.org/EIPS/eip-6110.
+        /// Introduced by SIP-6110 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-6110.md.
         deposit = 0,
 
         /// Withdrawal requests.
-        /// Introduced by EIP-7002 https://eips.ethereum.org/EIPS/eip-7002.
+        /// Introduced by SIP-7002 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7002.md.
         withdrawal = 1,
 
         /// Consolidation requests.
-        /// Introduced by EIP-7251 https://eips.ethereum.org/EIPS/eip-7251.
+        /// Introduced by SIP-7251 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7251.md.
         consolidation = 2,
     };
 

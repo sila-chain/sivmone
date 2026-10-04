@@ -128,7 +128,7 @@ TEST_P(sivm, sub_and_swap)
 TEST_P(sivm, swapsn_jumpdest)
 {
     // Test demonstrating possible problem with introducing multibyte SWAP/DUP instructions as per
-    // EIP-663 variants B and C.
+    // SIP-663 variants B and C.
     // When SWAPSN is implemented execution will fail with EVMC_BAD_JUMP_DESTINATION.
     const auto swapsn = "b3";
     const auto code = push(4) + OP_JUMP + swapsn + OP_JUMPDEST + push(0) + ret_top();
@@ -149,7 +149,7 @@ TEST_P(sivm, swapsn_jumpdest)
 TEST_P(sivm, swapsn_push)
 {
     // Test demonstrating possible problem with introducing multibyte SWAP/DUP instructions as per
-    // EIP-663 variants B and C.
+    // SIP-663 variants B and C.
     // When SWAPSN is implemented execution will succeed, considering PUSH an argument of SWAPSN.
     const auto swapsn = "b3";
     const auto code = push(5) + OP_JUMP + swapsn + push(uint8_t{OP_JUMPDEST}) + push(0) + ret_top();

@@ -14,7 +14,7 @@ namespace sivmone::state
 {
 namespace
 {
-/// Computes the hash the authorization tuple is signed over (EIP-7702):
+/// Computes the hash the authorization tuple is signed over (SIP-7702):
 /// keccak256(0x05 || rlp([chain_id, address, nonce])).
 bytes32 compute_authorization_signing_hash(const Authorization& auth) noexcept
 {

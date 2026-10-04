@@ -17,13 +17,13 @@ set_tests_properties(
     PASS_REGULAR_EXPRESSION "-call\\] - canonical.*-callcode\\] - canonical.*1 failed, 0 passed"
 )
 
-# Exercise block-level gas accounting (EIP-7778), with tracing on so that flag is covered too.
+# Exercise block-level gas accounting (SIP-7778), with tracing on so that flag is covered too.
 add_test(
-    NAME ${PREFIX}/eip7778_block_gas
-    COMMAND sivmone-cli test ${TESTS1}/eip7778_block_gas.json --trace
+    NAME ${PREFIX}/sip7778_block_gas
+    COMMAND sivmone-cli test ${TESTS1}/sip7778_block_gas.json --trace
 )
 set_tests_properties(
-    ${PREFIX}/eip7778_block_gas PROPERTIES
+    ${PREFIX}/sip7778_block_gas PROPERTIES
     # The trace is --trace reaching the VM; the count stands in for the exit code the regex hides.
     PASS_REGULAR_EXPRESSION "\"opName\":\"SSTORE\".*= 1 passed in"
 )
@@ -90,7 +90,7 @@ add_test(
 )
 set_tests_properties(
     ${PREFIX}/collect_only_directory PROPERTIES
-    PASS_REGULAR_EXPRESSION "eip7778_block_gas\\.json"
+    PASS_REGULAR_EXPRESSION "sip7778_block_gas\\.json"
     FAIL_REGULAR_EXPRESSION "unsupported_rlp"
 )
 

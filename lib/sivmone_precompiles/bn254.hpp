@@ -90,7 +90,7 @@ bool validate(const AffinePoint& pt) noexcept;
 /// Computes [c]P for a point in affine coordinate on the bn254 curve,
 AffinePoint mul(const AffinePoint& pt, const uint256& c) noexcept;
 
-/// ate paring implementation for bn254 curve according to https://eips.ethereum.org/EIPS/eip-197
+/// ate paring implementation for bn254 curve according to https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-197.md
 ///
 /// @param pairs  Sequence of point pairs: a point from the bn254 curve G1 group over the base field
 ///               followed by a point from twisted curve G2 group over extension field Fq^2.

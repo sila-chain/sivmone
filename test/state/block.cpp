@@ -15,7 +15,7 @@ uint64_t calc_base_fee(
 {
     auto parent_gas_target = parent_gas_limit / GAS_LIMIT_ELASTICITY_MULTIPLIER;
 
-    // Special logic for block activating EIP-1559 is not implemented, because test don't cover it.
+    // Special logic for block activating SIP-1559 is not implemented, because test don't cover it.
     if (parent_gas_used == parent_gas_target)
     {
         return parent_base_fee;
@@ -48,7 +48,7 @@ intx::uint256 compute_blob_gas_price(
     const BlobParams& blob_params, uint64_t excess_blob_gas) noexcept
 {
     /// A helper function approximating `factor * e ** (numerator / denominator)`.
-    /// https://eips.ethereum.org/EIPS/eip-4844#helpers
+    /// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-4844.md#helpers
     static constexpr auto fake_exponential = [](uint64_t factor, uint64_t numerator,
                                                  uint64_t denominator) noexcept {
         intx::uint256 i = 1;
@@ -78,7 +78,7 @@ uint64_t calc_excess_blob_gas(evmc_revision rev, const BlobParams& blob_params,
     uint64_t parent_blob_gas_used, uint64_t parent_excess_blob_gas, uint64_t parent_base_fee,
     const intx::uint256& parent_blob_base_fee) noexcept
 {
-    /// The base cost of a blob (EIP-7918).
+    /// The base cost of a blob (SIP-7918).
     constexpr auto BLOB_BASE_COST = 0x2000;
 
     const auto target_blob_gas_per_block = uint64_t{blob_params.target} * GAS_PER_BLOB;

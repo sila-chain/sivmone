@@ -14,12 +14,12 @@
 
 namespace sivmone::state
 {
-/// The maximum allowed gas limit for a transaction (EIP-7825).
+/// The maximum allowed gas limit for a transaction (SIP-7825).
 constexpr auto MAX_TX_GAS_LIMIT = 0x1000000;  // 2**24
 
 using AccessList = std::vector<std::pair<address, std::vector<bytes32>>>;
 
-/// Decodes an EIP-7702 authorization.
+/// Decodes an SIP-7702 authorization.
 ///
 /// Declared here (not file-local) so the generic rlp::decode(std::vector<T>&) finds it by ADL.
 [[nodiscard]] bool decode(bytes_view& from, Authorization& to) noexcept;
@@ -28,27 +28,27 @@ struct Transaction
 {
     /// The type of the transaction.
     ///
-    /// The format is defined by EIP-2718: Typed Transaction Envelope.
-    /// https://eips.ethereum.org/EIPS/eip-2718.
+    /// The format is defined by SIP-2718: Typed Transaction Envelope.
+    /// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2718.md.
     enum class Type : uint8_t
     {
         /// The legacy RLP-encoded transaction without leading "type" byte.
         legacy = 0,
 
         /// The typed transaction with optional account/storage access list.
-        /// Introduced by EIP-2930 https://eips.ethereum.org/EIPS/eip-2930.
+        /// Introduced by SIP-2930 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2930.md.
         access_list = 1,
 
         /// The typed transaction with priority gas price.
-        /// Introduced by EIP-1559 https://eips.ethereum.org/EIPS/eip-1559.
-        eip1559 = 2,
+        /// Introduced by SIP-1559 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-1559.md.
+        sip1559 = 2,
 
         /// The typed blob transaction (with array of blob hashes).
-        /// Introduced by EIP-4844 https://eips.ethereum.org/EIPS/eip-4844.
+        /// Introduced by SIP-4844 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-4844.md.
         blob = 3,
 
         /// The typed set code transaction (with authorization list).
-        /// Introduced by EIP-7702 https://eips.ethereum.org/EIPS/eip-7702.
+        /// Introduced by SIP-7702 https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7702.md.
         set_code = 4,
     };
 
@@ -85,7 +85,7 @@ struct Transaction
 
 /// Decodes a transaction from its complete serialization @p data.
 ///
-/// Handles the legacy RLP list and the EIP-2718 typed envelope (type byte followed by an RLP list).
+/// Handles the legacy RLP list and the SIP-2718 typed envelope (type byte followed by an RLP list).
 [[nodiscard]] std::optional<Transaction> decode_transaction(bytes_view data) noexcept;
 
 /// Recovers the sender (the signer) of the transaction @p tx decoded from @p txbytes,
@@ -94,7 +94,7 @@ struct Transaction
 /// The serialization is needed as well because the signing preimage is a slice of it; @p tx must
 /// be what decode_transaction(@p txbytes) returned.
 ///
-/// The recovery is strict at every revision: r, s in [1, secp256k1n) and low s (EIP-2).
+/// The recovery is strict at every revision: r, s in [1, secp256k1n) and low s (SIP-2).
 [[nodiscard]] std::optional<address> recover_sender(
     const Transaction& tx, bytes_view txbytes) noexcept;
 
@@ -104,7 +104,7 @@ struct TransactionProperties
     /// The amount of gas provided to the Sivm for the transaction execution.
     int64_t execution_gas_limit = 0;
 
-    /// The amount of state-gas spendable by Sivm on state increase (since EIP-8037).
+    /// The amount of state-gas spendable by Sivm on state increase (since SIP-8037).
     int64_t state_gas_limit = 0;
 
     /// The minimal amount of gas the transaction must use.
@@ -135,10 +135,10 @@ struct TransactionReceipt
     /// Amount of gas used by this transaction (after refund, with the min gas applied).
     int64_t gas_used = 0;
 
-    /// Amount of gas counted against the block gas limit by this transaction (EIP-7778).
+    /// Amount of gas counted against the block gas limit by this transaction (SIP-7778).
     int64_t block_gas_used = 0;
 
-    /// The amount of state-gas used by this transaction (since EIP-8037).
+    /// The amount of state-gas used by this transaction (since SIP-8037).
     /// It is the state-gas part of #block_gas_used; the rest is the execution-gas part.
     int64_t state_gas_used = 0;
 

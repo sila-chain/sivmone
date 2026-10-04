@@ -118,7 +118,7 @@ TEST_F(state_transition, selfdestruct_initcode)
 TEST_F(state_transition, selfdestruct_initcode_amsterdam)
 {
     // A same-tx-created account that self-destructs ending with a zero balance must not be in the
-    // final state (EIP-8246). In this test we use initcode.
+    // final state (SIP-8246). In this test we use initcode.
     rev = EVMC_AMSTERDAM;
     tx.data = selfdestruct(0xbe_address);
 
@@ -128,7 +128,7 @@ TEST_F(state_transition, selfdestruct_initcode_amsterdam)
 
 TEST_F(state_transition, selfdestruct_prefunded)
 {
-    // Although burn is removed in EIP-8246, the deletion of a pre-funded account still happens.
+    // Although burn is removed in SIP-8246, the deletion of a pre-funded account still happens.
     rev = EVMC_CANCUN;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
@@ -140,7 +140,7 @@ TEST_F(state_transition, selfdestruct_prefunded)
 
 TEST_F(state_transition, selfdestruct_prefunded_amsterdam)
 {
-    // Although burn is removed in EIP-8246, the deletion of a pre-funded account still happens.
+    // Although burn is removed in SIP-8246, the deletion of a pre-funded account still happens.
     rev = EVMC_AMSTERDAM;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
@@ -163,7 +163,7 @@ TEST_F(state_transition, selfdestruct_prefunded_burn)
 
 TEST_F(state_transition, selfdestruct_prefunded_burn_amsterdam)
 {
-    // Burn is removed with EIP-8246, the balance must be preserved.
+    // Burn is removed with SIP-8246, the balance must be preserved.
     rev = EVMC_AMSTERDAM;
     const auto created = compute_create_address(tx.sender, tx.nonce);
     pre[created] = {.balance = 1};
@@ -257,24 +257,24 @@ TEST_F(state_transition, massdestruct_cancun)
     expect.post[SINK].balance = N;
 }
 
-TEST_F(state_transition, eip7708_transfer_log_selfdestruct_existing)
+TEST_F(state_transition, sip7708_transfer_log_selfdestruct_existing)
 {
     // A pre-existing contract self-destructing to a distinct beneficiary emits an ETH transfer log
-    // for the moved balance (EIP-7708).
+    // for the moved balance (SIP-7708).
     rev = EVMC_AMSTERDAM;
     static constexpr auto Beneficiary = 0xbe_address;
     tx.to = To;
     pre[To] = {.balance = 0x99, .code = selfdestruct(Beneficiary)};
 
-    expect.post[To] = {};  // EIP-6780: survives, balance moved out.
+    expect.post[To] = {};  // SIP-6780: survives, balance moved out.
     expect.post[Beneficiary].balance = 0x99;
     expect.logs = {transfer_log(To, Beneficiary, 0x99)};
 }
 
-TEST_F(state_transition, eip7708_transfer_log_create_tx_then_selfdestruct)
+TEST_F(state_transition, sip7708_transfer_log_create_tx_then_selfdestruct)
 {
     // A CREATE-transaction endowment emits an ETH transfer log, then the same-tx-created account
-    // self-destructing in its initcode emits a second ETH transfer log (EIP-7708).
+    // self-destructing in its initcode emits a second ETH transfer log (SIP-7708).
     rev = EVMC_AMSTERDAM;
     static constexpr auto Beneficiary = 0xbe_address;
     tx.value = 0x99;

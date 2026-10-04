@@ -114,7 +114,7 @@ TEST_F(state_transition, touch_revert_nonexistent_istanbul)
 
 TEST_F(state_transition, touch_revert_cold_access_nonexistent)
 {
-    // Accessing a non-existent account warms it up by inserting a temporary empty one (EIP-2929).
+    // Accessing a non-existent account warms it up by inserting a temporary empty one (SIP-2929).
     // Reverting the accessing frame must restore it to non-existent, leaving no state diff entry.
     rev = EVMC_BERLIN;
     block.base_fee = 0;
@@ -261,7 +261,7 @@ TEST_F(state_transition, touch_revert_ripemd_frontier)
 
 TEST_F(state_transition, touch_revert_ripemd_london)
 {
-    // In range the quirk keeps the touch, so a pre-existing empty 0x03 leaf is swept by EIP-161
+    // In range the quirk keeps the touch, so a pre-existing empty 0x03 leaf is swept by SIP-161
     // even though the touching call reverted. Guards that the quirk stays active up to the Merge.
     rev = EVMC_LONDON;
     block.base_fee = 0;
@@ -274,9 +274,9 @@ TEST_F(state_transition, touch_revert_ripemd_london)
     expect.post[0x03_address].exists = false;  // deleted by the retained touch
 }
 
-// A storage-only account (nonce 0, balance 0, no code) is empty per EIP-158, so it is eligible for
+// A storage-only account (nonce 0, balance 0, no code) is empty per SIP-158, so it is eligible for
 // the end-of-tx sweep, but only a genuine touch may trigger it. Constructing one in the pre-state
-// needs a fork before EIP-7523.
+// needs a fork before SIP-7523.
 
 TEST_F(state_transition, touch_access_list_storage_only)
 {

@@ -177,7 +177,7 @@ BlobSchedule from_json<BlobSchedule>(const json::json& j)
 }
 
 // Based on calculateEIP1559BaseFee from ethereum/retesteth
-static uint64_t calculate_current_base_fee_eip1559(
+static uint64_t calculate_current_base_fee_sip1559(
     uint64_t parent_gas_used, uint64_t parent_gas_limit, uint64_t parent_base_fee)
 {
     // TODO: Make sure that 64-bit precision is good enough.
@@ -241,7 +241,7 @@ state::BlockInfo from_json_with_rev(
         base_fee = *current_base_fee;
     else if (const auto parent_base_fee = load_optional<uint64_t>(j, "parentBaseFee"))
     {
-        base_fee = calculate_current_base_fee_eip1559(from_json<uint64_t>(j.at("parentGasUsed")),
+        base_fee = calculate_current_base_fee_sip1559(from_json<uint64_t>(j.at("parentGasUsed")),
             from_json<uint64_t>(j.at("parentGasLimit")), *parent_base_fee);
     }
 
@@ -354,12 +354,12 @@ static void from_json_tx_common(const json::json& j, state::Transaction& o)
         if (j.contains("maxFeePerGas") || j.contains("maxPriorityFeePerGas"))
         {
             throw std::invalid_argument(
-                "invalid transaction: contains both legacy and EIP-1559 fees");
+                "invalid transaction: contains both legacy and SIP-1559 fees");
         }
     }
     else
     {
-        o.type = state::Transaction::Type::eip1559;
+        o.type = state::Transaction::Type::sip1559;
         o.max_gas_price = from_json<intx::uint256>(j.at("maxFeePerGas"));
         o.max_priority_gas_price = from_json<intx::uint256>(j.at("maxPriorityFeePerGas"));
     }
@@ -529,7 +529,7 @@ void validate_state(const TestState& state, evmc_revision rev)
             throw std::invalid_argument("unexpected code at precompile address " + hex0x(addr));
 
         const bool allowedEF = (rev >= EVMC_PRAGUE && is_code_delegated(acc.code)) ||
-                               // exceptions to EIP-3541 rule existing on Mainnet
+                               // exceptions to SIP-3541 rule existing on Mainnet
                                acc.code == "EF"_hex || acc.code == "EFF09f918bf09f9fa9"_hex;
         if (rev >= EVMC_LONDON && !allowedEF && !acc.code.empty() && acc.code[0] == 0xEF)
             throw std::invalid_argument("unexpected code starting with 0xEF at " + hex0x(addr));
@@ -542,7 +542,7 @@ void validate_state(const TestState& state, evmc_revision rev)
             acc.code.size() != std::size(DELEGATION_MAGIC) + sizeof(evmc::address))
         {
             throw std::invalid_argument(
-                "EIP-7702 delegation designator at " + hex0x(addr) + " has invalid size");
+                "SIP-7702 delegation designator at " + hex0x(addr) + " has invalid size");
         }
 
         for (const auto& [key, value] : acc.storage)

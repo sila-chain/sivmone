@@ -60,7 +60,7 @@ evmc::address to_address(const AffinePoint& pt) noexcept;
 /// The strictness of the signer recovery from a signature.
 enum class RecoveryMode : bool
 {
-    strict,     ///< Restrict s value range to lower half, prevents signature malleability (EIP-2).
+    strict,     ///< Restrict s value range to lower half, prevents signature malleability (SIP-2).
     malleable,  ///< Full range for s value, signature is malleable.
 };
 

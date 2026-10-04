@@ -48,23 +48,23 @@ struct BlockInfo
     bytes32 prev_randao;
     hash256 parent_beacon_block_root;
 
-    /// The EIP-1559 base fee, since London.
+    /// The SIP-1559 base fee, since London.
     uint64_t base_fee = 0;
 
     /// The chain id transactions must target.
     uint64_t chain_id = 1;
 
-    /// The "blob gas used" parameter from EIP-4844
+    /// The "blob gas used" parameter from SIP-4844
     std::optional<uint64_t> blob_gas_used;
 
-    /// The "excess blob gas" parameter from EIP-4844
+    /// The "excess blob gas" parameter from SIP-4844
     /// for computing the blob gas price in the current block.
     std::optional<uint64_t> excess_blob_gas;
 
-    /// Blob gas price from EIP-4844, computed from excess_blob_gas.
+    /// Blob gas price from SIP-4844, computed from excess_blob_gas.
     std::optional<intx::uint256> blob_base_fee;
 
-    /// The beacon chain slot number (EIP-7843). Absent before Amsterdam.
+    /// The beacon chain slot number (SIP-7843). Absent before Amsterdam.
     std::optional<uint64_t> slot_number;
 
     std::vector<Ommer> ommers;

@@ -2,15 +2,15 @@
 // Copyright 2021 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-2929 "Gas cost increases for state access opcodes"
-/// https://eips.ethereum.org/EIPS/eip-2929
+/// This file contains Sivm unit tests for SIP-2929 "Gas cost increases for state access opcodes"
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-2929.md
 
 #include "sivm_fixture.hpp"
 
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_P(sivm, eip2929_case1)
+TEST_P(sivm, sip2929_case1)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-1
     rev = EVMC_BERLIN;
@@ -51,7 +51,7 @@ TEST_P(sivm, eip2929_case1)
     EXPECT_EQ(r[23], msg.recipient);
 }
 
-TEST_P(sivm, eip2929_case2)
+TEST_P(sivm, sip2929_case2)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-2
     rev = EVMC_BERLIN;
@@ -72,7 +72,7 @@ TEST_P(sivm, eip2929_case2)
     EXPECT_EQ(r[4], msg.recipient);
 }
 
-TEST_P(sivm, eip2929_case3)
+TEST_P(sivm, sip2929_case3)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-3
     rev = EVMC_BERLIN;
@@ -85,7 +85,7 @@ TEST_P(sivm, eip2929_case3)
     EXPECT_EQ(result.output_size, 0);
 }
 
-TEST_P(sivm, eip2929_case4)
+TEST_P(sivm, sip2929_case4)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-4
     rev = EVMC_BERLIN;
@@ -99,7 +99,7 @@ TEST_P(sivm, eip2929_case4)
     EXPECT_EQ(result.output_size, 0);
 }
 
-TEST_P(sivm, eip2929_balance_oog)
+TEST_P(sivm, sip2929_balance_oog)
 {
     rev = EVMC_BERLIN;
     const auto code = push(0x0a) + OP_BALANCE;
@@ -112,7 +112,7 @@ TEST_P(sivm, eip2929_balance_oog)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2602);
 }
 
-TEST_P(sivm, eip2929_extcodesize_oog)
+TEST_P(sivm, sip2929_extcodesize_oog)
 {
     rev = EVMC_BERLIN;
     const auto code = push(0x0a) + OP_EXTCODESIZE;
@@ -125,7 +125,7 @@ TEST_P(sivm, eip2929_extcodesize_oog)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2602);
 }
 
-TEST_P(sivm, eip2929_extcodecopy_oog)
+TEST_P(sivm, sip2929_extcodecopy_oog)
 {
     rev = EVMC_BERLIN;
     const auto code = push(0) + OP_DUP1 + OP_DUP1 + push(0x0a) + OP_EXTCODECOPY;
@@ -138,7 +138,7 @@ TEST_P(sivm, eip2929_extcodecopy_oog)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2611);
 }
 
-TEST_P(sivm, eip2929_extcodehash_oog)
+TEST_P(sivm, sip2929_extcodehash_oog)
 {
     rev = EVMC_BERLIN;
     const auto code = push(0x0a) + OP_EXTCODEHASH;
@@ -151,7 +151,7 @@ TEST_P(sivm, eip2929_extcodehash_oog)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2602);
 }
 
-TEST_P(sivm, eip2929_sload_cold)
+TEST_P(sivm, sip2929_sload_cold)
 {
     rev = EVMC_BERLIN;
     const auto code = push(1) + OP_SLOAD;
@@ -168,7 +168,7 @@ TEST_P(sivm, eip2929_sload_cold)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2102);
 }
 
-TEST_P(sivm, eip2929_sload_two_slots)
+TEST_P(sivm, sip2929_sload_two_slots)
 {
     rev = EVMC_BERLIN;
     const evmc::bytes32 key0{0};
@@ -181,7 +181,7 @@ TEST_P(sivm, eip2929_sload_two_slots)
     EXPECT_EQ(host.accounts[msg.recipient].storage[key1].access_status, EVMC_ACCESS_WARM);
 }
 
-TEST_P(sivm, eip2929_sload_warm)
+TEST_P(sivm, sip2929_sload_warm)
 {
     rev = EVMC_BERLIN;
     const auto code = push(1) + OP_SLOAD;
@@ -197,7 +197,7 @@ TEST_P(sivm, eip2929_sload_warm)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 102);
 }
 
-TEST_P(sivm, eip2929_sstore_modify_cold)
+TEST_P(sivm, sip2929_sstore_modify_cold)
 {
     rev = EVMC_BERLIN;
     const auto code = sstore(1, 3);
@@ -217,7 +217,7 @@ TEST_P(sivm, eip2929_sstore_modify_cold)
     EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_WARM);
 }
 
-TEST_P(sivm, eip2929_selfdestruct_cold_beneficiary)
+TEST_P(sivm, sip2929_selfdestruct_cold_beneficiary)
 {
     rev = EVMC_BERLIN;
     const auto code = push(0xbe) + OP_SELFDESTRUCT;
@@ -230,7 +230,7 @@ TEST_P(sivm, eip2929_selfdestruct_cold_beneficiary)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 7602);
 }
 
-TEST_P(sivm, eip2929_selfdestruct_warm_beneficiary)
+TEST_P(sivm, sip2929_selfdestruct_warm_beneficiary)
 {
     rev = EVMC_BERLIN;
     const auto code = push(0xbe) + OP_SELFDESTRUCT;
@@ -245,7 +245,7 @@ TEST_P(sivm, eip2929_selfdestruct_warm_beneficiary)
     EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 5002);
 }
 
-TEST_P(sivm, eip2929_delegatecall_cold)
+TEST_P(sivm, sip2929_delegatecall_cold)
 {
     rev = EVMC_BERLIN;
     const auto code = delegatecall(0xde);

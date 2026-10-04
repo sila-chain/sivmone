@@ -11,7 +11,7 @@
 
 namespace sivmone
 {
-/// A frame's state-gas counters with the charging rules on top (EIP-8037).
+/// A frame's state-gas counters with the charging rules on top (SIP-8037).
 struct StateGas : evmc::StateGas
 {
     /// Charges `cost`, first from `left`, then from `gas_left` (recorded in `spilled`).

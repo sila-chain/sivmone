@@ -63,12 +63,12 @@ TEST_F(state_transition, block_apply_ommers_reward)
     expect.post[Coinbase].balance = 21000 + intx::uint256{block_reward} + block_reward / 16;
 }
 
-TEST_F(state_transition, eip7516_blob_base_fee)
+TEST_F(state_transition, sip7516_blob_base_fee)
 {
     rev = EVMC_CANCUN;
 
     block.excess_blob_gas = 0xabcd00;
-    // 0x1d is the result of ref implementation in EIP-4844
+    // 0x1d is the result of ref implementation in SIP-4844
     static constexpr auto price = 0x1d;
     block.blob_base_fee = price;
     assert(state::compute_blob_gas_price(get_blob_params(rev), *block.excess_blob_gas) ==

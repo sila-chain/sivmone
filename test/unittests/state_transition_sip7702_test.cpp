@@ -49,7 +49,7 @@ constexpr Authorization SENDER_DELEGATION_NONCE_MAX{
     .s = 0x7a5c56d5724cdc6b49f8d39b1dda26bf9a660745e2eeba6bd05c27d56d030fca_u256,
 };
 
-// The CREATE2 address eip7702_set_code_transaction_with_selfdestruct deploys; that test asserts
+// The CREATE2 address sip7702_set_code_transaction_with_selfdestruct deploys; that test asserts
 // the deployment still lands here, because the authorization below is signed over it.
 constexpr auto SELFDESTRUCTING_DELEGATE = 0x917e75ff40e354f8d10ed4456ae7e365e7ee7912_address;
 
@@ -62,7 +62,7 @@ constexpr Authorization AUTHORITY_DELEGATION_TO_SELFDESTRUCTING{
 };
 }  // namespace
 
-TEST_F(state_transition, eip7702_set_code_transaction)
+TEST_F(state_transition, sip7702_set_code_transaction)
 {
     rev = EVMC_PRAGUE;
 
@@ -79,7 +79,7 @@ TEST_F(state_transition, eip7702_set_code_transaction)
     expect.post[AUTHORITY].code = bytes{0xef, 0x01, 0x00} + hex(delegate);
 }
 
-TEST_F(state_transition, eip7702_set_code_transaction_authority_is_sender)
+TEST_F(state_transition, sip7702_set_code_transaction_authority_is_sender)
 {
     rev = EVMC_PRAGUE;
 
@@ -97,10 +97,10 @@ TEST_F(state_transition, eip7702_set_code_transaction_authority_is_sender)
     expect.post[delegate].exists = true;
 }
 
-TEST_F(state_transition, eip7702_set_code_self_authorization_reaching_nonce_max)
+TEST_F(state_transition, sip7702_set_code_self_authorization_reaching_nonce_max)
 {
     // A self-authorization that bumps the sender nonce to MAX_NONCE (2^64-1) is valid: only a
-    // tx nonce == MAX_NONCE is rejected by EIP-2681, not reaching it during execution.
+    // tx nonce == MAX_NONCE is rejected by SIP-2681, not reaching it during execution.
     rev = EVMC_PRAGUE;
 
     constexpr auto delegate = 0xde1e_address;
@@ -119,7 +119,7 @@ TEST_F(state_transition, eip7702_set_code_self_authorization_reaching_nonce_max)
     expect.post[To].storage[0x00_bytes32] = 0x01_bytes32;  // Proves the top-level call executed.
 }
 
-TEST_F(state_transition, eip7702_set_code_transaction_authority_is_to)
+TEST_F(state_transition, sip7702_set_code_transaction_authority_is_to)
 {
     rev = EVMC_PRAGUE;
 
@@ -134,7 +134,7 @@ TEST_F(state_transition, eip7702_set_code_transaction_authority_is_to)
     expect.post[AUTHORITY].code = bytes{0xef, 0x01, 0x00} + hex(delegate);
 }
 
-TEST_F(state_transition, eip7702_set_code_transaction_invalid_y_parity)
+TEST_F(state_transition, sip7702_set_code_transaction_invalid_y_parity)
 {
     rev = EVMC_PRAGUE;
 
@@ -153,7 +153,7 @@ TEST_F(state_transition, eip7702_set_code_transaction_invalid_y_parity)
     expect.post[delegate].exists = false;
 }
 
-TEST_F(state_transition, eip7702_set_code_transaction_unrecoverable_signature)
+TEST_F(state_transition, sip7702_set_code_transaction_unrecoverable_signature)
 {
     // An authorization with no recoverable authority must be skipped, leaving no account behind:
     // https://github.com/ipsilon/evmone/issues/1483.
@@ -173,7 +173,7 @@ TEST_F(state_transition, eip7702_set_code_transaction_unrecoverable_signature)
     expect.post[delegate].exists = false;
 }
 
-TEST_F(state_transition, eip7702_extcodesize)
+TEST_F(state_transition, sip7702_extcodesize)
 {
     rev = EVMC_PRAGUE;
 
@@ -189,7 +189,7 @@ TEST_F(state_transition, eip7702_extcodesize)
     expect.post[To].storage[0x01_bytes32] = 0x17_bytes32;
 }
 
-TEST_F(state_transition, eip7702_extcodehash_delegation_to_empty)
+TEST_F(state_transition, sip7702_extcodehash_delegation_to_empty)
 {
     rev = EVMC_PRAGUE;
 
@@ -205,7 +205,7 @@ TEST_F(state_transition, eip7702_extcodehash_delegation_to_empty)
     expect.post[To].storage[0x01_bytes32] = 0x01_bytes32;
 }
 
-TEST_F(state_transition, eip7702_extcodecopy)
+TEST_F(state_transition, sip7702_extcodecopy)
 {
     rev = EVMC_PRAGUE;
 
@@ -223,7 +223,7 @@ TEST_F(state_transition, eip7702_extcodecopy)
     expect.post[To].storage[0x01_bytes32] = 0x01_bytes32;
 }
 
-TEST_F(state_transition, eip7702_call)
+TEST_F(state_transition, sip7702_call)
 {
     rev = EVMC_PRAGUE;
 
@@ -239,7 +239,7 @@ TEST_F(state_transition, eip7702_call)
     expect.post[callee].storage[0x00_bytes32] = 0x11_bytes32;
 }
 
-TEST_F(state_transition, eip7702_call_with_value)
+TEST_F(state_transition, sip7702_call_with_value)
 {
     rev = EVMC_PRAGUE;
 
@@ -257,7 +257,7 @@ TEST_F(state_transition, eip7702_call_with_value)
     expect.post[delegate].balance = 0;
 }
 
-TEST_F(state_transition, eip7702_call_warms_up_delegate)
+TEST_F(state_transition, sip7702_call_warms_up_delegate)
 {
     rev = EVMC_PRAGUE;
 
@@ -278,7 +278,7 @@ TEST_F(state_transition, eip7702_call_warms_up_delegate)
     expect.post[callee].exists = true;
 }
 
-TEST_F(state_transition, eip7702_transaction_from_delegated_account)
+TEST_F(state_transition, sip7702_transaction_from_delegated_account)
 {
     rev = EVMC_PRAGUE;
 
@@ -293,7 +293,7 @@ TEST_F(state_transition, eip7702_transaction_from_delegated_account)
     expect.post[To].storage[0x01_bytes32] = to_bytes32(Sender);
 }
 
-TEST_F(state_transition, eip7702_transaction_to_delegated_account)
+TEST_F(state_transition, sip7702_transaction_to_delegated_account)
 {
     rev = EVMC_PRAGUE;
 
@@ -308,7 +308,7 @@ TEST_F(state_transition, eip7702_transaction_to_delegated_account)
     expect.post[To].storage[0x01_bytes32] = to_bytes32(Sender);
 }
 
-TEST_F(state_transition, eip7702_transaction_to_delegation_to_precompile)
+TEST_F(state_transition, sip7702_transaction_to_delegation_to_precompile)
 {
     rev = EVMC_PRAGUE;
 
@@ -322,7 +322,7 @@ TEST_F(state_transition, eip7702_transaction_to_delegation_to_precompile)
     expect.post[To].exists = true;
 }
 
-TEST_F(state_transition, eip7702_transaction_to_delegation_to_empty)
+TEST_F(state_transition, sip7702_transaction_to_delegation_to_empty)
 {
     rev = EVMC_PRAGUE;
 
@@ -336,7 +336,7 @@ TEST_F(state_transition, eip7702_transaction_to_delegation_to_empty)
     expect.post[delegate].exists = false;
 }
 
-TEST_F(state_transition, eip7702_delegated_mode_propagation_call)
+TEST_F(state_transition, sip7702_delegated_mode_propagation_call)
 {
     rev = EVMC_PRAGUE;
 
@@ -352,7 +352,7 @@ TEST_F(state_transition, eip7702_delegated_mode_propagation_call)
     expect.post[To].storage[0x01_bytes32] = 0x0a_bytes32;
 }
 
-TEST_F(state_transition, eip7702_selfdestruct)
+TEST_F(state_transition, sip7702_selfdestruct)
 {
     rev = EVMC_PRAGUE;
     constexpr auto callee = 0xca11ee_address;
@@ -376,7 +376,7 @@ TEST_F(state_transition, eip7702_selfdestruct)
     expect.post[callee].code = bytes{0xef, 0x01, 0x00} + hex(deployed_address);
 }
 
-TEST_F(state_transition, eip7702_set_code_transaction_with_selfdestruct)
+TEST_F(state_transition, sip7702_set_code_transaction_with_selfdestruct)
 {
     rev = EVMC_PRAGUE;
     const auto callee = AUTHORITY;  // The delegation is installed on the called account.

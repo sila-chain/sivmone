@@ -68,7 +68,7 @@ TEST_F(state_transition, invalid_tx_wrong_chain_id_legacy)
 
 TEST_F(state_transition, invalid_tx_legacy_protected_chain_id_0)
 {
-    // A legacy transaction signed for chain 0 (EIP-155) is bound to it like any other, unlike an
+    // A legacy transaction signed for chain 0 (SIP-155) is bound to it like any other, unlike an
     // unprotected one. No EEST fixture signs for chain 0, which is why this is pinned here.
     tx.type = Transaction::Type::legacy;
     tx.to = To;
@@ -83,7 +83,7 @@ TEST_F(state_transition, tx_legacy_unprotected_chain_id)
     block.base_fee = 0;  // should be 0 before London
     tx.type = Transaction::Type::legacy;
     tx.to = To;
-    tx.chain_id = 0;  // Unprotected legacy tx is valid on any chain (pre-EIP-155).
+    tx.chain_id = 0;  // Unprotected legacy tx is valid on any chain (pre-SIP-155).
 
     expect.post.at(Sender).nonce = pre[Sender].nonce + 1;
 }
@@ -177,7 +177,7 @@ TEST_F(state_transition, access_list_storage)
 
 TEST_F(state_transition, tx_data_min_cost_exec_0)
 {
-    // In this test we bump the gas used to MIN_GAS by EIP-7623. Execution gas is 0.
+    // In this test we bump the gas used to MIN_GAS by SIP-7623. Execution gas is 0.
     rev = EVMC_PRAGUE;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -188,7 +188,7 @@ TEST_F(state_transition, tx_data_min_cost_exec_0)
 
 TEST_F(state_transition, tx_data_min_cost_exec_50)
 {
-    // In this test the MIN_GAS by EIP-7623 is equal to the execution gas (50).
+    // In this test the MIN_GAS by SIP-7623 is equal to the execution gas (50).
     rev = EVMC_PRAGUE;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -202,7 +202,7 @@ TEST_F(state_transition, tx_data_min_cost_exec_50)
 
 TEST_F(state_transition, tx_data_min_cost_exec_51)
 {
-    // In this test the execution gas (51) is above the MIN_GAS by EIP-7623.
+    // In this test the execution gas (51) is above the MIN_GAS by SIP-7623.
     rev = EVMC_PRAGUE;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -216,7 +216,7 @@ TEST_F(state_transition, tx_data_min_cost_exec_51)
 
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_0)
 {
-    // EIP-7976: the floor is 64 gas per calldata byte. Execution gas is 0.
+    // SIP-7976: the floor is 64 gas per calldata byte. Execution gas is 0.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -227,7 +227,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_0)
 
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_below_floor)
 {
-    // EIP-7976: standard cost (intrinsic data + execution) is 1 below the floor.
+    // SIP-7976: standard cost (intrinsic data + execution) is 1 below the floor.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -241,7 +241,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_below_floor)
 
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_at_floor)
 {
-    // EIP-7976: standard cost (intrinsic data + execution) equals the floor.
+    // SIP-7976: standard cost (intrinsic data + execution) equals the floor.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -255,7 +255,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_at_floor)
 
 TEST_F(state_transition, tx_data_floor_amsterdam_exec_above_floor)
 {
-    // EIP-7976: standard cost (intrinsic data + execution) is 1 above the floor.
+    // SIP-7976: standard cost (intrinsic data + execution) is 1 above the floor.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = "0001"_hex;
@@ -269,7 +269,7 @@ TEST_F(state_transition, tx_data_floor_amsterdam_exec_above_floor)
 
 TEST_F(state_transition, tx_data_floor_amsterdam_zero_bytes)
 {
-    // EIP-7976: zero bytes pay the same 64-gas floor as nonzero bytes.
+    // SIP-7976: zero bytes pay the same 64-gas floor as nonzero bytes.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = "0000"_hex;
@@ -278,9 +278,9 @@ TEST_F(state_transition, tx_data_floor_amsterdam_zero_bytes)
     expect.gas_used = 21000 + MIN_GAS;
 }
 
-TEST_F(state_transition, tx_data_floor_osaka_uses_eip7623)
+TEST_F(state_transition, tx_data_floor_osaka_uses_sip7623)
 {
-    // EIP-7976 is not yet active in Osaka; the EIP-7623 floor (10 gas per token) still applies.
+    // SIP-7976 is not yet active in Osaka; the SIP-7623 floor (10 gas per token) still applies.
     rev = EVMC_OSAKA;
     tx.to = To;
     tx.data = "0001"_hex;  // tokens = 4 (nonzero) + 1 (zero) = 5
@@ -291,8 +291,8 @@ TEST_F(state_transition, tx_data_floor_osaka_uses_eip7623)
 
 TEST_F(state_transition, access_list_cost_amsterdam)
 {
-    // EIP-7981: 1280 gas (64*20) per address, 2048 gas (64*32) per storage key.
-    // EIP-8038: the per-entry prices become 2900 and 2000.
+    // SIP-7981: 1280 gas (64*20) per address, 2048 gas (64*32) per storage key.
+    // SIP-8038: the per-entry prices become 2900 and 2000.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.access_list = {{To, {0x01_bytes32}}};
@@ -302,7 +302,7 @@ TEST_F(state_transition, access_list_cost_amsterdam)
 
 TEST_F(state_transition, access_list_cost_osaka_unchanged)
 {
-    // EIP-7981 is inactive before Amsterdam.
+    // SIP-7981 is inactive before Amsterdam.
     rev = EVMC_OSAKA;
     tx.to = To;
     tx.access_list = {{To, {0x01_bytes32}}};
@@ -312,7 +312,7 @@ TEST_F(state_transition, access_list_cost_osaka_unchanged)
 
 TEST_F(state_transition, access_list_precompile_with_storage_keys)
 {
-    // An access list may name a precompile with storage keys (EIP-2930). Intrinsic gas is charged
+    // An access list may name a precompile with storage keys (SIP-2930). Intrinsic gas is charged
     // for both, though access_account() creates no state entry and the key warming is skipped.
     rev = EVMC_OSAKA;
     tx.to = To;
@@ -323,7 +323,7 @@ TEST_F(state_transition, access_list_precompile_with_storage_keys)
 
 TEST_F(state_transition, access_list_floor_amsterdam)
 {
-    // EIP-7981: access-list bytes count toward the floor.
+    // SIP-7981: access-list bytes count toward the floor.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = bytes(100, 0x00);
@@ -335,7 +335,7 @@ TEST_F(state_transition, access_list_floor_amsterdam)
 
 TEST_F(state_transition, invalid_access_list_amsterdam_gas_limit_below_floor)
 {
-    // EIP-7981: gas limit must cover the floor (28680) — the intrinsic cost (25580) is not enough.
+    // SIP-7981: gas limit must cover the floor (28680) — the intrinsic cost (25580) is not enough.
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.data = bytes(100, 0x00);
@@ -347,7 +347,7 @@ TEST_F(state_transition, invalid_access_list_amsterdam_gas_limit_below_floor)
 TEST_F(state_transition, tx_at_sender_nonce_max_minus_1_call)
 {
     // Regression: a top-level CALL tx must execute normally when the sender nonce is MAX_NONCE - 1
-    // (2^64-2). Only nonce == MAX_NONCE (2^64-1) is invalid per EIP-2681.
+    // (2^64-2). Only nonce == MAX_NONCE (2^64-1) is invalid per SIP-2681.
     tx.to = To;
     pre[Sender].nonce = MAX_NONCE - 1;
     tx.nonce = MAX_NONCE - 1;
@@ -359,7 +359,7 @@ TEST_F(state_transition, tx_at_sender_nonce_max_minus_1_call)
 TEST_F(state_transition, tx_at_sender_nonce_max_minus_1_create)
 {
     // Regression: a top-level CREATE tx must execute normally when the sender nonce is
-    // MAX_NONCE - 1 (2^64-2). Only nonce == MAX_NONCE (2^64-1) is invalid per EIP-2681.
+    // MAX_NONCE - 1 (2^64-2). Only nonce == MAX_NONCE (2^64-1) is invalid per SIP-2681.
     pre[Sender].nonce = MAX_NONCE - 1;
     tx.nonce = MAX_NONCE - 1;
 
@@ -380,9 +380,9 @@ TEST_F(state_transition, tx_emits_log)
     expect.logs = {Log{To, bytes{0xaa, 0xbb, 0xcc, 0xdd}, {TOPIC}}};
 }
 
-TEST_F(state_transition, eip7708_transfer_log_tx_value)
+TEST_F(state_transition, sip7708_transfer_log_tx_value)
 {
-    // Top level transaction with value emits log (EIP-7708).
+    // Top level transaction with value emits log (SIP-7708).
     rev = EVMC_AMSTERDAM;
     tx.to = To;
     tx.value = 0x12345;

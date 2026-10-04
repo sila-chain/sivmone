@@ -56,7 +56,7 @@ TEST(state_mpt_hash, one_transactions)
 
     Transaction tx{};
 
-    tx.type = Transaction::Type::eip1559;
+    tx.type = Transaction::Type::sip1559;
     tx.data =
         "04a7e62e00000000000000000000000000000000000000000000000000000000000000c0000000000000000000"
         "000000000000000000000000000000000000000000024000000000000000000000000000000000000000000000"
@@ -96,7 +96,7 @@ TEST(state_mpt_hash, one_transactions)
     EXPECT_EQ(tx_root, 0x6ce50bfaaebabe884433c144fa4d8a4c1087e443587a9788b30381636dedbeb2_bytes32);
 }
 
-TEST(state_mpt_hash, legacy_and_eip1559_receipt_three_logs_no_logs)
+TEST(state_mpt_hash, legacy_and_sip1559_receipt_three_logs_no_logs)
 {
     // https://sepolia.etherscan.io/tx/0x1e68d9dbbf933399a6dfe5686ba0b51e04a4da81ab17aa5ff84334fdf2d4a3a7
 
@@ -222,7 +222,7 @@ TEST(state_mpt_hash, legacy_and_eip1559_receipt_three_logs_no_logs)
     //}
 
     TransactionReceipt receipt1{};
-    receipt1.type = sivmone::state::Transaction::Type::eip1559;
+    receipt1.type = sivmone::state::Transaction::Type::sip1559;
     receipt1.status = EVMC_SUCCESS;
     receipt1.cumulative_gas_used = 0x2cd9b;
     receipt1.logs_bloom_filter = compute_bloom_filter(receipt1.logs);

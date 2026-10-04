@@ -142,7 +142,7 @@ std::string run_t8n_env(std::string_view env_json, evmc_revision rev)
 }
 
 /// ALLOC_JSON's sender beside the beacon-roots contract: without its code the block-start system
-/// call is skipped (EIP-4788).
+/// call is skipped (SIP-4788).
 constexpr auto ALLOC_WITH_BEACON_ROOTS_JSON = R"({
     "0x000f3df6d732807ef1319fb7b8bb8522d0beac02": {
         "code": "0x3373fffffffffffffffffffffffffffffffffffffffe14604d57602036146024575f5ffd5b5f35801560495762001fff810690815414603c575f5ffd5b62001fff01545f5260205ff35b5f5ffd5b62001fff42064281555f359062001fff015500",
@@ -157,7 +157,7 @@ constexpr auto ALLOC_WITH_BEACON_ROOTS_JSON = R"({
 })";
 
 /// Stubs of both request contracts, each returning nothing. Without their code the block-end
-/// system calls fail the block instead (EIP-7002, EIP-7251).
+/// system calls fail the block instead (SIP-7002, SIP-7251).
 constexpr auto ALLOC_WITH_REQUEST_STUBS_JSON = R"({
     "0x00000961ef480eb55e80d19ad83579a64c007002": {
         "code": "0x00",
@@ -174,7 +174,7 @@ constexpr auto ALLOC_WITH_REQUEST_STUBS_JSON = R"({
 
 TEST(tooling_t8n, base_fee_is_computed_from_the_parent_block)
 {
-    // The parent used twice its gas target, so the fee rises by max(7 / 8, 1) = 1 (EIP-1559).
+    // The parent used twice its gas target, so the fee rises by max(7 / 8, 1) = 1 (SIP-1559).
     const auto result = json::parse(run_t8n_env(ENV_WITH_PARENT_JSON, EVMC_LONDON));
     EXPECT_EQ(result.at("currentBaseFee"), "0x8");
 }
@@ -188,7 +188,7 @@ TEST(tooling_t8n, no_base_fee_before_london)
 
 TEST(tooling_t8n, blob_transaction_creating_a_contract_is_rejected)
 {
-    // A blob transaction has no create form (EIP-4844). This one is valid in every other respect,
+    // A blob transaction has no create form (SIP-4844). This one is valid in every other respect,
     // so the missing `to` is its only fault.
     static constexpr auto BLOB_CREATE_TX = R"([{
         "input": "0x",
@@ -219,7 +219,7 @@ TEST(tooling_t8n, a_block_requesting_nothing_reports_the_empty_requests_hash)
     const auto result = json::parse(run_t8n(ALLOC_WITH_REQUEST_STUBS_JSON, "[]", EVMC_PRAGUE));
     EXPECT_FALSE(result.contains("blockException"));
     EXPECT_EQ(result.at("requests"), json::array());
-    // sha256 of nothing at all (EIP-7685).
+    // sha256 of nothing at all (SIP-7685).
     EXPECT_EQ(result.at("requestsHash"),
         "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
 }
@@ -275,7 +275,7 @@ TEST(tooling_t8n, out_alloc_reports_the_beacon_root_write_and_the_created_accoun
     tooling::t8n(vm, args);
 
     const auto post = json::parse(out_alloc.str());
-    // Slot timestamp % 8191 holds the timestamp (EIP-4788).
+    // Slot timestamp % 8191 holds the timestamp (SIP-4788).
     EXPECT_EQ(post.at("0x000f3df6d732807ef1319fb7b8bb8522d0beac02")
                   .at("storage")
                   .at("0x00000000000000000000000000000000000000000000000000000000000016ca"),
@@ -349,7 +349,7 @@ TEST(tooling_t8n, pre_byzantium_sets_receipt_post_state)
 {
     // The TX_JSON fixture uses PUSH0 in its init code, so the inner CREATE fails at Homestead,
     // but the outer tx still produces a receipt, which carries the post-state root instead of
-    // the EIP-658 status.
+    // the SIP-658 status.
     const auto result = run_t8n(ALLOC_JSON, TX_JSON, EVMC_HOMESTEAD);
 
     EXPECT_THAT(result, HasSubstr("\"transactionHash\""));
@@ -433,7 +433,7 @@ TEST(tooling_t8n, max_v)
 {
     evmc::VM vm{evmc_create_sivmone()};
 
-    // Legacy EIP-155 `v` is chainId*2 + 35 + parity, exceeding 0xff for chainId > 110.
+    // Legacy SIP-155 `v` is chainId*2 + 35 + parity, exceeding 0xff for chainId > 110.
     // The maximum `v` (uint64 max = 0xffffffffffffffff) must be parsed and executed without
     // overflow; regression test for `v` being loaded as `uint8_t`, which threw
     // `from_json<uint8_t>: value > 0xFF`.
@@ -488,7 +488,7 @@ TEST(tooling_t8n, receipt_status_reports_failure)
 
 TEST(tooling_t8n, block_gas_used_is_pre_refund_from_amsterdam)
 {
-    // The block gas is the pre-refund transaction gas from Amsterdam on (EIP-7778), while a
+    // The block gas is the pre-refund transaction gas from Amsterdam on (SIP-7778), while a
     // receipt reports what the sender paid. The callee clears a storage slot, so the transaction
     // earns a refund and the two must differ; before Amsterdam they must stay equal.
     static constexpr auto ALLOC_REFUNDING_CALLEE = R"({
@@ -514,7 +514,7 @@ TEST(tooling_t8n, block_gas_used_is_pre_refund_from_amsterdam)
     EXPECT_EQ(osaka_block_gas, osaka_cumulative);
 
     // The difference is the refund for clearing the slot, capped at 1/5 of the gas used
-    // (EIP-3529): the repriced refund exceeds that cap.
+    // (SIP-3529): the repriced refund exceeds that cap.
     const auto [block_gas, cumulative] = run(EVMC_AMSTERDAM);
     EXPECT_EQ(block_gas - cumulative, block_gas / 5);
 }

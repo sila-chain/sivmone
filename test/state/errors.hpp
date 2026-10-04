@@ -52,7 +52,7 @@ enum ErrorCode : int  // NOLINT(*-use-enum-class)
     UNKNOWN_PARENT,
     INVALID_BLOCK_NUMBER,
 
-    // Block requests collection (EIP-7685).
+    // Block requests collection (SIP-7685).
     INVALID_DEPOSIT_EVENT_LAYOUT,
     SYSTEM_CONTRACT_EMPTY,
     SYSTEM_CONTRACT_CALL_FAILED,

@@ -97,7 +97,7 @@ TEST(statetest_loader, tx_max_chain_id)
 
 TEST(statetest_loader, tx_max_legacy_chain_id)
 {
-    // A legacy EIP-155 transaction encodes the chain ID inside `v` as
+    // A legacy SIP-155 transaction encodes the chain ID inside `v` as
     // v = chain_id*2 + 35 + parity (parity in {0, 1}). Because `v` is loaded as uint64, the
     // largest chain ID a legacy transaction can carry is the one whose `v` reaches uint64 max:
     // chain_id = 0x7fffffffffffffee with parity 0 gives v = 0xffffffffffffffff. A larger chain ID
@@ -118,10 +118,10 @@ TEST(statetest_loader, tx_max_legacy_chain_id)
     const auto tx = test::from_json<state::Transaction>(json::json::parse(input));
     EXPECT_EQ(tx.chain_id, 0x7fffffffffffffee);
     EXPECT_EQ(tx.v, std::numeric_limits<uint64_t>::max());
-    EXPECT_EQ(tx.v, tx.chain_id * 2 + 35);  // EIP-155 with y-parity 0.
+    EXPECT_EQ(tx.v, tx.chain_id * 2 + 35);  // SIP-155 with y-parity 0.
 }
 
-TEST(statetest_loader, tx_eip1559)
+TEST(statetest_loader, tx_sip1559)
 {
     constexpr std::string_view input = R"({
         "input": "b0b1",
@@ -139,7 +139,7 @@ TEST(statetest_loader, tx_eip1559)
     })";
 
     const auto tx = test::from_json<state::Transaction>(json::json::parse(input));
-    EXPECT_EQ(tx.type, state::Transaction::Type::eip1559);
+    EXPECT_EQ(tx.type, state::Transaction::Type::sip1559);
     EXPECT_EQ(tx.data, (bytes{0xb0, 0xb1}));
     EXPECT_EQ(tx.gas_limit, 0x9091);
     EXPECT_EQ(tx.chain_id, 1);
@@ -175,7 +175,7 @@ TEST(statetest_loader, tx_access_list)
     })";
 
     const auto tx = test::from_json<state::Transaction>(json::json::parse(input));
-    EXPECT_EQ(tx.type, state::Transaction::Type::eip1559);
+    EXPECT_EQ(tx.type, state::Transaction::Type::sip1559);
     EXPECT_TRUE(tx.data.empty());
     EXPECT_EQ(tx.gas_limit, 0);
     EXPECT_EQ(tx.value, 0);
@@ -214,7 +214,7 @@ TEST(statetest_loader, tx_confusing)
 
     EXPECT_THAT([&] { test::from_json<state::Transaction>(json::json::parse(input)); },
         ThrowsMessage<std::invalid_argument>(
-            "invalid transaction: contains both legacy and EIP-1559 fees"));
+            "invalid transaction: contains both legacy and SIP-1559 fees"));
 }
 
 TEST(statetest_loader, tx_type_1)

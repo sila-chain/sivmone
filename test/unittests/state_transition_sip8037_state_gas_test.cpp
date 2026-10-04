@@ -10,9 +10,9 @@
 using namespace evmc::literals;
 using namespace sivmone::test;
 
-TEST_F(state_transition, eip8037_create_tx_collision_excess_reservoir_refunded)
+TEST_F(state_transition, sip8037_create_tx_collision_excess_reservoir_refunded)
 {
-    // A create transaction colliding with an existing account (EIP-7610) returns its state-gas
+    // A create transaction colliding with an existing account (SIP-7610) returns its state-gas
     // reservoir instead of forfeiting it, so the sender is billed at most MAX_TX_GAS_LIMIT.
     rev = EVMC_AMSTERDAM;
 
@@ -34,7 +34,7 @@ TEST_F(state_transition, eip8037_create_tx_collision_excess_reservoir_refunded)
     expect.post[create_address] = {.nonce = 1, .code = bytecode{OP_STOP}};
 }
 
-TEST_F(state_transition, eip8037_create_tx_revert_refunds_spilled_new_account_charge)
+TEST_F(state_transition, sip8037_create_tx_revert_refunds_spilled_new_account_charge)
 {
     rev = EVMC_AMSTERDAM;
     tx.data = revert(0, 0);
@@ -48,7 +48,7 @@ TEST_F(state_transition, eip8037_create_tx_revert_refunds_spilled_new_account_ch
     expect.post[create_address].exists = false;
 }
 
-TEST_F(state_transition, eip8037_create_tx_halt_returns_excess_reservoir)
+TEST_F(state_transition, sip8037_create_tx_halt_returns_excess_reservoir)
 {
     rev = EVMC_AMSTERDAM;
 
@@ -69,7 +69,7 @@ TEST_F(state_transition, eip8037_create_tx_halt_returns_excess_reservoir)
     expect.post[create_address].exists = false;
 }
 
-TEST_F(state_transition, eip8037_create_tx_charges_new_account_and_code_deposit)
+TEST_F(state_transition, sip8037_create_tx_charges_new_account_and_code_deposit)
 {
     rev = EVMC_AMSTERDAM;
     tx.data = ret(0, 1);  // Deploy a single zero byte.
@@ -78,7 +78,7 @@ TEST_F(state_transition, eip8037_create_tx_charges_new_account_and_code_deposit)
     expect.post[compute_create_address(Sender, pre[Sender].nonce)].code = bytes{0x00};
 }
 
-TEST_F(state_transition, eip8037_create_tx_with_value_pays_new_account_once)
+TEST_F(state_transition, sip8037_create_tx_with_value_pays_new_account_once)
 {
     rev = EVMC_AMSTERDAM;
     tx.value = 1;
@@ -88,7 +88,7 @@ TEST_F(state_transition, eip8037_create_tx_with_value_pays_new_account_once)
     expect.post[compute_create_address(Sender, pre[Sender].nonce)] = {.nonce = 1, .balance = 1};
 }
 
-TEST_F(state_transition, eip8037_create_tx_uses_reservoir_then_execution_gas)
+TEST_F(state_transition, sip8037_create_tx_uses_reservoir_then_execution_gas)
 {
     rev = EVMC_AMSTERDAM;
     tx.gas_limit = MAX_TX_GAS_LIMIT + NEW_ACCOUNT_STATE_GAS / 2;
@@ -101,7 +101,7 @@ TEST_F(state_transition, eip8037_create_tx_uses_reservoir_then_execution_gas)
     expect.post[compute_create_address(Sender, pre[Sender].nonce)].nonce = 1;
 }
 
-TEST_F(state_transition, eip8037_create_tx_to_prefunded_account_has_no_new_account_charge)
+TEST_F(state_transition, sip8037_create_tx_to_prefunded_account_has_no_new_account_charge)
 {
     rev = EVMC_AMSTERDAM;
 
@@ -113,7 +113,7 @@ TEST_F(state_transition, eip8037_create_tx_to_prefunded_account_has_no_new_accou
     expect.post[create_address] = {.nonce = 1, .balance = 1};
 }
 
-TEST_F(state_transition, eip8037_create_tx_out_of_gas_on_new_account_charge)
+TEST_F(state_transition, sip8037_create_tx_out_of_gas_on_new_account_charge)
 {
     rev = EVMC_AMSTERDAM;
     tx.gas_limit = 60'000;  // Intrinsic gas leaves less than NEW_ACCOUNT_STATE_GAS.
@@ -124,7 +124,7 @@ TEST_F(state_transition, eip8037_create_tx_out_of_gas_on_new_account_charge)
     expect.post[compute_create_address(Sender, pre[Sender].nonce)].exists = false;
 }
 
-TEST_F(state_transition, eip8037_nested_create_revert_refills_new_account_charge)
+TEST_F(state_transition, sip8037_nested_create_revert_refills_new_account_charge)
 {
     rev = EVMC_AMSTERDAM;
     tx.to = To;
@@ -138,7 +138,7 @@ namespace
 {
 /// The intrinsic plus the CALL's execution gas: its seven arguments, the warm call, the
 /// cold-account surcharge and the value transfer. CALL_VALUE is ACCOUNT_WRITE + CALL_STIPEND
-/// and a light failure returns the stipend unspent, so only ACCOUNT_WRITE remains (EIP-8038).
+/// and a light failure returns the stipend unspent, so only ACCOUNT_WRITE remains (SIP-8038).
 /// The NEW_ACCOUNT state charge is refilled, so it does not appear here.
 constexpr int64_t CALL_LIGHTFAIL_EXECUTION_GAS =
     21'000 + 7 * instr::gas_costs[EVMC_AMSTERDAM][OP_PUSH1] +
@@ -146,7 +146,7 @@ constexpr int64_t CALL_LIGHTFAIL_EXECUTION_GAS =
     instr::additional_cold_account_access(EVMC_AMSTERDAM) + instr::ACCOUNT_WRITE;
 }  // namespace
 
-TEST_F(state_transition, eip8037_call_value_lightfail_new_account_charge_refilled)
+TEST_F(state_transition, sip8037_call_value_lightfail_new_account_charge_refilled)
 {
     // A value-CALL charges NEW_ACCOUNT for an absent target before the sender-balance check.
     // The light failure creates no account, so the charge is refilled and the net state-gas is
@@ -164,7 +164,7 @@ TEST_F(state_transition, eip8037_call_value_lightfail_new_account_charge_refille
     expect.state_gas = 0;
 }
 
-TEST_F(state_transition, eip8037_call_value_lightfail_existing_account_baseline)
+TEST_F(state_transition, sip8037_call_value_lightfail_existing_account_baseline)
 {
     // The baseline for the case above: an existing target is never charged, so both the execution
     // gas and the state-gas must come out identical.
@@ -182,10 +182,10 @@ TEST_F(state_transition, eip8037_call_value_lightfail_existing_account_baseline)
     expect.state_gas = 0;
 }
 
-TEST_F(state_transition, eip8037_value_to_zero_balance_precompile_pays_new_account)
+TEST_F(state_transition, sip8037_value_to_zero_balance_precompile_pays_new_account)
 {
     // Funding a zero-balance precompile materializes a state account, so it pays NEW_ACCOUNT
-    // (EIP-161). The reservoir is empty below the cap, so the charge spills into execution gas
+    // (SIP-161). The reservoir is empty below the cap, so the charge spills into execution gas
     // and the precompile runs on what is left.
     rev = EVMC_AMSTERDAM;
     tx.to = 0x04_address;  // Identity, absent from `pre`.
@@ -199,7 +199,7 @@ TEST_F(state_transition, eip8037_value_to_zero_balance_precompile_pays_new_accou
     expect.state_gas = NEW_ACCOUNT_STATE_GAS;
 }
 
-TEST_F(state_transition, eip8037_value_to_new_account_pays_new_account)
+TEST_F(state_transition, sip8037_value_to_new_account_pays_new_account)
 {
     rev = EVMC_AMSTERDAM;
     tx.to = To;  // Absent from pre.
@@ -211,7 +211,7 @@ TEST_F(state_transition, eip8037_value_to_new_account_pays_new_account)
     expect.state_gas = NEW_ACCOUNT_STATE_GAS;
 }
 
-TEST_F(state_transition, eip8037_value_to_existing_empty_account_pays_new_account)
+TEST_F(state_transition, sip8037_value_to_existing_empty_account_pays_new_account)
 {
     rev = EVMC_AMSTERDAM;
     tx.to = To;
@@ -223,7 +223,7 @@ TEST_F(state_transition, eip8037_value_to_existing_empty_account_pays_new_accoun
     expect.state_gas = NEW_ACCOUNT_STATE_GAS;
 }
 
-TEST_F(state_transition, eip8037_value_to_new_account_uses_reservoir_then_execution_gas)
+TEST_F(state_transition, sip8037_value_to_new_account_uses_reservoir_then_execution_gas)
 {
     rev = EVMC_AMSTERDAM;
     tx.to = To;  // Absent from pre.
@@ -237,7 +237,7 @@ TEST_F(state_transition, eip8037_value_to_new_account_uses_reservoir_then_execut
     expect.state_gas = NEW_ACCOUNT_STATE_GAS;
 }
 
-TEST_F(state_transition, eip8037_value_to_new_account_out_of_gas)
+TEST_F(state_transition, sip8037_value_to_new_account_out_of_gas)
 {
     rev = EVMC_AMSTERDAM;
     tx.to = To;  // Absent from pre.
@@ -250,7 +250,7 @@ TEST_F(state_transition, eip8037_value_to_new_account_out_of_gas)
     expect.post[To].exists = false;
 }
 
-TEST_F(state_transition, eip8037_value_to_new_precompile_failure_refunds_new_account)
+TEST_F(state_transition, sip8037_value_to_new_precompile_failure_refunds_new_account)
 {
     rev = EVMC_AMSTERDAM;
     tx.to = 0x04_address;  // Identity, absent from pre.
@@ -263,7 +263,7 @@ TEST_F(state_transition, eip8037_value_to_new_precompile_failure_refunds_new_acc
     expect.post[*tx.to].exists = false;
 }
 
-TEST_F(state_transition, eip8037_sstore_slot_allocated_and_cleared_in_one_tx)
+TEST_F(state_transition, sip8037_sstore_slot_allocated_and_cleared_in_one_tx)
 {
     // Allocating a slot and clearing it in the same transaction (0 -> 1 -> 0) refills the
     // allocation charge, leaving the net state-gas at zero.
@@ -280,7 +280,7 @@ TEST_F(state_transition, eip8037_sstore_slot_allocated_and_cleared_in_one_tx)
     expect.post[To].exists = true;
 }
 
-TEST_F(state_transition, eip8037_sstore_slot_cleared_in_a_child_frame)
+TEST_F(state_transition, sip8037_sstore_slot_cleared_in_a_child_frame)
 {
     // A slot allocated in one frame and cleared in a deeper one refills more state-gas than the
     // child was given, so the child returns a bigger reservoir than it received. The credit must
@@ -301,7 +301,7 @@ TEST_F(state_transition, eip8037_sstore_slot_cleared_in_a_child_frame)
     expect.post[CLEARER].exists = true;
 }
 
-TEST_F(state_transition, eip8037_reverted_child_keeps_the_slot_allocation_charged)
+TEST_F(state_transition, sip8037_reverted_child_keeps_the_slot_allocation_charged)
 {
     // A child clearing a slot its caller allocated refills more state-gas than it was given,
     // leaving its reservoir above its own budget. Reverting must restore that budget rather than
@@ -324,7 +324,7 @@ TEST_F(state_transition, eip8037_reverted_child_keeps_the_slot_allocation_charge
 
 namespace
 {
-/// The code deposit of a maximum-size contract, split into its two components (EIP-8037).
+/// The code deposit of a maximum-size contract, split into its two components (SIP-8037).
 constexpr auto DEPOSIT_CODE_WORDS = MAX_CODE_SIZE_AMSTERDAM / 32;
 constexpr auto DEPOSIT_EXECUTION = 6 * DEPOSIT_CODE_WORDS;
 constexpr int64_t DEPOSIT_STATE = int64_t{MAX_CODE_SIZE_AMSTERDAM} * COST_PER_STATE_BYTE;
@@ -352,7 +352,7 @@ bytecode deposit_creator_code()
 }
 }  // namespace
 
-TEST_F(state_transition, eip8037_code_deposit_out_of_execution_gas_with_a_full_reservoir)
+TEST_F(state_transition, sip8037_code_deposit_out_of_execution_gas_with_a_full_reservoir)
 {
     // The code deposit splits into an execution and a state component. A reservoir covering the
     // state component must not let the deposit through when the execution component is
@@ -371,7 +371,7 @@ TEST_F(state_transition, eip8037_code_deposit_out_of_execution_gas_with_a_full_r
     expect.post[compute_create_address(DEPOSIT_CREATOR, pre[DEPOSIT_CREATOR].nonce)].exists = false;
 }
 
-TEST_F(state_transition, eip8037_code_deposit_execution_gas_boundary)
+TEST_F(state_transition, sip8037_code_deposit_execution_gas_boundary)
 {
     // The same deposit one execution component richer succeeds, pinning the case above to the
     // execution gas rather than to anything else the CREATE pays for.

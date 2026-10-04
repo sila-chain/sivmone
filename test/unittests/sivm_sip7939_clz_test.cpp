@@ -2,8 +2,8 @@
 // Copyright 2025 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-7939 "Count leading zeros (CLZ) opcode"
-/// https://eips.ethereum.org/EIPS/eip-7939
+/// This file contains Sivm unit tests for SIP-7939 "Count leading zeros (CLZ) opcode"
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7939.md
 
 #include "sivm_fixture.hpp"
 

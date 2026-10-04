@@ -633,11 +633,11 @@ void modexp(std::span<const uint8_t> base_bytes, std::span<const uint8_t> exp_by
     const auto declared_mod_size = (mod_bytes.size() + 7) / 8;
 
     // Bump allocator for all working memory (values + scratch).
-    // Stack buffer covers inputs up to the EIP-7823 limit (1024 bytes).
+    // Stack buffer covers inputs up to the SIP-7823 limit (1024 bytes).
     // Capacity: values[b+2m] + op scratch[(MAX_PRECOMPUTED+3)m+3b+2] + CRT[m+2]
     //           = 4b + (MAX_PRECOMPUTED+6)m + 4 words.
     // The worst case is an even modulus with 1 trailing zero bit (odd_size=m, pow2_size=1).
-    static constexpr size_t MAX_SIZE = 1024 / sizeof(uint64_t);  // EIP-7823
+    static constexpr size_t MAX_SIZE = 1024 / sizeof(uint64_t);  // SIP-7823
     static constexpr size_t STACK_CAPACITY = 4 * MAX_SIZE + (6 + MAX_PRECOMPUTED) * MAX_SIZE + 4;
     alignas(uint64_t) std::byte stack_buf[STACK_CAPACITY * sizeof(uint64_t)];
     std::pmr::monotonic_buffer_resource pool{stack_buf, sizeof(stack_buf)};

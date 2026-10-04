@@ -2,8 +2,8 @@
 // Copyright 2023 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-7516: "BLOBBASEFEE opcode"
-/// https://eips.ethereum.org/EIPS/eip-7516
+/// This file contains Sivm unit tests for SIP-7516: "BLOBBASEFEE opcode"
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7516.md
 
 #include "sivm_fixture.hpp"
 

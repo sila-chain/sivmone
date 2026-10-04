@@ -38,7 +38,7 @@ namespace
         if (!rlp::take_list_payload(from, body))
             return false;
     }
-    else  // Typed (EIP-2718): a raw type byte followed by the RLP list.
+    else  // Typed (SIP-2718): a raw type byte followed by the RLP list.
     {
         // The type is a single byte in [0x00, 0x7f], not an RLP item; reading it directly rejects
         // a non-canonical RLP-string form such as 0x81 0x02.
@@ -58,9 +58,9 @@ namespace
     if (!rlp::decode(body, to.nonce))
         return false;
 
-    // EIP-1559 and the later types (blob, set-code) carry a separate priority fee per gas;
+    // SIP-1559 and the later types (blob, set-code) carry a separate priority fee per gas;
     // earlier types reuse the single gas price for both caps (set below).
-    const auto has_priority_gas_price = to.type >= Transaction::Type::eip1559;
+    const auto has_priority_gas_price = to.type >= Transaction::Type::sip1559;
     if (has_priority_gas_price)
     {
         if (!rlp::decode(body, to.max_priority_gas_price))
@@ -99,16 +99,16 @@ namespace
 
     if (to.type == Transaction::Type::legacy)
     {
-        // Legacy v carries the recovery id and, since EIP-155, the chain id. It is kept verbatim,
+        // Legacy v carries the recovery id and, since SIP-155, the chain id. It is kept verbatim,
         // the way rlp_encode() writes it, and the chain id derived alongside. Requiring the whole
         // v to fit uint64_t bounds the chain id to 2**63 - 18, the same limit the JSON transaction
         // loader has.
         if (!rlp::decode(body, to.v))
             return false;
 
-        if (to.v >= 35)  // EIP-155: v = 35 + 2 * chain_id + y_parity.
+        if (to.v >= 35)  // SIP-155: v = 35 + 2 * chain_id + y_parity.
             to.chain_id = (to.v - 35) / 2;
-        else if (to.v != 27 && to.v != 28)  // Pre-EIP-155: bound to no chain, chain_id unused.
+        else if (to.v != 27 && to.v != 28)  // Pre-SIP-155: bound to no chain, chain_id unused.
             return false;
     }
     else
@@ -145,7 +145,7 @@ std::optional<address> recover_sender(const Transaction& tx, bytes_view txbytes)
 {
     // The signing preimage is the transaction's encoding without the trailing (v, r, s).
     const auto typed = tx.type != Transaction::Type::legacy;
-    auto envelope = txbytes.substr(typed ? 1 : 0);  // Skip the EIP-2718 type byte.
+    auto envelope = txbytes.substr(typed ? 1 : 0);  // Skip the SIP-2718 type byte.
     bytes_view payload;
     [[maybe_unused]] const auto is_list = rlp::take_list_payload(envelope, payload);
     assert(is_list);  // tx has been decoded from txbytes, so its list header is valid.
@@ -157,12 +157,12 @@ std::optional<address> recover_sender(const Transaction& tx, bytes_view txbytes)
     assert(signature_size <= payload.size());
     auto preimage = bytes{payload.substr(0, payload.size() - signature_size)};
 
-    // Protected legacy transactions sign chain_id by appending (chain_id, 0, 0) (EIP-155).
+    // Protected legacy transactions sign chain_id by appending (chain_id, 0, 0) (SIP-155).
     // TODO: Allocate bytes only in this case; use views for typed transactions.
     if (!typed && tx.chain_id_protected())
         preimage += rlp::encode(tx.chain_id) + rlp::encode(uint64_t{}) + rlp::encode(uint64_t{});
 
-    // A typed v is {0, 1}. A legacy v is 27 + y_parity, or 35 + 2 * chain_id + y_parity (EIP-155):
+    // A typed v is {0, 1}. A legacy v is 27 + y_parity, or 35 + 2 * chain_id + y_parity (SIP-155):
     // both bases are odd, so an even v means y_parity 1.
     const auto y_parity = typed ? tx.v != 0 : tx.v % 2 == 0;
 

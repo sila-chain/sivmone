@@ -1,5 +1,5 @@
 {
-    "eip7778_block_gas_excludes_refund": {
+    "sip7778_block_gas_excludes_refund": {
         "network": "SilaAmsterdam",
         "genesisBlockHeader": {
             "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",

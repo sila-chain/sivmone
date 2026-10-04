@@ -228,7 +228,7 @@ TEST_P(sivm, sstore_cost_net_gas_metering)
         int64_t set = -1;
         int64_t reset = -1;
         int64_t clear = -1;
-        int64_t state_set = 0;  ///< Storage creation, charged in state gas (EIP-8037).
+        int64_t state_set = 0;  ///< Storage creation, charged in state gas (SIP-8037).
     };
 
     const auto test = [this](const evmc::bytes32& original, const evmc::bytes32& current,

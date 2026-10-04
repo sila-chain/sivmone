@@ -8,10 +8,10 @@ set(PREFIX ${PREFIX}/test)
 
 set(DATA ${CMAKE_CURRENT_SOURCE_DIR})
 
-# One run takes both formats: eip7778_block_gas.json declares its format, the other two are
+# One run takes both formats: sip7778_block_gas.json declares its format, the other two are
 # recognised by shape.
 add_test(NAME ${PREFIX}/test_mixed_formats COMMAND sivmone-cli test
-    ${DATA}/statetest/tests1/SuiteA/test1.json ${DATA}/blockchaintest/eip7778_block_gas.json
+    ${DATA}/statetest/tests1/SuiteA/test1.json ${DATA}/blockchaintest/sip7778_block_gas.json
     ${DATA}/blockchaintest/unrecovered_sender_blob_gas.json)
 set_tests_properties(
     ${PREFIX}/test_mixed_formats PROPERTIES PASS_REGULAR_EXPRESSION "= 3 passed in")

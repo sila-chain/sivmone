@@ -17,7 +17,7 @@ using namespace sivmone::test;
 
 namespace
 {
-/// A minimal, decodable pre-EIP-155 legacy transaction; the base for the field-mutation rejection
+/// A minimal, decodable pre-SIP-155 legacy transaction; the base for the field-mutation rejection
 /// tests below. Not constexpr: Transaction is not a literal type before libstdc++ 12, which lacks
 /// the constexpr container destructors.
 const state::Transaction MINIMAL_LEGACY_TX{
@@ -92,7 +92,7 @@ TEST(state_rlp_decode, tx_round_trip)
     };
 
     const std::array cases{
-        std::pair{"access_list",  // EIP-2930.
+        std::pair{"access_list",  // SIP-2930.
             state::Transaction{
                 .type = access_list,
                 .data = "0x095ea7b3"_hex,
@@ -107,9 +107,9 @@ TEST(state_rlp_decode, tx_round_trip)
                 .s = 0x41_u256,
                 .v = 1,
             }},
-        std::pair{"eip1559",
+        std::pair{"sip1559",
             state::Transaction{
-                .type = eip1559,
+                .type = sip1559,
                 .data = "0x095ea7b3"_hex,
                 .gas_limit = 0x9c40,
                 .max_gas_price = 0x64,
@@ -142,7 +142,7 @@ TEST(state_rlp_decode, tx_round_trip)
                 .s = 0xa_u256,
                 .v = 1,
             }},
-        std::pair{"set_code",  // EIP-7702; auth y_parity may be any value < 2**8.
+        std::pair{"set_code",  // SIP-7702; auth y_parity may be any value < 2**8.
             state::Transaction{
                 .type = set_code,
                 .gas_limit = 0x186a0,
@@ -193,7 +193,7 @@ TEST(state_rlp_decode, tx_round_trip_legacy)
 {
     // A legacy transaction has a single wire gas price, so the decoded form differs from the input
     // in max_priority_gas_price; v is kept verbatim and the chain id derived from it.
-    // EIP-155: v = 35 + 2 * chain_id + parity, with v = 35 the lowest accepted value; before it,
+    // SIP-155: v = 35 + 2 * chain_id + parity, with v = 35 the lowest accepted value; before it,
     // v is 27 or 28 and the transaction is bound to no chain.
     for (const auto& [v, chain_id] :
         {std::pair{27u, uint64_t{0}}, std::pair{28u, uint64_t{0}}, std::pair{35u, uint64_t{0}},
@@ -230,7 +230,7 @@ TEST(state_rlp_decode, tx_round_trip_legacy)
 
 TEST(state_rlp_decode, tx_set_code_auth_y_parity_overflow_rejected)
 {
-    // EIP-7702 bounds y_parity to < 2**8; a value of 2**8 fails the whole transaction at decode
+    // SIP-7702 bounds y_parity to < 2**8; a value of 2**8 fails the whole transaction at decode
     // time, matching geth (V uint8) and revm/alloy (y_parity: U8). Authorization::y_parity cannot
     // hold such a value, so the tuple is encoded by hand.
     const auto auth = rlp::encode_tuple(
@@ -257,7 +257,7 @@ TEST(state_rlp_decode, tx_rejects_trailing_data)
     EXPECT_FALSE(state::decode_transaction(rlp::encode(MINIMAL_LEGACY_TX) + "00"_hex).has_value());
 
     auto typed = MINIMAL_LEGACY_TX;
-    typed.type = state::Transaction::Type::eip1559;
+    typed.type = state::Transaction::Type::sip1559;
     typed.chain_id = 1;
     typed.v = 0;  // Typed y_parity must be in {0, 1}.
     EXPECT_FALSE(state::decode_transaction(rlp::encode(typed) + "00"_hex).has_value());
@@ -469,14 +469,14 @@ TEST(state_rlp_decode, tx_rejects_invalid_legacy_v)
     // Regression: a legacy signature v that is neither 27/28 nor >= 35 must be rejected, not
     // underflowed.
     auto tx = MINIMAL_LEGACY_TX;
-    tx.v = 5;  // Invalid: neither pre-155 {27, 28} nor EIP-155 (>= 35).
+    tx.v = 5;  // Invalid: neither pre-155 {27, 28} nor SIP-155 (>= 35).
     EXPECT_FALSE(state::decode_transaction(rlp::encode(tx)).has_value());
 }
 
 TEST(state_rlp_decode, tx_rejects_legacy_v_over_uint64)
 {
     // Regression: a legacy v that does not fit uint64 must be rejected, not truncated. This bounds
-    // the EIP-155 chain id to (2**64 - 36) / 2, the limit the JSON transaction loader also has.
+    // the SIP-155 chain id to (2**64 - 36) / 2, the limit the JSON transaction loader also has.
     // Hand-crafted legacy tx with v = 2**65 + 35, i.e. chain id 2**64.
     const auto rlp = "0xd2808080808080890200000000000000230101"_hex;
     EXPECT_FALSE(state::decode_transaction(rlp).has_value());
@@ -492,14 +492,14 @@ TEST(state_rlp_decode, tx_rejects_malformed_envelope)
     // The type byte must be rejected on its own, before the body is looked at: the two bodies
     // below decode cleanly for the type they are shaped for, so only the type check rejects them.
     // Type 0 takes the legacy field order (no chain_id) once past the type check, type 5 the
-    // EIP-1559 one.
+    // SIP-1559 one.
     EXPECT_FALSE(state::decode_transaction("0x00ca018080808080801b0102"_hex).has_value());
     EXPECT_FALSE(state::decode_transaction("0x05cc8080808080808080c0800102"_hex).has_value());
 
-    // The EIP-2718 type byte is a raw byte, not an RLP item; wrapping it as a 1-byte RLP string
+    // The SIP-2718 type byte is a raw byte, not an RLP item; wrapping it as a 1-byte RLP string
     // (0x81 0x02, read as type 129, outside the {1..4} range) must be rejected.
     auto typed = MINIMAL_LEGACY_TX;
-    typed.type = state::Transaction::Type::eip1559;
+    typed.type = state::Transaction::Type::sip1559;
     typed.chain_id = 1;
     typed.v = 0;
     auto wrapped = rlp::encode(typed);
@@ -512,7 +512,7 @@ TEST(state_rlp_decode, tx_rejects_typed_v_over_1)
 {
     // A typed transaction's top-level y_parity must be 0 or 1.
     auto tx = MINIMAL_LEGACY_TX;
-    tx.type = state::Transaction::Type::eip1559;
+    tx.type = state::Transaction::Type::sip1559;
     tx.chain_id = 1;
     tx.v = 2;
     EXPECT_FALSE(state::decode_transaction(rlp::encode(tx)).has_value());
@@ -550,7 +550,7 @@ TEST(state_rlp_decode, tx_rejects_truncated_fields)
         uint64_t{0}, 1_u256, uint64_t{21000}, bytes_view{}, 6_u256, bytes_view{})));  // v
     EXPECT_TRUE(rejected("0xf8"_hex));  // malformed legacy list header
 
-    // Typed eip1559 [chain_id, nonce, max_priority, max_fee, gas_limit, to, value, data,
+    // Typed sip1559 [chain_id, nonce, max_priority, max_fee, gas_limit, to, value, data,
     // access_list, y_parity, r, s], truncated before each field:
     EXPECT_TRUE(rejected("0x02c0"_hex));                                         // chain_id
     EXPECT_TRUE(rejected("0x02"_hex + encode_tuple(uint64_t{1})));               // nonce
@@ -580,7 +580,7 @@ TEST(state_rlp_decode, tx_rejects_truncated_fields)
 
 TEST(state_rlp_decode, tx_rejects_malformed_authorization)
 {
-    // The EIP-7702 authorization_list and its entries are RLP lists of exactly six fields each.
+    // The SIP-7702 authorization_list and its entries are RLP lists of exactly six fields each.
     const auto rejected = [](const bytes& tx) {
         return !state::decode_transaction(tx).has_value();
     };
@@ -642,7 +642,7 @@ TEST(state_rlp_decode, decode_authorization_field_positions)
 
 TEST(state_rlp_decode, recover_sender_legacy_protected)
 {
-    // The same fields signed twice: over the pre-EIP-155 preimage and over the EIP-155 one for
+    // The same fields signed twice: over the pre-SIP-155 preimage and over the SIP-155 one for
     // chain 0 (wire v = 35/36). Both decode to chain_id 0, so only the verbatim v says which
     // preimage was signed. No EEST fixture signs for chain 0, which is why this is pinned here.
     // Signer of both: 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550 (private key 0xa5). sivmone only
@@ -673,7 +673,7 @@ TEST(state_rlp_decode, recover_sender_rejects_out_of_range_s)
 
 TEST(state_rlp_decode, recover_sender_rejects_high_s)
 {
-    // EIP-2 bounds s to the lower half of the curve order, on top of the [1, secp256k1n) range.
+    // SIP-2 bounds s to the lower half of the curve order, on top of the [1, secp256k1n) range.
     // One above the bound differs from the largest accepted s in nothing else.
     auto tx = MINIMAL_LEGACY_TX;
     tx.s = crypto::secp256k1::Curve::ORDER / 2;

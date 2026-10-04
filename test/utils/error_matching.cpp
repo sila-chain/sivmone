@@ -22,7 +22,7 @@ struct AlternativeExceptions
 /// Where the execution specs draw more distinctions than sivmone does, or draw one of them in a
 /// different place. Both refuse the same transactions, so every name listed here is accepted.
 constexpr AlternativeExceptions ALTERNATIVE_TX_EXCEPTIONS[]{
-    // The specs make the floor cost (EIP-7623) a rule of its own; sivmone folds it into the
+    // The specs make the floor cost (SIP-7623) a rule of its own; sivmone folds it into the
     // intrinsic gas.
     {state::INTRINSIC_GAS_TOO_LOW, "TransactionException.INTRINSIC_GAS_BELOW_FLOOR_GAS_COST"},
 
@@ -38,7 +38,7 @@ constexpr AlternativeExceptions ALTERNATIVE_TX_EXCEPTIONS[]{
         "TransactionException.TYPE_3_TX_MAX_BLOB_GAS_ALLOWANCE_EXCEEDED"},
 
     // sivmone bounds the signature v while decoding the transaction, because the domain of v is
-    // what tells a legacy transaction from a typed one and carries the chain id (EIP-155). The
+    // what tells a legacy transaction from a typed one and carries the chain id (SIP-155). The
     // execution specs read v as a plain integer and bound it with the rest of the signature.
     // decode_transaction() reports one code for every malformed encoding, so this accepts more
     // than the v rule; narrowing it needs the decoder to report the v domain separately.

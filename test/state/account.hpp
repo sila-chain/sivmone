@@ -44,7 +44,7 @@ struct Account
     /// The cached and modified account storage entries.
     std::unordered_map<bytes32, StorageValue> storage;
 
-    /// The EIP-1153 transient (transaction-level lifetime) storage.
+    /// The SIP-1153 transient (transaction-level lifetime) storage.
     std::unordered_map<bytes32, bytes32> transient_storage;
 
     /// The cache of the account code.
@@ -55,7 +55,7 @@ struct Account
 
     // TODO: Consider moving the flags up (to lower offsets) for shorter x86 machine code (disp8).
 
-    /// The account access status (EIP-2929): warm once accessed earlier in the transaction.
+    /// The account access status (SIP-2929): warm once accessed earlier in the transaction.
     /// Revertible.
     evmc_access_status access_status = EVMC_ACCESS_COLD;
 
@@ -68,7 +68,7 @@ struct Account
     bool destructed = false;
 
     /// The account should be erased if it is empty at the end of a transaction.
-    /// This flag means the account has been "touched" as defined in EIP-161,
+    /// This flag means the account has been "touched" as defined in SIP-161,
     /// or it is a newly created temporary account.
     ///
     /// Yellow Paper uses term "delete" but it is a keyword in C++ while
@@ -80,7 +80,7 @@ struct Account
     /// The account has been created in the current transaction.
     ///
     /// FIXME: Not reverted on CREATE rollback; a leaked value suppresses the
-    /// EIP-161 touch-delete of the now-empty account (state-root divergence).
+    /// SIP-161 touch-delete of the now-empty account (state-root divergence).
     bool just_created = false;
 
     /// This account's code has been modified.

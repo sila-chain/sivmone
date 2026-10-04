@@ -45,8 +45,8 @@ std::optional<Requests> collect_deposit_requests(std::span<const TransactionRece
     {
         for (const auto& log : receipt.logs)
         {
-            // Follow the EIP-6110 pseudocode for block validity.
-            // https://eips.ethereum.org/EIPS/eip-6110#block-validity
+            // Follow the SIP-6110 pseudocode for block validity.
+            // https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-6110.md#block-validity
 
             // Filter out logs by the contact address and the log first topic.
             if (log.addr != DEPOSIT_CONTRACT_ADDRESS)
@@ -72,7 +72,7 @@ std::optional<Requests> collect_deposit_requests(std::span<const TransactionRece
             // In ABI a word with its size prepends every bytes array.
             // Skip over the first 5 words (offsets of the values) and the pubkey size.
             // Read and validate the ABI offsets and lengths for the dynamic fields
-            // according to EIP-6110. If any check fails, collection is considered failed.
+            // according to SIP-6110. If any check fails, collection is considered failed.
 
             const auto read_word_as_size = [&](size_t pos) -> std::optional<uint32_t> {
                 assert(log.data.size() >= pos + 32);
@@ -119,7 +119,7 @@ std::optional<Requests> collect_deposit_requests(std::span<const TransactionRece
                 PUBKEY_OFFSET, WITHDRAWAL_OFFSET, AMOUNT_OFFSET, SIGNATURE_OFFSET, INDEX_OFFSET};
 
             if (offsets != EXPECTED_OFFSETS)
-                return std::nullopt;  // layout does not match expected EIP-6110 deposit layout
+                return std::nullopt;  // layout does not match expected SIP-6110 deposit layout
 
             // Validate sizes of each field encoded in the log.
             const auto validate_size_at = [&](uint32_t offset, uint32_t expected_size) -> bool {
@@ -132,7 +132,7 @@ std::optional<Requests> collect_deposit_requests(std::span<const TransactionRece
                 !validate_size_at(SIGNATURE_OFFSET, SIGNATURE_SIZE) ||
                 !validate_size_at(INDEX_OFFSET, INDEX_SIZE))
             {
-                // field size does not match expected EIP-6110 deposit layout
+                // field size does not match expected SIP-6110 deposit layout
                 return std::nullopt;
             }
 

@@ -104,7 +104,7 @@ public:
     /// Methods performing changes to the state which can be reverted by rollback().
     /// @{
 
-    /// Touches (as in EIP-161) an existing account or inserts new erasable account.
+    /// Touches (as in SIP-161) an existing account or inserts new erasable account.
     Account& touch(const address& addr);
 
     void journal_balance_change(const address& addr, const intx::uint256& prev_balance);
@@ -143,7 +143,7 @@ TransactionReceipt transition(const StateView& state, const BlockInfo& block,
 
 /// Validate a transaction.
 ///
-/// @param block_state_gas_left  Remaining block state-gas (EIP-8037).
+/// @param block_state_gas_left  Remaining block state-gas (SIP-8037).
 /// @return The transaction's computed gas properties or a validation error.
 [[nodiscard]] std::variant<TransactionProperties, std::error_code> validate_transaction(
     const StateView& state_view, const BlockInfo& block, const Transaction& tx, evmc_revision rev,

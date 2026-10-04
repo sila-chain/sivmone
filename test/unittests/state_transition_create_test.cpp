@@ -185,7 +185,7 @@ TEST_F(state_transition, create_tx_collision_storage)
 {
     rev = EVMC_LONDON;
 
-    // Test create address collision with an account only having storage (EIP-7610).
+    // Test create address collision with an account only having storage (SIP-7610).
     const auto created = compute_create_address(Sender, pre[Sender].nonce);
     pre[created] = {.storage = {{0x00_bytes32, 0x01_bytes32}}};
 
@@ -209,7 +209,7 @@ TEST_F(state_transition, create_collision_storage)
 {
     rev = EVMC_LONDON;
 
-    // Test create address collision with an account only having storage (EIP-7610).
+    // Test create address collision with an account only having storage (SIP-7610).
     tx.to = To;
     pre[To] = {.code = sstore(0, create())};
     const auto created = compute_create_address(To, pre[To].nonce);
@@ -425,13 +425,13 @@ TEST_F(state_transition, create2_rollback_preserves_access_list_slot_warmth)
     expect.gas_used = 109405;  // Cooling the slot would add the 2100 cold surcharge.
 }
 
-TEST_F(state_transition, eip7954_create_tx_at_max_code_size)
+TEST_F(state_transition, sip7954_create_tx_at_max_code_size)
 {
-    // Amsterdam raises the deployed code size limit from 0x6000 to 0x10000 (EIP-7954).
+    // Amsterdam raises the deployed code size limit from 0x6000 to 0x10000 (SIP-7954).
     // A create transaction deploying code of exactly the new limit succeeds.
     rev = EVMC_AMSTERDAM;
     static constexpr auto code_size = 0x10000;  // MAX_CODE_SIZE_AMSTERDAM.
-    tx.gas_limit = 110'000'000;  // Covers the ~100M code-deposit state gas (EIP-8037).
+    tx.gas_limit = 110'000'000;  // Covers the ~100M code-deposit state gas (SIP-8037).
     block.gas_limit = tx.gas_limit;
     pre[Sender].balance = tx.gas_limit * tx.max_gas_price;
     tx.data = ret(0, code_size);  // Init code returns `code_size` zero bytes as the deployed code.
@@ -440,9 +440,9 @@ TEST_F(state_transition, eip7954_create_tx_at_max_code_size)
     expect.post[create_address].code = bytes(code_size, 0x00);
 }
 
-TEST_F(state_transition, eip7954_create_tx_above_max_code_size)
+TEST_F(state_transition, sip7954_create_tx_above_max_code_size)
 {
-    // Code one byte above the new 0x10000 limit is still rejected on Amsterdam (EIP-7954).
+    // Code one byte above the new 0x10000 limit is still rejected on Amsterdam (SIP-7954).
     rev = EVMC_AMSTERDAM;
     static constexpr auto code_size = 0x10000 + 1;
     tx.gas_limit = 110'000'000;  // Enough to deposit the code, so only the limit can reject it.

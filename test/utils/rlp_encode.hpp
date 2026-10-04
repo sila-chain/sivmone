@@ -18,7 +18,7 @@ namespace sivmone::state
 /// Defines how to RLP-encode a Log.
 [[nodiscard]] bytes rlp_encode(const Log& log);
 
-/// Defines how to RLP-encode an Authorization (EIP-7702).
+/// Defines how to RLP-encode an Authorization (SIP-7702).
 [[nodiscard]] bytes rlp_encode(const Authorization& authorization);
 
 /// Defines how to RLP-encode a Withdrawal.

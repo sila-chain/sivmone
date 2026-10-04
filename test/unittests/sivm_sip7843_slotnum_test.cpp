@@ -2,8 +2,8 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// This file contains Sivm unit tests for EIP-7843: SLOTNUM opcode.
-/// https://eips.ethereum.org/EIPS/eip-7843
+/// This file contains Sivm unit tests for SIP-7843: SLOTNUM opcode.
+/// https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7843.md
 
 #include "sivm_fixture.hpp"
 

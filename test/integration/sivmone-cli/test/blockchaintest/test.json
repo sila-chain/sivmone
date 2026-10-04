@@ -1,5 +1,5 @@
 {
-    "tests/osaka/eip7939_count_leading_zeros/test_count_leading_zeros.py::test_clz_call_operation[fork_Osaka-blockchain_test_from_state_test-call]": {
+    "tests/osaka/sip7939_count_leading_zeros/test_count_leading_zeros.py::test_clz_call_operation[fork_Osaka-blockchain_test_from_state_test-call]": {
         "network": "SilaOsaka",
         "genesisBlockHeader": {
             "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -54,7 +54,7 @@
         "sealEngine": "NoProof",
         "_info": {}
     },
-    "tests/osaka/eip7939_count_leading_zeros/test_count_leading_zeros.py::test_clz_call_operation[fork_Osaka-blockchain_test_from_state_test-callcode]": {
+    "tests/osaka/sip7939_count_leading_zeros/test_count_leading_zeros.py::test_clz_call_operation[fork_Osaka-blockchain_test_from_state_test-callcode]": {
         "network": "SilaOsaka",
         "genesisBlockHeader": {
             "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",

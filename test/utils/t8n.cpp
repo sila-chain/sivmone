@@ -153,7 +153,7 @@ void t8n(evmc::VM& vm, const T8NArgs& args)
                 for (const auto& log : receipt.logs)
                     j_logs.push_back(to_json(log));
                 // A pre-Byzantium receipt is keyed on the post-state root instead of the
-                // EIP-658 status. Emit both, as go-sila does: the root takes precedence.
+                // SIP-658 status. Emit both, as go-sila does: the root takes precedence.
                 j_receipt["root"] =
                     receipt.post_state.has_value() ? hex0x(*receipt.post_state) : "";
                 j_receipt["status"] = hex0x(uint64_t{receipt.status == EVMC_SUCCESS});
@@ -195,7 +195,7 @@ void t8n(evmc::VM& vm, const T8NArgs& args)
     }
     if (rev >= EVMC_PRAGUE)
     {
-        // EIP-7685: General purpose execution layer requests
+        // SIP-7685: General purpose execution layer requests
         j_result["requests"] = JSON::array();
         for (const auto& r : requests)
         {

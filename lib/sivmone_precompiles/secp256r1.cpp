@@ -20,8 +20,8 @@ bool verify(const ethash::hash256& h, const uint256& r, const uint256& s, const 
 {
     // The implementation follows "Elliptic Curve Digital Signature Algorithm"
     // https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm#Signature_verification_algorithm
-    // but EIP-7951 spec is also a good source:
-    // https://eips.ethereum.org/EIPS/eip-7951#signature-verification-algorithm
+    // but SIP-7951 spec is also a good source:
+    // https://github.com/sila-chain/SIPs/blob/main/SIPS/sip-7951.md#signature-verification-algorithm
 
     // 1. Validate r and s are within [1, n-1].
     if (r == 0 || r >= Curve::ORDER || s == 0 || s >= Curve::ORDER)

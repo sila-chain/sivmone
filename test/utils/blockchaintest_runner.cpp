@@ -18,11 +18,11 @@
 namespace sivmone::test
 {
 
-/// The CL gossip protocol constraint of the maximum block size (EIP-7934).
+/// The CL gossip protocol constraint of the maximum block size (SIP-7934).
 constexpr size_t MAX_BLOCK_SIZE = 10 * 1024 * 1024;
-/// The safety margin for beacon block content (EIP-7934).
+/// The safety margin for beacon block content (SIP-7934).
 constexpr size_t SAFETY_MARGIN = 2 * 1024 * 1024;
-/// The maximum EL block size when RLP encoded (EIP-7934).
+/// The maximum EL block size when RLP encoded (SIP-7934).
 constexpr size_t MAX_RLP_BLOCK_SIZE = MAX_BLOCK_SIZE - SAFETY_MARGIN;
 
 namespace
@@ -100,7 +100,7 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
             return make_error_code(INCORRECT_BLOCK_FORMAT);
 
         // Check that the excess blob gas was updated correctly.
-        // According to EIP-7918 current blocks params (`rev`) should be used for parent base fee
+        // According to SIP-7918 current blocks params (`rev`) should be used for parent base fee
         // calculation.
         const auto parent_blob_base_fee =
             compute_blob_gas_price(blob_params, parent_header->excess_blob_gas.value_or(0));
@@ -117,7 +117,7 @@ std::error_code validate_block(evmc_revision rev, state::BlobParams blob_params,
             return make_error_code(INCORRECT_BLOCK_FORMAT);
     }
 
-    // `slot_number` is mandatory from Amsterdam and invalid before (EIP-7843).
+    // `slot_number` is mandatory from Amsterdam and invalid before (SIP-7843).
     if (test_block.block_info.slot_number.has_value() != (rev >= EVMC_AMSTERDAM))
         return make_error_code(INCORRECT_BLOCK_FORMAT);
 
@@ -161,7 +161,7 @@ void check_transactions_round_trip(bytes_view block_rlp, TestReport& report)
         txs.remove_prefix(h.payload_length);
 
         // A legacy transaction is an RLP list here, a typed one an RLP string wrapping the
-        // EIP-2718 envelope; the envelope alone is the transaction.
+        // SIP-2718 envelope; the envelope alone is the transaction.
         const auto tx_bytes = h.is_list ? item.substr(0, header_size + h.payload_length) :
                                           item.substr(header_size, h.payload_length);
 

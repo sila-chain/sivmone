@@ -16,7 +16,7 @@ constexpr auto VERSIONED_HASH_SIZE = SHA256_HASH_SIZE;
 /// The KZG version number of the versioned hash.
 constexpr std::byte VERSIONED_HASH_VERSION_KZG{0x01};
 
-/// An EIP-4844 parameter.
+/// An SIP-4844 parameter.
 constexpr auto FIELD_ELEMENTS_PER_BLOB = 4096_u256;
 
 /// Scalar field modulus of BLS12-381.
