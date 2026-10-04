@@ -1,6 +1,6 @@
 {
   "a_stops_early": {
-    "network": "Amsterdam",
+    "network": "SilaAmsterdam",
     "genesisBlockHeader": {
       "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
       "uncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
@@ -69,7 +69,7 @@
     "lastblockhash": "0x0000000000000000000000000000000000000000000000000000000000000002",
     "postState": {},
     "config": {
-      "network": "Amsterdam",
+      "network": "SilaAmsterdam",
       "chainid": "0x01"
     },
     "genesisRLP": "0x",
@@ -82,7 +82,7 @@
     "_info": {
       "comment": "Runs only if the test before it stopped by itself rather than taking the rest of the file with it. Its post state is wrong, so reaching it is visible."
     },
-    "network": "Amsterdam",
+    "network": "SilaAmsterdam",
     "genesisBlockHeader": {
       "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
       "uncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
@@ -119,7 +119,7 @@
     "lastblockhash": "0x0000000000000000000000000000000000000000000000000000000000000001",
     "postState": {},
     "config": {
-      "network": "Amsterdam",
+      "network": "SilaAmsterdam",
       "chainid": "0x01"
     },
     "genesisRLP": "0x",

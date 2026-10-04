@@ -29,7 +29,7 @@ constexpr std::string_view NONCE_TOO_HIGH = R"({"invalid_nonce": {
         "currentRandom": "0x0000000000000000000000000000000000000000000000000000000000020000",
         "currentTimestamp": "0x03e8"
     },
-    "post": {"Shanghai": [{
+    "post": {"SilaShanghai": [{
         "hash": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
         "indexes": {"data": 0, "gas": 0, "value": 0},
         "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
@@ -58,7 +58,7 @@ constexpr std::string_view VALID_TX = R"({"valid_tx": {
         "currentNumber": "0x01",
         "currentTimestamp": "0x03e8"
     },
-    "post": {"London": [{
+    "post": {"SilaLondon": [{
         "hash": "0x71322a2754548ef6d3b540e9b6b858379787c2d1f31bc68205b70902c1d6155f",
         "indexes": {"data": 0, "gas": 0, "value": 0},
         "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
@@ -89,7 +89,7 @@ constexpr std::string_view FAILING_TX = R"({"failing_tx": {
         "currentNumber": "0x01",
         "currentTimestamp": "0x03e8"
     },
-    "post": {"London": [{
+    "post": {"SilaLondon": [{
         "hash": "0x994280467b9327f616db6328828df403c3493f32ca409a86e7ce6a415a7be488",
         "indexes": {"data": 0, "gas": 0, "value": 0},
         "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
@@ -119,7 +119,7 @@ std::string txbytes_case(std::string_view txbytes)
             "currentNumber": "0x01",
             "currentTimestamp": "0x03e8"
         },
-        "post": {"Shanghai": [{
+        "post": {"SilaShanghai": [{
             "hash": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
             "indexes": {"data": 0, "gas": 0, "value": 0},
             "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
@@ -168,7 +168,7 @@ TEST(statetest_runner, unexpected_invalid_transactions)
 
     ASSERT_EQ(failures.size(), 1u);
     EXPECT_EQ(failures[0].test, "invalid_nonce");
-    EXPECT_EQ(failures[0].where, "Shanghai/0");
+    EXPECT_EQ(failures[0].where, "SilaShanghai/0");
     EXPECT_EQ(failures[0].what, "transaction validity");
     EXPECT_EQ(failures[0].detail,
         "unexpected invalid transaction: TransactionException.NONCE_MISMATCH_TOO_HIGH");
@@ -178,7 +178,7 @@ TEST(statetest_runner, not_rejected_transaction)
 {
     // The transaction is valid, but the fixture expects it to be rejected.
     auto fixture = json::json::parse(VALID_TX);
-    fixture["valid_tx"]["post"]["London"][0]["expectException"] =
+    fixture["valid_tx"]["post"]["SilaLondon"][0]["expectException"] =
         "TransactionException.NONCE_MISMATCH_TOO_HIGH";
 
     const auto failures = run(fixture.dump()).failures;

@@ -65,7 +65,7 @@ struct Failure
 {
     /// The test case it fired in: the fixture's top-level name.
     std::string test;
-    /// Where in that case, as built by TestReport::at(), e.g. "Prague/0".
+    /// Where in that case, as built by TestReport::at(), e.g. "SilaPrague/0".
     std::string where;
     /// What was checked, named in the terms the fixture uses.
     std::string what;
@@ -106,7 +106,7 @@ public:
     void start_case(std::string name) { m_test = std::move(name); }
 
     /// Extends the place within the test case with @p position, until the scope ends.
-    /// Nested calls read as a path: at(1) inside at("Prague") is "Prague/1".
+    /// Nested calls read as a path: at(1) inside at("SilaPrague") is "SilaPrague/1".
     [[nodiscard]] Scope at(const auto&... position)
     {
         const auto restore_length = m_where.size();

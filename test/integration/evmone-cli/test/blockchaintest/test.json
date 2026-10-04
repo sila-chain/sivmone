@@ -1,6 +1,6 @@
 {
     "tests/osaka/eip7939_count_leading_zeros/test_count_leading_zeros.py::test_clz_call_operation[fork_Osaka-blockchain_test_from_state_test-call]": {
-        "network": "Osaka",
+        "network": "SilaOsaka",
         "genesisBlockHeader": {
             "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
             "uncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
@@ -29,20 +29,20 @@
         "postState": {},
         "lastblockhash": "0x4ef7b363944b3890a495f70bd2c84060e2a011f52ea11a065c032c479595dc1c",
         "config": {
-            "network": "Osaka",
+            "network": "SilaOsaka",
             "chainid": "0x01",
             "blobSchedule": {
-                "Cancun": {
+                "SilaCancun": {
                     "target": "0x03",
                     "max": "0x06",
                     "baseFeeUpdateFraction": "0x32f0ed"
                 },
-                "Prague": {
+                "SilaPrague": {
                     "target": "0x06",
                     "max": "0x09",
                     "baseFeeUpdateFraction": "0x4c6964"
                 },
-                "Osaka": {
+                "SilaOsaka": {
                     "target": "0x06",
                     "max": "0x09",
                     "baseFeeUpdateFraction": "0x4c6964"
@@ -55,7 +55,7 @@
         "_info": {}
     },
     "tests/osaka/eip7939_count_leading_zeros/test_count_leading_zeros.py::test_clz_call_operation[fork_Osaka-blockchain_test_from_state_test-callcode]": {
-        "network": "Osaka",
+        "network": "SilaOsaka",
         "genesisBlockHeader": {
             "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
             "uncleHash": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
@@ -84,20 +84,20 @@
         "postState": {},
         "lastblockhash": "0x215c568985562fcbce1f73cb89b4f06453c9d9c5ee0f192873811046d4ebbe47",
         "config": {
-            "network": "Osaka",
+            "network": "SilaOsaka",
             "chainid": "0x01",
             "blobSchedule": {
-                "Cancun": {
+                "SilaCancun": {
                     "target": "0x03",
                     "max": "0x06",
                     "baseFeeUpdateFraction": "0x32f0ed"
                 },
-                "Prague": {
+                "SilaPrague": {
                     "target": "0x06",
                     "max": "0x09",
                     "baseFeeUpdateFraction": "0x4c6964"
                 },
-                "Osaka": {
+                "SilaOsaka": {
                     "target": "0x06",
                     "max": "0x09",
                     "baseFeeUpdateFraction": "0x4c6964"

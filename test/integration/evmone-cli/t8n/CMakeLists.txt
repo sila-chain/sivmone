@@ -26,7 +26,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/base_fee
     COMMAND
     evmone-cli t8n
-    --state.fork London
+    --state.fork SilaLondon
     --state.reward 0
     --state.chainid 1
     --input.alloc alloc.json
@@ -57,7 +57,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/base_fee
     COMMAND
     evmone-cli t8n
-    --state.fork Berlin
+    --state.fork SilaBerlin
     --state.reward 0
     --state.chainid 1
     --input.alloc alloc.json
@@ -77,7 +77,7 @@ set_tests_properties(
     ${PREFIX}/${TEST_CASE}/out.json PROPERTIES
     FIXTURES_CLEANUP ${TEST_CASE}
     PASS_REGULAR_EXPRESSION [=["gasUsed"]=]
-    # Only a run shows that --state.fork Berlin reaches t8n as a revision before London.
+    # Only a run shows that --state.fork SilaBerlin reaches t8n as a revision before London.
     FAIL_REGULAR_EXPRESSION currentBaseFee
 )
 
@@ -89,7 +89,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_CASE}
     COMMAND
     evmone-cli t8n
-    --state.fork Cancun
+    --state.fork SilaCancun
     --state.reward 0
     --state.chainid 1
     --input.alloc alloc.json
@@ -159,7 +159,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_CASE}
     COMMAND
     evmone-cli t8n
-    --state.fork Prague
+    --state.fork SilaPrague
     --state.reward 0
     --state.chainid 1
     --input.alloc alloc.json
@@ -191,7 +191,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_CASE}
     COMMAND
     evmone-cli t8n
-    --state.fork Osaka
+    --state.fork SilaOsaka
     --state.reward 0
     --state.chainid 1
     --input.alloc alloc.json
@@ -229,7 +229,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cancun_create_tx
     COMMAND
     evmone-cli t8n
-    --state.fork Cancun
+    --state.fork SilaCancun
     --state.reward 0
     --state.chainid 1
     --input.alloc alloc.json
@@ -268,7 +268,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/base_fee
     COMMAND
     evmone-cli t8n
-    --state.fork Paris
+    --state.fork SilaParis
     --state.chainid 0xffffffffffffffff
     --input.env env.json
 )
@@ -283,7 +283,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_CASE}
     COMMAND
     evmone-cli t8n
-    --state.fork Prague
+    --state.fork SilaPrague
     --state.reward -1
     --state.chainid 1
     --input.alloc alloc.json

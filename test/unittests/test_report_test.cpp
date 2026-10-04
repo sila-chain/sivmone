@@ -57,7 +57,7 @@ TEST(test_report, check_eq_reports_both_values)
 {
     Recorded recorded;
     recorded.report.start_case("t");
-    const auto in_case = recorded.report.at("Prague", '/', 0);
+    const auto in_case = recorded.report.at("SilaPrague", '/', 0);
 
     EXPECT_FALSE(recorded.report.check_eq("state root", 0x01_bytes32, 0x02_bytes32));
 
@@ -99,7 +99,7 @@ TEST(test_report, at_scopes_nest_and_restore)
     Recorded recorded;
     recorded.report.start_case("t");
     {
-        const auto outer = recorded.report.at("Prague");
+        const auto outer = recorded.report.at("SilaPrague");
         {
             const auto inner = recorded.report.at(3);
             recorded.report.fail("inner", "d");
@@ -109,8 +109,8 @@ TEST(test_report, at_scopes_nest_and_restore)
     recorded.report.fail("case", "d");
 
     ASSERT_EQ(recorded.failures().size(), 3u);
-    EXPECT_EQ(recorded.failures()[0].where, "Prague/3");
-    EXPECT_EQ(recorded.failures()[1].where, "Prague");
+    EXPECT_EQ(recorded.failures()[0].where, "SilaPrague/3");
+    EXPECT_EQ(recorded.failures()[1].where, "SilaPrague");
     EXPECT_EQ(recorded.failures()[2].where, "");
 }
 
@@ -188,7 +188,7 @@ TEST(test_report, a_place_that_renders_empty_adds_no_separator)
 {
     Recorded recorded;
     recorded.report.start_case("t");
-    const auto outer = recorded.report.at("Prague");
+    const auto outer = recorded.report.at("SilaPrague");
     {
         const auto inner = recorded.report.at(std::string{});
         recorded.report.fail("what");
@@ -196,8 +196,8 @@ TEST(test_report, a_place_that_renders_empty_adds_no_separator)
     recorded.report.fail("after");
 
     ASSERT_EQ(recorded.failures().size(), 2u);
-    EXPECT_EQ(recorded.failures()[0].where, "Prague");
-    EXPECT_EQ(recorded.failures()[1].where, "Prague");
+    EXPECT_EQ(recorded.failures()[0].where, "SilaPrague");
+    EXPECT_EQ(recorded.failures()[1].where, "SilaPrague");
 }
 
 TEST(test_report, extra_detail_is_not_formatted_when_the_check_holds)

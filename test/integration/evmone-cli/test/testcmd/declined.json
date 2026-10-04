@@ -3,7 +3,7 @@
   "_info": {
    "comment": "Declines to load: expectException without rlp_decoded, which the loader refuses before reading anything after the blocks."
   },
-  "network": "Cancun",
+  "network": "SilaCancun",
   "genesisBlockHeader": {
    "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
    "coinbase": "0x0000000000000000000000000000000000000000",
@@ -40,7 +40,7 @@
    "currentTimestamp": "0x03e8"
   },
   "post": {
-   "London": [
+   "SilaLondon": [
     {
      "hash": "0xe8010ce590f401c9d61fef8ab05bea9bcec24281b795e5868809bc4e515aa530",
      "indexes": {

@@ -27,7 +27,7 @@ BlockchainTest one_block_fixture()
 {
     BlockchainTest t;
     t.name = "unit";
-    t.network = "Prague";
+    t.network = "SilaPrague";
 
     auto& g = t.genesis_block_header;
     g.gas_limit = GAS_LIMIT;

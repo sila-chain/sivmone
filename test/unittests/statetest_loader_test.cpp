@@ -118,7 +118,7 @@ TEST(statetest_loader, load_minimal_test)
                 "nonce" : "0"
             },
             "post": {
-                "Cancun": []
+                "SilaCancun": []
             },
             "env": {
                 "currentNumber": "0",

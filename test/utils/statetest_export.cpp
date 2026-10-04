@@ -15,9 +15,9 @@ std::string_view to_test_fork_name(evmc_revision rev) noexcept
     switch (rev)
     {
     case EVMC_TANGERINE_WHISTLE:
-        return "EIP150";
+        return "SIP150";
     case EVMC_SPURIOUS_DRAGON:
-        return "EIP158";
+        return "SIP158";
     default:
         return evmc::to_string(rev);
     }

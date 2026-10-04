@@ -259,7 +259,7 @@ TEST_F(tracing, trace_revert)
 //
 //     trace_stream << '\n';
 //     EXPECT_EQ(trace({}, 2), R"(
-//{"depth":2,"rev":"Berlin","static":false}
+//{"depth":2,"rev":"SilaBerlin","static":false}
 //{"error":null,"gas":0xf4240,"gasUsed":0x0,"output":""}
 //)");
 // }
@@ -270,7 +270,7 @@ TEST_F(tracing, trace_revert)
 //
 //     trace_stream << '\n';
 //     EXPECT_EQ(trace({}, 2, EVMC_STATIC), R"(
-//{"depth":2,"rev":"Berlin","static":true}
+//{"depth":2,"rev":"SilaBerlin","static":true}
 //{"error":null,"gas":0xf4240,"gasUsed":0x0,"output":""}
 //)");
 // }

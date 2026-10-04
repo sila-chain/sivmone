@@ -3,7 +3,7 @@
     "_info": {
       "comment": "The runner takes the sender from the fixture, so it cannot see the broken signature; the transaction executes and the wrong blobGasUsed is the first header mismatch."
     },
-    "network": "Cancun",
+    "network": "SilaCancun",
     "genesisBlockHeader": {
       "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
       "coinbase": "0x0000000000000000000000000000000000000000",

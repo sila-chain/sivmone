@@ -216,33 +216,33 @@ static inline const char* evmc_revision_to_string(enum evmc_revision rev)
     case EVMC_FRONTIER:
         return "Frontier";
     case EVMC_HOMESTEAD:
-        return "Homestead";
+        return "SilaHomestead";
     case EVMC_TANGERINE_WHISTLE:
         return "TangerineWhistle";
     case EVMC_SPURIOUS_DRAGON:
         return "SpuriousDragon";
     case EVMC_BYZANTIUM:
-        return "Byzantium";
+        return "SilaByzantium";
     case EVMC_PETERSBURG:
         return "Petersburg";
     case EVMC_ISTANBUL:
-        return "Istanbul";
+        return "SilaIstanbul";
     case EVMC_BERLIN:
-        return "Berlin";
+        return "SilaBerlin";
     case EVMC_LONDON:
-        return "London";
+        return "SilaLondon";
     case EVMC_PARIS:
-        return "Paris";
+        return "SilaParis";
     case EVMC_SHANGHAI:
-        return "Shanghai";
+        return "SilaShanghai";
     case EVMC_CANCUN:
-        return "Cancun";
+        return "SilaCancun";
     case EVMC_PRAGUE:
-        return "Prague";
+        return "SilaPrague";
     case EVMC_OSAKA:
-        return "Osaka";
+        return "SilaOsaka";
     case EVMC_AMSTERDAM:
-        return "Amsterdam";
+        return "SilaAmsterdam";
     case EVMC_EXPERIMENTAL:
         return "Experimental";
     }

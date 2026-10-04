@@ -14,7 +14,7 @@ TEST(json_loader, blockchain_test)
 {
     // NOTE: fake `rlp` field! Never decoded by loader, only size is read and checked.
     std::istringstream input{R"({
-        "000-fork=Shanghai-fill_stack": {
+        "000-fork=SilaShanghai-fill_stack": {
             "blocks": [
                 {
                     "blockHeader": {
@@ -101,7 +101,7 @@ TEST(json_loader, blockchain_test)
                 "hash": "0xe1bcc830589216abdc79cb3075f06f7b133f7b0cf257ecb346da33c354099700"
             },
             "lastblockhash": "0x01de610f00331cea813e8143d51eb44ca352cdd90c602bb4b4bcf3c6cf9d5531",
-            "network": "Shanghai",
+            "network": "SilaShanghai",
             "pre": {
                 "0x0000000000000000000000000000000000000100": {
                     "nonce": "0x00",
@@ -141,7 +141,7 @@ TEST(json_loader, blockchain_test)
     EXPECT_EQ(btt.size(), 1);
     EXPECT_EQ(btt[0].test_blocks.size(), 1);
     EXPECT_EQ(btt[0].rev.get_revision(0), evmc_revision::EVMC_SHANGHAI);
-    EXPECT_EQ(btt[0].name, "000-fork=Shanghai-fill_stack");
+    EXPECT_EQ(btt[0].name, "000-fork=SilaShanghai-fill_stack");
     EXPECT_EQ(btt[0].genesis_block_header.timestamp, 0);
     EXPECT_EQ(btt[0].genesis_block_header.gas_limit, 0x016345785d8a0000);
     EXPECT_EQ(btt[0].genesis_block_header.base_fee_per_gas, 0x07);
@@ -169,7 +169,7 @@ TEST(json_loader, blockchain_test_post_state_hash)
 {
     // NOTE: fake `rlp` field! Never decoded by loader, only size is read and checked.
     std::istringstream input{R"({
-        "000-fork=Shanghai-fill_stack": {
+        "000-fork=SilaShanghai-fill_stack": {
             "blocks": [
                 {
                     "blockHeader": {
@@ -260,7 +260,7 @@ TEST(json_loader, blockchain_test_post_state_hash)
     EXPECT_EQ(btt[0].test_blocks.size(), 1);
     EXPECT_EQ(btt[0].rev.get_revision(0), evmc_revision::EVMC_SHANGHAI);
     EXPECT_EQ(btt[0].rev.get_revision(15'000), evmc_revision::EVMC_CANCUN);
-    EXPECT_EQ(btt[0].name, "000-fork=Shanghai-fill_stack");
+    EXPECT_EQ(btt[0].name, "000-fork=SilaShanghai-fill_stack");
     EXPECT_EQ(btt[0].genesis_block_header.timestamp, 0);
     EXPECT_EQ(btt[0].genesis_block_header.gas_limit, 0x016345785d8a0000);
     EXPECT_EQ(btt[0].genesis_block_header.base_fee_per_gas, 0x07);
@@ -279,7 +279,7 @@ TEST(json_loader, blockchain_test_pre_paris)
 {
     // NOTE: fake `rlp` field! Never decoded by loader, only size is read and checked.
     std::istringstream input{R"({
-        "000-fork=Shanghai-fill_stack": {
+        "000-fork=SilaShanghai-fill_stack": {
             "blocks": [
                 {
                     "blockHeader": {
@@ -344,7 +344,7 @@ TEST(json_loader, blockchain_test_pre_paris)
                 "hash": "0xe1bcc830589216abdc79cb3075f06f7b133f7b0cf257ecb346da33c354099700"
             },
             "lastblockhash": "0x01de610f00331cea813e8143d51eb44ca352cdd90c602bb4b4bcf3c6cf9d5531",
-            "network": "London",
+            "network": "SilaLondon",
             "pre": {
                 "0x0000000000000000000000000000000000000100": {
                     "nonce": "0x00",
@@ -369,7 +369,7 @@ TEST(json_loader, blockchain_test_pre_paris)
     EXPECT_EQ(btt.size(), 1);
     EXPECT_EQ(btt[0].test_blocks.size(), 1);
     EXPECT_EQ(btt[0].rev.get_revision(0), evmc_revision::EVMC_LONDON);
-    EXPECT_EQ(btt[0].name, "000-fork=Shanghai-fill_stack");
+    EXPECT_EQ(btt[0].name, "000-fork=SilaShanghai-fill_stack");
     EXPECT_EQ(btt[0].genesis_block_header.timestamp, 0);
     EXPECT_EQ(btt[0].genesis_block_header.gas_limit, 0x016345785d8a0000);
     EXPECT_EQ(btt[0].genesis_block_header.base_fee_per_gas, 0x07);
@@ -395,7 +395,7 @@ TEST(json_loader, blockchain_test_slot_number_absent_differs_from_zero)
     // The second block intentionally omits `slotNumber`; the loader does not validate headers.
     std::istringstream input{R"({
         "000-slotnum": {
-            "network": "Amsterdam",
+            "network": "SilaAmsterdam",
             "genesisBlockHeader": {
                 "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
                 "coinbase": "0x0000000000000000000000000000000000000000",
@@ -478,7 +478,7 @@ TEST(json_loader, blockchain_test_unsupported_rlp)
     // explanation, and a stream consumed by the first run would then report a false one.
     constexpr std::string_view fixture = R"({
         "unsupported_rlp": {
-            "network": "Cancun",
+            "network": "SilaCancun",
             "genesisBlockHeader": {
                 "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
                 "coinbase": "0x0000000000000000000000000000000000000000",

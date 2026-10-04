@@ -3,7 +3,7 @@
     "_info": {
       "comment": "As above, but the block reaches the requests check: the executed transaction makes the deposit contract emit a log with no data."
     },
-    "network": "Prague",
+    "network": "SilaPrague",
     "genesisBlockHeader": {
       "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
       "coinbase": "0x0000000000000000000000000000000000000000",

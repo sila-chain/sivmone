@@ -24,18 +24,18 @@ state::BlobParams get_blob_params(
     std::string_view network, const BlobSchedule& blob_schedule, int64_t timestamp)
 {
     std::string fork;
-    if (network == "PragueToOsakaAtTime15k")
-        fork = timestamp >= 15'000 ? "Osaka" : "Prague";
-    else if (network == "OsakaToBPO1AtTime15k")
-        fork = timestamp >= 15'000 ? "BPO1" : "Osaka";
+    if (network == "SilaPragueToSilaOsakaAtTime15k")
+        fork = timestamp >= 15'000 ? "SilaOsaka" : "SilaPrague";
+    else if (network == "SilaOsakaToBPO1AtTime15k")
+        fork = timestamp >= 15'000 ? "BPO1" : "SilaOsaka";
     else if (network == "BPO1ToBPO2AtTime15k")
         fork = timestamp >= 15'000 ? "BPO2" : "BPO1";
     else if (network == "BPO2ToBPO3AtTime15k")
         fork = timestamp >= 15'000 ? "BPO3" : "BPO2";
     else if (network == "BPO3ToBPO4AtTime15k")
         fork = timestamp >= 15'000 ? "BPO4" : "BPO3";
-    else if (network == "BPO2ToAmsterdamAtTime15k")
-        fork = timestamp >= 15'000 ? "Amsterdam" : "BPO2";
+    else if (network == "BPO2ToSilaAmsterdamAtTime15k")
+        fork = timestamp >= 15'000 ? "SilaAmsterdam" : "BPO2";
     else
         fork = network;
     if (const auto it = blob_schedule.find(fork); it != blob_schedule.end())

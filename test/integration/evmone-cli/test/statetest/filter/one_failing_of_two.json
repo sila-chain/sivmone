@@ -10,7 +10,7 @@
       "currentTimestamp": "0x03e8"
     },
     "post": {
-      "London": [
+      "SilaLondon": [
         {
           "hash": "0x71322a2754548ef6d3b540e9b6b858379787c2d1f31bc68205b70902c1d6155f",
           "indexes": {
@@ -57,7 +57,7 @@
       "currentTimestamp": "0x03e8"
     },
     "post": {
-      "London": [
+      "SilaLondon": [
         {
           "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "indexes": {

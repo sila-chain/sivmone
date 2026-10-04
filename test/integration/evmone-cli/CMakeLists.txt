@@ -10,7 +10,7 @@ set(PREFIX ${PREFIX}/evmone-cli)
 # take it as a second command and run that one instead, exiting 0 with the wrong work done:
 # the dispatch tries run first, so a trailing "run" hijacked every other subcommand.
 add_test(NAME ${PREFIX}/one_command_per_invocation COMMAND evmone-cli
-    t8n --state.fork Cancun run 6000)
+    t8n --state.fork SilaCancun run 6000)
 set_tests_properties(
     ${PREFIX}/one_command_per_invocation PROPERTIES
     PASS_REGULAR_EXPRESSION "arguments were not expected"
@@ -25,14 +25,14 @@ set_tests_properties(
 
 # A PASS_REGULAR_EXPRESSION makes CTest ignore the exit code, so run them again for that alone.
 add_test(NAME ${PREFIX}/one_command_per_invocation_exit_code COMMAND evmone-cli
-    t8n --state.fork Cancun run 6000)
+    t8n --state.fork SilaCancun run 6000)
 set_tests_properties(
     ${PREFIX}/one_command_per_invocation_exit_code PROPERTIES WILL_FAIL TRUE)
 
 # t8n is given its required option here: without one the second command exits non-zero by itself,
 # so the exit code would say nothing about whether it was taken as a command.
 add_test(NAME ${PREFIX}/one_command_per_invocation_reversed_exit_code COMMAND evmone-cli
-    run 6000 t8n --state.fork Cancun)
+    run 6000 t8n --state.fork SilaCancun)
 set_tests_properties(
     ${PREFIX}/one_command_per_invocation_reversed_exit_code PROPERTIES WILL_FAIL TRUE)
 
