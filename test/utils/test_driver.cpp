@@ -90,10 +90,10 @@ Format classify(const json::json& fixture)
             return Format::unsupported;
         }
     }
-    // Nothing declares the format: a hand-written or pre-EEST file, or an "_info" without one.
+    // Nothing declares the format: a hand-written or pre-SEST file, or an "_info" without one.
     // Each shape is named by the state it starts from and what is applied to it, never by what
     // it expects, so a fixture whose expectations are missing is still a test and is run.
-    // Anything else is not a test at all, as EEST's shared pre-allocation is not.
+    // Anything else is not a test at all, as SEST's shared pre-allocation is not.
     if (fixture.contains("pre") && fixture.contains("blocks"))
         return Format::blockchain_test;
     if (fixture.contains("pre") && fixture.contains("transaction"))
@@ -102,7 +102,7 @@ Format classify(const json::json& fixture)
 }
 
 /// Parses the fixture file at @p path. Throws UnsupportedTestFeature for a file with no
-/// fixture in it: EEST keeps its shared pre-allocation and an index beside the fixtures, and
+/// fixture in it: SEST keeps its shared pre-allocation and an index beside the fixtures, and
 /// neither is a test.
 json::json load_fixture_file(const fs::path& path)
 {

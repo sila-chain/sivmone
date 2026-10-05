@@ -9,7 +9,7 @@
 
 namespace sivmone::test
 {
-/// Rewrites a fixture's `expectException` value to the execution-spec-tests names sivmone reports,
+/// Rewrites a fixture's `expectException` value to the SEST names sivmone reports,
 /// so both test runners compare one vocabulary. Covers the retesteth vocabulary of sila-chain/sila-tests
 /// (TR_NoFunds, InvalidGasLimit2, ...) and the few block-level spec names sivmone does not tell
 /// apart. Anything else is returned unchanged.

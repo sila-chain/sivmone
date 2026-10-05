@@ -69,7 +69,7 @@ TEST_F(state_transition, invalid_tx_wrong_chain_id_legacy)
 TEST_F(state_transition, invalid_tx_legacy_protected_chain_id_0)
 {
     // A legacy transaction signed for chain 0 (SIP-155) is bound to it like any other, unlike an
-    // unprotected one. No EEST fixture signs for chain 0, which is why this is pinned here.
+    // unprotected one. No SEST fixture signs for chain 0, which is why this is pinned here.
     tx.type = Transaction::Type::legacy;
     tx.to = To;
     tx.chain_id = 0;

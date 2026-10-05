@@ -472,8 +472,8 @@ static void from_json(const json::json& j_t, StateTransitionTest& o)
     if (const auto info_it = j_t.find("_info"); info_it != j_t.end())
     {
         // Parse input labels to improve test readability.
-        // EEST doesn't use labels, so exclude this code from coverage
-        // to help with ethereum/tests -> EEST conversion.
+        // SEST doesn't use labels, so exclude this code from coverage
+        // to help with sila-chain/sila-tests -> SEST conversion.
         // LCOV_EXCL_START
         if (const auto labels_it = info_it->find("labels"); labels_it != info_it->end())
         {

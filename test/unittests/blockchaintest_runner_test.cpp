@@ -2,7 +2,7 @@
 // Copyright 2026 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
-/// Tests of the blockchain test runner's verdicts. EEST reaches validate_block()'s rejections on
+/// Tests of the blockchain test runner's verdicts. SEST reaches validate_block()'s rejections on
 /// a green run, but not the reports below them: those need sivmone and a fixture to disagree.
 /// Neither is reachable from the suites the coverage job runs.
 

@@ -11,7 +11,7 @@ namespace sivmone::state
 
 /// The reasons a transaction or a block is rejected.
 ///
-/// The message of each is the execution-spec-tests exception name for the same rule, so a test can
+/// The message of each is the SEST exception name for the same rule, so a test can
 /// compare a rejection against the `expectException` its fixture states. Where the specs name more
 /// than one exception for a rule, the message is the canonical one and the test harness carries the
 /// alternatives; the few rules the specs do not name at all keep a plain message.

@@ -168,7 +168,7 @@ json::json to_state_test(std::string_view test_name, const state::BlockInfo& blo
 
     if (holds_alternative<std::error_code>(res))
     {
-        // The error message is the execution-spec-tests exception name.
+        // The error message is the SEST exception name.
         jpost["expectException"] = std::get<std::error_code>(res).message();
         jpost["logs"] = hex0x(logs_hash(std::vector<state::Log>()));
     }

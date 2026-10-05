@@ -262,7 +262,7 @@ TEST_F(state_transition, create2_prefunded_revert_storage_no_leak)
 {
     // Prefunded CREATE2 (create-over-existing path): the init writes storage, the create is
     // reverted, then a second CREATE2 at the same address must read slot 0 back as zero.
-    // TODO: migrate to EEST -- extend test_create2_succeeds_after_reverted_create2 to read storage.
+    // TODO: migrate to SEST -- extend test_create2_succeeds_after_reverted_create2 to read storage.
     static constexpr auto Creator = 0xcc_address;
     static constexpr auto Reverter = 0xbb_address;
 

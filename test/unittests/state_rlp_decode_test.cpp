@@ -644,7 +644,7 @@ TEST(state_rlp_decode, recover_sender_legacy_protected)
 {
     // The same fields signed twice: over the pre-SIP-155 preimage and over the SIP-155 one for
     // chain 0 (wire v = 35/36). Both decode to chain_id 0, so only the verbatim v says which
-    // preimage was signed. No EEST fixture signs for chain 0, which is why this is pinned here.
+    // preimage was signed. No SEST fixture signs for chain 0, which is why this is pinned here.
     // Signer of both: 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550 (private key 0xa5). sivmone only
     // recovers, so changing the fields means re-signing each preimage elsewhere, with a low s.
     constexpr auto signer = 0x1d694d5ad94f32132ff5c14c901d3ddbee90a550_address;

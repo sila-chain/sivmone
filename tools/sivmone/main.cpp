@@ -72,7 +72,7 @@ struct T8nOptions
 
 const CLI::App& setup_t8n_cmd(CLI::App& app, T8nOptions& opts)
 {
-    auto& cmd = *app.add_subcommand("t8n", "Run Sila state transition (EELS t8n protocol)");
+    auto& cmd = *app.add_subcommand("t8n", "Run Sila state transition (SELS t8n protocol)");
     cmd.add_option("--state.fork", opts.state_fork, "Active Sivm revision")->required();
     cmd.add_option("--state.chainid", opts.state_chainid, "Chain ID (decimal or 0x-prefixed hex)");
     cmd.add_option(

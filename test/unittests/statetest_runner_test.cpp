@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /// Tests of what the state test runner reports when a fixture does not hold. Those paths run only
-/// when sivmone disagrees with a fixture, which a green EEST run never does.
+/// when sivmone disagrees with a fixture, which a green SEST run never does.
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
